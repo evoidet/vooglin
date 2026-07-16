@@ -9,9 +9,10 @@
   <title>Vooglin — Practical Automation and Digital Workflows</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="assets/sun/vooglin-sun-768.webp" imagesrcset="assets/sun/vooglin-sun-480.webp 480w, assets/sun/vooglin-sun-768.webp 768w, assets/sun/vooglin-sun-1254.webp 1254w" imagesizes="(max-width: 600px) 300px, min(36vw, 560px)" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600&family=Syne:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260716-snap9">
+  <script src="script.js?v=20260716-snap9" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -38,14 +39,11 @@
   </header>
 
   <main id="main">
-    <section class="hero" id="top" aria-labelledby="hero-title">
+    <section class="hero" id="top" aria-labelledby="hero-title" data-motion-region="hero">
       <div class="hero-orbit orbit-one" aria-hidden="true"></div>
       <div class="hero-orbit orbit-two" aria-hidden="true"></div>
       <div class="hero-sun" aria-hidden="true">
-        <div class="sun-corona"></div>
-        <div class="sun-core"></div>
-        <div class="sun-flare flare-one"></div>
-        <div class="sun-flare flare-two"></div>
+        <img class="solar-image" src="assets/sun/vooglin-sun-768.webp" srcset="assets/sun/vooglin-sun-480.webp 480w, assets/sun/vooglin-sun-768.webp 768w, assets/sun/vooglin-sun-1254.webp 1254w" sizes="(max-width: 600px) 300px, min(36vw, 560px)" width="1254" height="1254" alt="" decoding="async" fetchpriority="high">
       </div>
 
       <div class="hero-copy">
@@ -104,38 +102,110 @@
       </div>
 
       <div class="journey" data-journey>
-        <div class="journey-stage">
+        <div class="journey-stage" data-motion-region="journey">
           <div class="stage-grid" aria-hidden="true"></div>
-          <div class="journey-sun" aria-hidden="true"><i></i></div>
+          <svg class="orbital-field orbital-field-back" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <linearGradient id="orbit-cool" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#6fd8ff" stop-opacity="0" />
+                <stop offset=".42" stop-color="#9dc4ff" stop-opacity=".34" />
+                <stop offset="1" stop-color="#8270d8" stop-opacity=".04" />
+              </linearGradient>
+              <linearGradient id="orbit-warm" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ffc98d" stop-opacity="0" />
+                <stop offset=".48" stop-color="#c18dd8" stop-opacity=".23" />
+                <stop offset="1" stop-color="#7ed9d1" stop-opacity=".03" />
+              </linearGradient>
+            </defs>
+            <g class="orbit-plane orbit-plane-far">
+              <ellipse class="orbit-line orbit-line-cool" cx="800" cy="450" rx="770" ry="116" transform="rotate(-8 800 450)" />
+              <ellipse class="orbit-line orbit-line-warm" cx="800" cy="450" rx="688" ry="158" transform="rotate(7 800 450)" />
+              <ellipse class="orbit-line orbit-line-cool" cx="800" cy="450" rx="596" ry="205" transform="rotate(-13 800 450)" />
+              <ellipse class="orbit-line orbit-line-warm" cx="800" cy="450" rx="506" ry="247" transform="rotate(11 800 450)" />
+              <ellipse class="orbit-line orbit-line-cool" cx="800" cy="450" rx="416" ry="286" transform="rotate(-17 800 450)" />
+              <ellipse class="orbit-line orbit-line-warm" cx="800" cy="450" rx="328" ry="323" transform="rotate(14 800 450)" />
+              <ellipse class="orbit-line orbit-line-cool" cx="800" cy="450" rx="244" ry="358" transform="rotate(-10 800 450)" />
+            </g>
+            <g class="automation-signals">
+              <path class="data-route data-route-cool" pathLength="1" d="M112 536 C390 298 642 620 928 404 S1370 280 1510 470" />
+              <path class="data-route data-route-warm" pathLength="1" d="M214 282 C474 516 710 244 1014 526 S1374 602 1490 378" />
+              <circle class="orbit-node node-a" cx="398" cy="399" r="3" />
+              <circle class="orbit-node node-b" cx="928" cy="404" r="2.5" />
+              <circle class="orbit-node node-c" cx="1294" cy="343" r="3" />
+            </g>
+          </svg>
+          <div class="journey-sun" aria-hidden="true">
+            <img class="solar-image" src="assets/sun/vooglin-sun-256.webp" srcset="assets/sun/vooglin-sun-256.webp 256w, assets/sun/vooglin-sun-480.webp 480w" sizes="82px" width="480" height="480" alt="" decoding="async">
+          </div>
           <div class="stage-label stage-label-left">VOOGLIN / SYSTEM JOURNEY</div>
           <div class="stage-label stage-label-right">SCROLL LINKED</div>
 
-          <div class="planet-system" aria-hidden="true" data-planet-system>
-            <div class="orbit-path orbit-path-a"><i class="moon"></i><b></b><b></b></div>
-            <div class="orbit-path orbit-path-b"><i></i><b></b></div>
-            <div class="orbit-path orbit-path-c"><i></i></div>
-            <div class="planet-glow"></div>
-            <div class="planet" data-planet>
-              <div class="planet-texture"></div>
-              <div class="planet-night"></div>
-              <div class="planet-grid"></div>
-              <div class="planet-clouds"></div>
-              <div class="planet-shine"></div>
-              <div class="planet-atmosphere"></div>
-              <div class="planet-rings"><i></i></div>
+          <div class="incoming-system" aria-hidden="true" data-incoming-system>
+            <div class="incoming-glow"></div>
+            <div class="incoming-planet">
+              <img data-incoming-planet-image src="assets/planets/survey-320.webp" width="320" height="320" alt="" decoding="async" loading="lazy">
             </div>
-            <div class="service-satellites"><i></i><i></i><i></i></div>
-            <div class="data-trails"><i></i><i></i><i></i></div>
+            <div class="incoming-atmosphere"></div>
           </div>
 
+          <div class="planet-system" aria-hidden="true" data-planet-system>
+            <div class="planet-glow"></div>
+            <div class="orbit-path orbit-path-a"><i></i><b></b><b></b></div>
+            <div class="orbit-path orbit-path-b"><i class="moon"></i><i></i><b></b></div>
+            <div class="orbit-path orbit-path-c"><i></i><b></b></div>
+            <div class="service-satellites"><i></i><i></i><i></i></div>
+            <div class="data-trails"><i></i><i></i><i></i></div>
+            <div class="planet" data-planet>
+              <img
+                data-planet-image
+                src="assets/planets/registration-768.webp"
+                srcset="assets/planets/registration-768.webp 768w, assets/planets/registration-1024.webp 1024w, assets/planets/registration-1254.webp 1254w"
+                sizes="(max-width: 600px) 86vw, (max-width: 900px) 58vw, 48vw"
+                width="1254"
+                height="1254"
+                alt=""
+                decoding="async"
+                fetchpriority="high"
+              >
+              <div class="planet-rings"></div>
+              <div class="planet-atmosphere"></div>
+            </div>
+          </div>
+
+          <svg class="orbital-field orbital-field-front" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <linearGradient id="orbit-front-cool" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#8ee3ff" stop-opacity="0" />
+                <stop offset=".5" stop-color="#d3deff" stop-opacity=".22" />
+                <stop offset="1" stop-color="#8ee3ff" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="orbit-front-warm" x1="1" y1="0" x2="0" y2="0">
+                <stop offset="0" stop-color="#f6b978" stop-opacity="0" />
+                <stop offset=".52" stop-color="#e4b6ce" stop-opacity=".19" />
+                <stop offset="1" stop-color="#f6b978" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <ellipse class="orbit-arc orbit-arc-cool" pathLength="1" stroke-dasharray=".26 .74" stroke-dashoffset="-.07" cx="800" cy="450" rx="688" ry="158" transform="rotate(7 800 450)" />
+            <ellipse class="orbit-arc orbit-arc-warm" pathLength="1" stroke-dasharray=".22 .78" stroke-dashoffset="-.42" cx="800" cy="450" rx="506" ry="247" transform="rotate(11 800 450)" />
+            <ellipse class="orbit-arc orbit-arc-cool" pathLength="1" stroke-dasharray=".18 .82" stroke-dashoffset="-.16" cx="800" cy="450" rx="328" ry="323" transform="rotate(14 800 450)" />
+          </svg>
+
           <article class="service-card" aria-live="polite">
+            <div class="service-status" aria-hidden="true">
+              <i></i><span>SYSTEM ACTIVE</span><b data-service-code>REG-01</b>
+            </div>
             <div class="service-number" data-service-number>01 / 08</div>
             <div class="service-icon" data-service-icon aria-hidden="true"></div>
-            <h3 data-service-title>Applications, Registrations and Events</h3>
-            <p data-service-description>Registration systems that keep applications, participant information, confirmations, limits, reminders, and results organised.</p>
+            <h3 data-service-title>Applications, registrations and participants</h3>
+            <p data-service-description>Create systems for collecting applications, registrations, participant information, confirmations, notifications, statuses, limits, waiting lists, reminders, and final statistics.</p>
+            <p class="service-subtitle" data-service-subtitle>Keep every participant and application organised without repetitive manual copying.</p>
+            <p class="service-examples-label">Example outcomes</p>
             <ul class="service-outcomes" data-service-tags></ul>
             <p class="service-note" data-service-note hidden></p>
-            <a class="service-link magnetic" href="#contact">Discuss this service <span aria-hidden="true">→</span></a>
+            <div class="service-actions">
+              <a class="service-link magnetic" href="#contact">Discuss this service <span aria-hidden="true">→</span></a>
+              <a class="service-directory-link" href="#all-services">All services <span aria-hidden="true">↘</span></a>
+            </div>
           </article>
 
           <div class="journey-progress" aria-label="Service journey progress">
@@ -143,7 +213,15 @@
             <div class="progress-track"><i data-progress-bar></i></div>
             <span>08</span>
           </div>
-          <p class="journey-hint">Scroll controls the journey <span aria-hidden="true">↓</span></p>
+          <nav class="journey-step-controls" aria-label="Service navigation">
+            <button type="button" data-service-prev aria-label="Previous service">
+              <span aria-hidden="true">←</span><b>Previous</b>
+            </button>
+            <button type="button" data-service-next aria-label="Next service">
+              <b>Next</b><span aria-hidden="true">→</span>
+            </button>
+          </nav>
+          <p class="journey-hint">One gesture · one service <span aria-hidden="true">↓</span></p>
         </div>
         <div class="service-triggers" data-service-triggers></div>
       </div>
@@ -155,7 +233,7 @@
         <h2 id="auxiliary-title">Additional services,<br><em>when you need them.</em></h2>
         <p>Smaller improvements and ongoing support can orbit the main system—keeping it useful, understandable, and ready for what comes next.</p>
       </div>
-      <div class="service-station" aria-hidden="true">
+      <div class="service-station" aria-hidden="true" data-motion-region="auxiliary">
         <div class="station-orbit station-orbit-a"><i></i></div>
         <div class="station-orbit station-orbit-b"><i></i></div>
         <div class="station-core"><i></i><b></b></div>
@@ -171,7 +249,72 @@
       </ul>
     </section>
 
-    <section class="outro" id="contact" aria-labelledby="outro-title">
+    <section class="service-directory" id="all-services" aria-labelledby="directory-title" data-motion-region="directory">
+      <div class="directory-heading">
+        <p class="eyebrow"><span></span> Service directory</p>
+        <h2 id="directory-title">Find the right<br><em>orbit.</em></h2>
+        <p>Open any main system at its readable point in the journey, or choose a supporting service to see the closest fit.</p>
+      </div>
+
+      <div class="directory-main" aria-label="Main services">
+        <a class="directory-service" href="#registrations" data-service-jump="0">
+          <img src="assets/planets/registration-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+          <span><small>01 / Registrations</small>Applications, registrations and participants<em>Organised applications without repetitive copying.</em></span><b aria-hidden="true">→</b>
+        </a>
+        <a class="directory-service" href="#feedback" data-service-jump="1">
+          <img src="assets/planets/survey-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+          <span><small>02 / Feedback</small>Surveys, feedback and results<em>Report-ready insight from scattered responses.</em></span><b aria-hidden="true">→</b>
+        </a>
+        <a class="directory-service" href="#reports" data-service-jump="2">
+          <img src="assets/planets/dashboard-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+          <span><small>03 / Data</small>Tables, dashboards and reports<em>Important information in one clear view.</em></span><b aria-hidden="true">→</b>
+        </a>
+        <a class="directory-service" href="#tasks" data-service-jump="3">
+          <img src="assets/planets/tasks-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+          <span><small>04 / Projects</small>Tasks and deadlines<em>A shared view of progress, ownership, and attention.</em></span><b aria-hidden="true">→</b>
+        </a>
+        <a class="directory-service" href="#budget" data-service-jump="4">
+          <img src="assets/planets/finance-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+          <span><small>05 / Finance</small>Budgets, expenses and documents<em>Project costs and documents kept understandable.</em></span><b aria-hidden="true">→</b>
+        </a>
+        <a class="directory-service" href="#documents" data-service-jump="5">
+          <img src="assets/planets/documents-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+          <span><small>06 / Communication</small>Automated documents and emails<em>Consistent messages and documents, created faster.</em></span><b aria-hidden="true">→</b>
+        </a>
+        <a class="directory-service" href="#websites" data-service-jump="6">
+          <img src="assets/planets/web-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+          <span><small>07 / Web</small>Websites and forms<em>A clear online place for information and requests.</em></span><b aria-hidden="true">→</b>
+        </a>
+        <a class="directory-service" href="#integrations" data-service-jump="7">
+          <img src="assets/planets/integration-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+          <span><small>08 / Automation</small>Integrations and workflow automation<em>Separate tools connected into one working flow.</em></span><b aria-hidden="true">→</b>
+        </a>
+      </div>
+
+      <div class="directory-support" aria-labelledby="support-title">
+        <div>
+          <p class="eyebrow"><span></span> Supporting services</p>
+          <h3 id="support-title">Smaller moves,<br>connected to the system.</h3>
+        </div>
+        <ul>
+          <li><a href="#integrations" data-service-jump="7">Process diagnosis and automation planning <span>→</span></a></li>
+          <li><a href="#registrations" data-service-jump="0">Event registration systems <span>→</span></a></li>
+          <li><a href="#integrations" data-service-jump="7">Google Workspace setup <span>→</span></a></li>
+          <li><a href="#websites" data-service-jump="6">Forms connected to websites <span>→</span></a></li>
+          <li><a href="#reports" data-service-jump="2">Dashboards and management views <span>→</span></a></li>
+          <li><a href="#tasks" data-service-jump="3">Reminders and deadline flows <span>→</span></a></li>
+          <li><a href="#reports" data-service-jump="2">Data transfer, cleanup and structure <span>→</span></a></li>
+          <li><a href="#integrations" data-service-jump="7">AI-assisted modules <span>→</span></a></li>
+          <li><a href="#integrations" data-service-jump="7">Training and user instructions <span>→</span></a></li>
+          <li><a href="#integrations" data-service-jump="7">Technical support after launch <span>→</span></a></li>
+          <li><a href="#integrations" data-service-jump="7">Improvements to existing automations <span>→</span></a></li>
+          <li><a href="#websites" data-service-jump="6">Small website updates <span>→</span></a></li>
+          <li><a href="#integrations" data-service-jump="7">Complete process automation <span>→</span></a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="outro" id="contact" aria-labelledby="outro-title" data-motion-region="outro">
       <div class="outro-planet" aria-hidden="true">
         <div class="outro-horizon"></div>
       </div>
