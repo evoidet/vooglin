@@ -250,6 +250,9 @@ function updateJourney() {
   const cardEnter = smoothstep(.16, .34, chapterProgress);
   const cardDepart = smoothstep(.62, .8, chapterProgress);
   const cardOpacity = reducedMotion ? 1 : clamp(cardEnter * (1 - cardDepart) * 1.45);
+  const cardEntryX = ["right", "low", "high"].includes(service.layout) ? -68 : 68;
+  const cardExitX = cardEntryX * -.65;
+  const cardX = mix(cardEntryX, 0, cardEnter) + cardExitX * cardDepart;
   const deviceFactor = isCompactDevice() ? .44 : 1;
   const verticalFactor = isCompactDevice() ? .42 : 1;
   const journeyX = mix(service.entry[0] * deviceFactor, 0, enter) + service.exit[0] * deviceFactor * depart;
@@ -263,6 +266,7 @@ function updateJourney() {
   planetSystem.style.setProperty("--journey-opacity", reducedMotion ? 1 : planetOpacity);
   planetSystem.style.setProperty("--journey-rotation", `${reducedMotion ? 0 : mix(-7, 8, chapterProgress)}deg`);
   serviceCard.style.setProperty("--card-opacity", cardOpacity);
+  serviceCard.style.setProperty("--card-x", `${reducedMotion ? 0 : cardX}px`);
   serviceCard.style.setProperty("--card-shift", `${reducedMotion ? 0 : mix(30, -24, cardEnter) + cardDepart * 30}px`);
   progressBar.style.width = `${clamp(chapterPosition / services.length) * 100}%`;
 
