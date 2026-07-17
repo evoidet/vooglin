@@ -759,7 +759,7 @@ nextServiceButton.addEventListener("click", () => requestServiceStep(1));
 let wheelIntent = 0;
 let wheelArmed = true;
 let wheelIdleTimer = null;
-journeyStage.addEventListener("wheel", (event) => {
+window.addEventListener("wheel", (event) => {
   if (event.ctrlKey || journeyEscaping || !journeyIsControlled()) return;
   event.preventDefault();
   window.clearTimeout(wheelIdleTimer);
@@ -794,18 +794,18 @@ document.addEventListener("keydown", (event) => {
 
 let touchStartY = null;
 let touchStartedInJourney = false;
-journeyStage.addEventListener("touchstart", (event) => {
+document.addEventListener("touchstart", (event) => {
   if (event.touches.length !== 1 || journeyEscaping || !journeyIsControlled()) return;
   touchStartY = event.touches[0].clientY;
   touchStartedInJourney = true;
 }, { passive: true });
 
-journeyStage.addEventListener("touchmove", (event) => {
+document.addEventListener("touchmove", (event) => {
   if (!touchStartedInJourney || touchStartY === null) return;
   event.preventDefault();
 }, { passive: false });
 
-journeyStage.addEventListener("touchend", (event) => {
+document.addEventListener("touchend", (event) => {
   if (!touchStartedInJourney || touchStartY === null) return;
   const endY = event.changedTouches[0]?.clientY ?? touchStartY;
   const distance = touchStartY - endY;
@@ -814,7 +814,7 @@ journeyStage.addEventListener("touchend", (event) => {
   if (Math.abs(distance) >= (isCompactDevice() ? 38 : 48)) requestServiceStep(Math.sign(distance));
 }, { passive: true });
 
-journeyStage.addEventListener("touchcancel", () => {
+document.addEventListener("touchcancel", () => {
   touchStartY = null;
   touchStartedInJourney = false;
 }, { passive: true });

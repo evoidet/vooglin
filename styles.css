@@ -216,6 +216,14 @@ footer,
   letter-spacing: 0.08em;
 }
 
+.site-header .brand-icon {
+  display: block;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  object-fit: contain;
+}
+
 .brand-dim {
   padding: 0 3px;
   color: #666b7b;
