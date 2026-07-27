@@ -237,13 +237,13 @@ button {
   z-index: 0;
   inset: -16%;
   content: "";
-  opacity: 0.36;
+  opacity: 0.5;
   background-image:
-    radial-gradient(circle at 14% 22%, rgba(255, 255, 255, 0.82) 0 0.7px, transparent 1.2px),
-    radial-gradient(circle at 69% 17%, rgba(255, 255, 255, 0.64) 0 0.6px, transparent 1.1px),
-    radial-gradient(circle at 38% 73%, rgba(255, 255, 255, 0.74) 0 0.8px, transparent 1.3px),
-    radial-gradient(circle at 86% 61%, rgba(221, 255, 106, 0.6) 0 0.7px, transparent 1.2px);
-  background-size: 260px 230px, 330px 290px, 410px 370px, 520px 440px;
+    radial-gradient(circle at 14% 22%, rgba(255, 255, 255, 0.88) 0 0.8px, transparent 1.15px),
+    radial-gradient(circle at 69% 17%, rgba(255, 255, 255, 0.64) 0 0.7px, transparent 1.1px),
+    radial-gradient(circle at 38% 73%, rgba(255, 255, 255, 0.74) 0 0.85px, transparent 1.2px),
+    radial-gradient(circle at 86% 61%, rgba(221, 255, 106, 0.42) 0 0.75px, transparent 1.15px);
+  background-size: 220px 200px, 310px 270px, 430px 360px, 680px 520px;
   mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.72) 72%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.72) 72%, transparent 100%);
 }
@@ -251,6 +251,7 @@ button {
 .hero-wordmark {
   position: relative;
   z-index: 1;
+  isolation: isolate;
   width: min(100%, var(--content-width));
   margin: 0 auto;
   color: var(--white);
@@ -262,39 +263,23 @@ button {
 }
 
 .hero-wordmark span {
+  position: relative;
+  z-index: 2;
   display: block;
+  text-shadow: 0 0 32px rgba(0, 0, 0, 0.65);
 }
 
-.hero-wordmark::after {
+.wordmark-network {
   position: absolute;
-  inset: 0;
-  content: attr(data-word);
-  color: transparent;
-  background:
-    linear-gradient(
-      105deg,
-      transparent 34%,
-      rgba(221, 255, 106, 0.18) 46%,
-      rgba(255, 255, 255, 0.88) 51%,
-      transparent 63%
-    );
-  background-position: 180% 0;
-  background-size: 230% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  animation: wordmark-scan 9s ease-in-out infinite;
-}
-
-@keyframes wordmark-scan {
-  0%,
-  22% {
-    background-position: 180% 0;
-  }
-
-  48%,
-  100% {
-    background-position: -80% 0;
-  }
+  z-index: 1;
+  top: 50%;
+  left: -4%;
+  width: 108%;
+  height: clamp(112px, 15vw, 218px);
+  display: block;
+  pointer-events: none;
+  opacity: 0.9;
+  transform: translateY(-49%);
 }
 
 .hero-wordmark,
@@ -1658,6 +1643,18 @@ footer {
     font-size: clamp(48px, 15.5vw, 74px);
   }
 
+  .hero::before {
+    opacity: 0.43;
+    background-size: 190px 180px, 280px 250px, 400px 340px, 620px 500px;
+  }
+
+  .wordmark-network {
+    left: -8%;
+    width: 116%;
+    height: clamp(86px, 28vw, 116px);
+    opacity: 0.88;
+  }
+
   .hero-inner {
     margin-top: 62px;
   }
@@ -1926,8 +1923,8 @@ footer {
     transition-duration: 0.01ms !important;
   }
 
-  .hero-wordmark::after {
-    display: none;
+  .wordmark-network {
+    opacity: 0.56;
   }
 }
 
@@ -1937,5 +1934,9 @@ footer {
     --muted: #414542;
     --line-dark: rgba(255, 255, 255, 0.35);
     --line: #9b9d98;
+  }
+
+  .hero::before {
+    opacity: 0.62;
   }
 }
