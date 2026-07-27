@@ -3,350 +3,347 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#03050b">
-  <meta name="description" content="Vooglin creates practical automation, registration systems, dashboards, websites, and digital workflows for small organisations and project teams.">
+  <meta name="theme-color" content="#090909">
+  <meta name="description" content="Vooglin builds practical automation and digital workflows for small organisations, project teams, and growing businesses.">
   <meta name="robots" content="index, follow">
-  <title>Vooglin — Practical Automation and Digital Workflows</title>
-  <link rel="icon" type="image/png" href="vooglin.png">
-  <link rel="apple-touch-icon" href="vooglin.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Vooglin">
+  <meta property="og:title" content="Automate the work that slows you down.">
+  <meta property="og:description" content="Practical automation and digital workflows for small organisations and project teams.">
+  <meta property="og:url" content="https://vooglin.ee/">
+  <meta property="og:image" content="https://vooglin.ee/og-brand.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Automate the work that slows you down.">
+  <meta name="twitter:description" content="Practical automation and digital workflows for small organisations and project teams.">
+  <meta name="twitter:image" content="https://vooglin.ee/og-brand.png">
+  <title>Vooglin — Practical automation for everyday work</title>
+  <link rel="canonical" href="https://vooglin.ee/">
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="assets/sun/vooglin-sun-768.webp" imagesrcset="assets/sun/vooglin-sun-480.webp 480w, assets/sun/vooglin-sun-768.webp 768w, assets/sun/vooglin-sun-1254.webp 1254w" imagesizes="(max-width: 600px) 300px, min(36vw, 560px)" fetchpriority="high">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600&family=Syne:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260717-scroll1">
-  <script src="script.js?v=20260717-scroll1" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=20260727-stars">
+  <script src="/script.js?v=20260727-stars" defer></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Vooglin",
+      "url": "https://vooglin.ee/",
+      "logo": "https://vooglin.ee/favicon.png",
+      "email": "info@vooglin.ee"
+    }
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <canvas id="space-canvas" aria-hidden="true"></canvas>
-  <div class="noise" aria-hidden="true"></div>
-  <div class="cursor-glow" aria-hidden="true"></div>
-  <div class="deep-space-objects" aria-hidden="true">
-    <i class="cosmic-object object-cube"></i>
-    <i class="cosmic-object object-diamond"></i>
-    <i class="cosmic-object object-relay"></i>
-  </div>
 
   <header class="site-header" data-header>
-    <a class="brand" href="#top" aria-label="Vooglin home">
-      <img class="brand-icon" src="vooglin.png" width="26" height="26" alt="" decoding="async">
-      <span>VOOGLIN</span>
-    </a>
-    <nav class="desktop-nav" aria-label="Primary navigation">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="Vooglin home">
+        <span class="brand-symbol" aria-hidden="true"><i></i></span>
+        <span>VOOGLIN</span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#services">Services</a>
+        <a href="#process">How it works</a>
+        <a href="/pricing/">Pricing</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <a class="header-cta" href="#contact">Discuss your workflow</a>
+
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav">
+        <span>Menu</span>
+        <i aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
       <a href="#services">Services</a>
-      <a href="#approach">Approach</a>
+      <a href="#process">How it works</a>
+      <a href="/pricing/">Pricing</a>
+      <a href="#about">About</a>
       <a href="#contact">Contact</a>
+      <a href="mailto:info@vooglin.ee">info@vooglin.ee</a>
     </nav>
-    <a class="nav-cta magnetic" href="#contact">Start a project <span aria-hidden="true">↗</span></a>
   </header>
 
   <main id="main">
-    <section class="hero" id="top" aria-labelledby="hero-title" data-motion-region="hero">
-      <div class="hero-orbit orbit-one" aria-hidden="true"></div>
-      <div class="hero-orbit orbit-two" aria-hidden="true"></div>
-      <div class="hero-sun" aria-hidden="true">
-        <img class="solar-image" src="assets/sun/vooglin-sun-768.webp" srcset="assets/sun/vooglin-sun-480.webp 480w, assets/sun/vooglin-sun-768.webp 768w, assets/sun/vooglin-sun-1254.webp 1254w" sizes="(max-width: 600px) 300px, min(36vw, 560px)" width="1254" height="1254" alt="" decoding="async" fetchpriority="high">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-wordmark" aria-hidden="true">
+        <canvas class="wordmark-network" data-wordmark-network data-network-variant="hero"></canvas>
+        <span>VOOGLIN</span>
       </div>
 
-      <div class="hero-copy">
-        <p class="eyebrow reveal-item"><span></span> Automation and digital workflows</p>
-        <h1 id="hero-title" class="reveal-item">
-          Simple systems.<br>
-          <em>Less manual work.</em>
-        </h1>
-        <p class="hero-description reveal-item">
-          Vooglin creates practical automation and digital workflows for small organisations, project teams, event organisers, and growing businesses.
-        </p>
-        <div class="hero-actions reveal-item">
-          <a class="button button-primary magnetic" href="#services">
-            Explore services
-            <span class="button-arrow" aria-hidden="true">↓</span>
-          </a>
-          <a class="text-link" href="#contact">Start a project <span aria-hidden="true">↗</span></a>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> Practical automation for small teams</p>
+          <h1 id="hero-title">Automate the work that slows you down.</h1>
+          <p class="hero-description">
+            Vooglin turns forms, spreadsheets, emails and documents into clear workflows that run with less manual effort.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-accent" href="#contact">Discuss your workflow</a>
+            <a class="plain-link" href="mailto:info@vooglin.ee">info@vooglin.ee</a>
+          </div>
+        </div>
+
+        <div class="workflow-panel" aria-label="An example Vooglin workflow">
+          <div class="panel-header">
+            <p>A typical workflow</p>
+            <span><i></i> Connected</span>
+          </div>
+          <ol class="workflow-list">
+            <li>
+              <span class="workflow-number">01</span>
+              <div>
+                <strong>Collect</strong>
+                <small>Forms, email and files</small>
+              </div>
+            </li>
+            <li>
+              <span class="workflow-number">02</span>
+              <div>
+                <strong>Organise</strong>
+                <small>Rules, ownership and status</small>
+              </div>
+            </li>
+            <li>
+              <span class="workflow-number">03</span>
+              <div>
+                <strong>Act</strong>
+                <small>Documents, reminders and tasks</small>
+              </div>
+            </li>
+            <li>
+              <span class="workflow-number">04</span>
+              <div>
+                <strong>See</strong>
+                <small>Dashboards, reports and next steps</small>
+              </div>
+            </li>
+          </ol>
+          <p class="panel-note">One workflow. Fewer handovers.</p>
         </div>
       </div>
 
-      <div class="hero-meta reveal-item" aria-label="Studio highlights">
-        <div><span>01</span> Practical by design</div>
-        <div><span>02</span> Built around your work</div>
-        <div><span>03</span> Ready to grow</div>
-      </div>
-
-      <div class="scroll-cue" aria-hidden="true">
-        <span>Scroll to launch</span>
-        <i></i>
+      <div class="hero-footer">
+        <p>Built for small organisations, project teams, events and growing businesses.</p>
+        <p>Based in Estonia · Working digitally</p>
       </div>
     </section>
 
-    <section class="mission" id="approach" aria-labelledby="mission-title">
-      <div class="section-index" aria-hidden="true">00 / APPROACH</div>
-      <div class="mission-copy">
-        <p class="eyebrow"><span></span> The Vooglin approach</p>
-        <h2 id="mission-title">Practical automation, built around <em>real work.</em></h2>
-        <p>We organise scattered information, connect the right tools, and create clear systems that make everyday work easier to manage.</p>
+    <section class="positioning" aria-labelledby="positioning-title">
+      <div class="section-label">A simpler way to work</div>
+      <div class="positioning-copy">
+        <h2 id="positioning-title">Built around your process.<br>Not around a platform.</h2>
+        <p>We find the repeated steps, connect the tools you already use, and build only what the work needs.</p>
       </div>
-      <div class="mission-signal" aria-hidden="true">
-        <div class="signal-ring ring-a"></div>
-        <div class="signal-ring ring-b"></div>
-        <div class="signal-ring ring-c"></div>
-        <div class="signal-center"><span></span></div>
-        <p>WORKFLOW SIGNAL<br><strong>CONNECTED</strong></p>
+      <div class="principles" aria-label="How Vooglin works">
+        <div>
+          <span>01</span>
+          <h3>Practical by design</h3>
+          <p>Every part of the system has a clear job.</p>
+        </div>
+        <div>
+          <span>02</span>
+          <h3>Easy to understand</h3>
+          <p>Your team can see how it works and use it with confidence.</p>
+        </div>
+        <div>
+          <span>03</span>
+          <h3>Ready to improve</h3>
+          <p>Start with the useful core, then grow it when the work changes.</p>
+        </div>
       </div>
     </section>
 
     <section class="services" id="services" aria-labelledby="services-title">
-      <div class="services-intro">
-        <div>
-          <p class="eyebrow"><span></span> The service journey</p>
-          <h2 id="services-title">Eight systems.<br><em>One connected universe.</em></h2>
-        </div>
-        <p>Move through the Vooglin universe one chapter at a time. Every planet represents a practical system designed around real people, information, and work.</p>
+      <div class="section-heading">
+        <p class="section-label">Services</p>
+        <h2 id="services-title">Systems that remove repetitive work.</h2>
+        <p>From one troublesome process to a connected day-to-day system.</p>
       </div>
 
-      <div class="journey" data-journey>
-        <div class="journey-stage" data-motion-region="journey">
-          <div class="stage-grid" aria-hidden="true"></div>
-          <svg class="orbital-field orbital-field-back" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <defs>
-              <linearGradient id="orbit-cool" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#6fd8ff" stop-opacity="0" />
-                <stop offset=".42" stop-color="#9dc4ff" stop-opacity=".34" />
-                <stop offset="1" stop-color="#8270d8" stop-opacity=".04" />
-              </linearGradient>
-              <linearGradient id="orbit-warm" x1="1" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#ffc98d" stop-opacity="0" />
-                <stop offset=".48" stop-color="#c18dd8" stop-opacity=".23" />
-                <stop offset="1" stop-color="#7ed9d1" stop-opacity=".03" />
-              </linearGradient>
-            </defs>
-            <g class="orbit-plane orbit-plane-far">
-              <ellipse class="orbit-line orbit-line-cool" cx="800" cy="450" rx="770" ry="116" transform="rotate(-8 800 450)" />
-              <ellipse class="orbit-line orbit-line-warm" cx="800" cy="450" rx="688" ry="158" transform="rotate(7 800 450)" />
-              <ellipse class="orbit-line orbit-line-cool" cx="800" cy="450" rx="596" ry="205" transform="rotate(-13 800 450)" />
-              <ellipse class="orbit-line orbit-line-warm" cx="800" cy="450" rx="506" ry="247" transform="rotate(11 800 450)" />
-              <ellipse class="orbit-line orbit-line-cool" cx="800" cy="450" rx="416" ry="286" transform="rotate(-17 800 450)" />
-              <ellipse class="orbit-line orbit-line-warm" cx="800" cy="450" rx="328" ry="323" transform="rotate(14 800 450)" />
-              <ellipse class="orbit-line orbit-line-cool" cx="800" cy="450" rx="244" ry="358" transform="rotate(-10 800 450)" />
-            </g>
-            <g class="automation-signals">
-              <path class="data-route data-route-cool" pathLength="1" d="M112 536 C390 298 642 620 928 404 S1370 280 1510 470" />
-              <path class="data-route data-route-warm" pathLength="1" d="M214 282 C474 516 710 244 1014 526 S1374 602 1490 378" />
-              <circle class="orbit-node node-a" cx="398" cy="399" r="3" />
-              <circle class="orbit-node node-b" cx="928" cy="404" r="2.5" />
-              <circle class="orbit-node node-c" cx="1294" cy="343" r="3" />
-            </g>
-          </svg>
-          <div class="journey-sun" aria-hidden="true">
-            <img class="solar-image" src="assets/sun/vooglin-sun-256.webp" srcset="assets/sun/vooglin-sun-256.webp 256w, assets/sun/vooglin-sun-480.webp 480w" sizes="82px" width="480" height="480" alt="" decoding="async">
+      <div class="service-list">
+        <article class="service-row">
+          <span class="service-number">01</span>
+          <h3>Workflow automation<br>& integrations</h3>
+          <div>
+            <p>Connect forms, spreadsheets, email, documents and task tools into one reliable flow.</p>
+            <small>Make · n8n · Zapier · Google Workspace · APIs</small>
           </div>
-          <div class="stage-label stage-label-left">VOOGLIN / SYSTEM JOURNEY</div>
-          <div class="stage-label stage-label-right">SCROLL LINKED</div>
+        </article>
 
-          <div class="incoming-system" aria-hidden="true" data-incoming-system>
-            <div class="incoming-glow"></div>
-            <div class="incoming-planet">
-              <img data-incoming-planet-image src="assets/planets/survey-320.webp" width="320" height="320" alt="" decoding="async" loading="lazy">
-            </div>
-            <div class="incoming-atmosphere"></div>
+        <article class="service-row">
+          <span class="service-number">02</span>
+          <h3>Forms, registrations<br>& events</h3>
+          <div>
+            <p>Collect applications, manage limits and statuses, and send confirmations and reminders automatically.</p>
+            <small>Applications · Waiting lists · Notifications · Results</small>
           </div>
+        </article>
 
-          <div class="planet-system" aria-hidden="true" data-planet-system>
-            <div class="planet-glow"></div>
-            <div class="orbit-path orbit-path-a"><i></i><b></b><b></b></div>
-            <div class="orbit-path orbit-path-b"><i class="moon"></i><i></i><b></b></div>
-            <div class="orbit-path orbit-path-c"><i></i><b></b></div>
-            <div class="service-satellites"><i></i><i></i><i></i></div>
-            <div class="data-trails"><i></i><i></i><i></i></div>
-            <div class="planet" data-planet>
-              <img
-                data-planet-image
-                src="assets/planets/registration-768.webp"
-                srcset="assets/planets/registration-768.webp 768w, assets/planets/registration-1024.webp 1024w, assets/planets/registration-1254.webp 1254w"
-                sizes="(max-width: 600px) 86vw, (max-width: 900px) 58vw, 48vw"
-                width="1254"
-                height="1254"
-                alt=""
-                decoding="async"
-                fetchpriority="high"
-              >
-              <div class="planet-rings"></div>
-              <div class="planet-atmosphere"></div>
-            </div>
+        <article class="service-row">
+          <span class="service-number">03</span>
+          <h3>Dashboards, budgets<br>& reports</h3>
+          <div>
+            <p>Keep deadlines, costs, results and warnings visible without rebuilding reports by hand.</p>
+            <small>Live status · Clear ownership · Management overview</small>
           </div>
+        </article>
 
-          <svg class="orbital-field orbital-field-front" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <defs>
-              <linearGradient id="orbit-front-cool" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stop-color="#8ee3ff" stop-opacity="0" />
-                <stop offset=".5" stop-color="#d3deff" stop-opacity=".22" />
-                <stop offset="1" stop-color="#8ee3ff" stop-opacity="0" />
-              </linearGradient>
-              <linearGradient id="orbit-front-warm" x1="1" y1="0" x2="0" y2="0">
-                <stop offset="0" stop-color="#f6b978" stop-opacity="0" />
-                <stop offset=".52" stop-color="#e4b6ce" stop-opacity=".19" />
-                <stop offset="1" stop-color="#f6b978" stop-opacity="0" />
-              </linearGradient>
-            </defs>
-            <ellipse class="orbit-arc orbit-arc-cool" pathLength="1" stroke-dasharray=".26 .74" stroke-dashoffset="-.07" cx="800" cy="450" rx="688" ry="158" transform="rotate(7 800 450)" />
-            <ellipse class="orbit-arc orbit-arc-warm" pathLength="1" stroke-dasharray=".22 .78" stroke-dashoffset="-.42" cx="800" cy="450" rx="506" ry="247" transform="rotate(11 800 450)" />
-            <ellipse class="orbit-arc orbit-arc-cool" pathLength="1" stroke-dasharray=".18 .82" stroke-dashoffset="-.16" cx="800" cy="450" rx="328" ry="323" transform="rotate(14 800 450)" />
-          </svg>
-
-          <article class="service-card" aria-live="polite">
-            <div class="service-status" aria-hidden="true">
-              <i></i><span>SYSTEM ACTIVE</span><b data-service-code>REG-01</b>
-            </div>
-            <div class="service-number" data-service-number>01 / 08</div>
-            <div class="service-icon" data-service-icon aria-hidden="true"></div>
-            <h3 data-service-title>Applications, registrations and participants</h3>
-            <p data-service-description>Create systems for collecting applications, registrations, participant information, confirmations, notifications, statuses, limits, waiting lists, reminders, and final statistics.</p>
-            <p class="service-subtitle" data-service-subtitle>Keep every participant and application organised without repetitive manual copying.</p>
-            <p class="service-examples-label">Example outcomes</p>
-            <ul class="service-outcomes" data-service-tags></ul>
-            <p class="service-note" data-service-note hidden></p>
-            <div class="service-actions">
-              <a class="service-link magnetic" href="#contact">Discuss this service <span aria-hidden="true">→</span></a>
-              <a class="service-directory-link" href="#all-services">All services <span aria-hidden="true">↘</span></a>
-            </div>
-          </article>
-
-          <div class="journey-progress" aria-label="Service journey progress">
-            <span data-progress-label>01</span>
-            <div class="progress-track"><i data-progress-bar></i></div>
-            <span>08</span>
+        <article class="service-row">
+          <span class="service-number">04</span>
+          <h3>Documents<br>& communication</h3>
+          <div>
+            <p>Generate personalised emails, PDFs, certificates and organised records from the same data.</p>
+            <small>Templates · Scheduled messages · Consistent records</small>
           </div>
-          <nav class="journey-step-controls" aria-label="Service navigation">
-            <button type="button" data-service-prev aria-label="Previous service">
-              <span aria-hidden="true">←</span><b>Previous</b>
-            </button>
-            <button type="button" data-service-next aria-label="Next service">
-              <b>Next</b><span aria-hidden="true">→</span>
-            </button>
-          </nav>
-          <p class="journey-hint">One gesture · one service <span aria-hidden="true">↓</span></p>
-        </div>
-        <div class="service-triggers" data-service-triggers></div>
+        </article>
+
+        <article class="service-row">
+          <span class="service-number">05</span>
+          <h3>Simple websites<br>& connected forms</h3>
+          <div>
+            <p>Create focused pages and forms that feed directly into the workflow behind them.</p>
+            <small>Responsive pages · Useful forms · Reliable publishing</small>
+          </div>
+        </article>
       </div>
     </section>
 
-    <section class="auxiliary" aria-labelledby="auxiliary-title">
-      <div class="auxiliary-copy">
-        <p class="eyebrow"><span></span> Orbital support</p>
-        <h2 id="auxiliary-title">Additional services,<br><em>when you need them.</em></h2>
-        <p>Smaller improvements and ongoing support can orbit the main system—keeping it useful, understandable, and ready for what comes next.</p>
-      </div>
-      <div class="service-station" aria-hidden="true" data-motion-region="auxiliary">
-        <div class="station-orbit station-orbit-a"><i></i></div>
-        <div class="station-orbit station-orbit-b"><i></i></div>
-        <div class="station-core"><i></i><b></b></div>
-      </div>
-      <ul class="auxiliary-list">
-        <li><span>01</span> Process analysis and automation planning</li>
-        <li><span>02</span> Google Workspace and digital work environment setup</li>
-        <li><span>03</span> Training and user instructions</li>
-        <li><span>04</span> Technical support after implementation</li>
-        <li><span>05</span> Improvement of existing automations</li>
-        <li><span>06</span> Small website updates</li>
-        <li><span>07</span> AI-assisted modules where appropriate</li>
-      </ul>
-    </section>
-
-    <section class="service-directory" id="all-services" aria-labelledby="directory-title" data-motion-region="directory">
-      <div class="directory-heading">
-        <p class="eyebrow"><span></span> Service directory</p>
-        <h2 id="directory-title">Find the right<br><em>orbit.</em></h2>
-        <p>Open any main system at its readable point in the journey, or choose a supporting service to see the closest fit.</p>
-      </div>
-
-      <div class="directory-main" aria-label="Main services">
-        <a class="directory-service" href="#registrations" data-service-jump="0">
-          <img src="assets/planets/registration-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
-          <span><small>01 / Registrations</small>Applications, registrations and participants<em>Organised applications without repetitive copying.</em></span><b aria-hidden="true">→</b>
-        </a>
-        <a class="directory-service" href="#feedback" data-service-jump="1">
-          <img src="assets/planets/survey-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
-          <span><small>02 / Feedback</small>Surveys, feedback and results<em>Report-ready insight from scattered responses.</em></span><b aria-hidden="true">→</b>
-        </a>
-        <a class="directory-service" href="#reports" data-service-jump="2">
-          <img src="assets/planets/dashboard-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
-          <span><small>03 / Data</small>Tables, dashboards and reports<em>Important information in one clear view.</em></span><b aria-hidden="true">→</b>
-        </a>
-        <a class="directory-service" href="#tasks" data-service-jump="3">
-          <img src="assets/planets/tasks-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
-          <span><small>04 / Projects</small>Tasks and deadlines<em>A shared view of progress, ownership, and attention.</em></span><b aria-hidden="true">→</b>
-        </a>
-        <a class="directory-service" href="#budget" data-service-jump="4">
-          <img src="assets/planets/finance-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
-          <span><small>05 / Finance</small>Budgets, expenses and documents<em>Project costs and documents kept understandable.</em></span><b aria-hidden="true">→</b>
-        </a>
-        <a class="directory-service" href="#documents" data-service-jump="5">
-          <img src="assets/planets/documents-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
-          <span><small>06 / Communication</small>Automated documents and emails<em>Consistent messages and documents, created faster.</em></span><b aria-hidden="true">→</b>
-        </a>
-        <a class="directory-service" href="#websites" data-service-jump="6">
-          <img src="assets/planets/web-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
-          <span><small>07 / Web</small>Websites and forms<em>A clear online place for information and requests.</em></span><b aria-hidden="true">→</b>
-        </a>
-        <a class="directory-service" href="#integrations" data-service-jump="7">
-          <img src="assets/planets/integration-320.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
-          <span><small>08 / Automation</small>Integrations and workflow automation<em>Separate tools connected into one working flow.</em></span><b aria-hidden="true">→</b>
-        </a>
-      </div>
-
-      <div class="directory-support" aria-labelledby="support-title">
-        <div>
-          <p class="eyebrow"><span></span> Supporting services</p>
-          <h3 id="support-title">Smaller moves,<br>connected to the system.</h3>
-        </div>
-        <ul>
-          <li><a href="#integrations" data-service-jump="7">Process diagnosis and automation planning <span>→</span></a></li>
-          <li><a href="#registrations" data-service-jump="0">Event registration systems <span>→</span></a></li>
-          <li><a href="#integrations" data-service-jump="7">Google Workspace setup <span>→</span></a></li>
-          <li><a href="#websites" data-service-jump="6">Forms connected to websites <span>→</span></a></li>
-          <li><a href="#reports" data-service-jump="2">Dashboards and management views <span>→</span></a></li>
-          <li><a href="#tasks" data-service-jump="3">Reminders and deadline flows <span>→</span></a></li>
-          <li><a href="#reports" data-service-jump="2">Data transfer, cleanup and structure <span>→</span></a></li>
-          <li><a href="#integrations" data-service-jump="7">AI-assisted modules <span>→</span></a></li>
-          <li><a href="#integrations" data-service-jump="7">Training and user instructions <span>→</span></a></li>
-          <li><a href="#integrations" data-service-jump="7">Technical support after launch <span>→</span></a></li>
-          <li><a href="#integrations" data-service-jump="7">Improvements to existing automations <span>→</span></a></li>
-          <li><a href="#websites" data-service-jump="6">Small website updates <span>→</span></a></li>
-          <li><a href="#integrations" data-service-jump="7">Complete process automation <span>→</span></a></li>
+    <section class="example" aria-labelledby="example-title">
+      <div class="example-copy">
+        <p class="eyebrow eyebrow-dark"><span></span> One process, kept in sync</p>
+        <h2 id="example-title">Enter the information once.<br>Use it everywhere.</h2>
+        <p>One form can update a table, notify the right person, create a document and keep a dashboard current — without copying the same information four times.</p>
+        <ul class="outcome-list" aria-label="Typical outcomes">
+          <li>Less copying</li>
+          <li>Fewer missed steps</li>
+          <li>Clearer status</li>
         </ul>
       </div>
+
+      <div class="system-map" aria-label="A connected automation example">
+        <div class="system-map-header">
+          <p>Registration workflow</p>
+          <span>4 connected steps</span>
+        </div>
+        <div class="map-track" aria-hidden="true">
+          <i></i>
+        </div>
+        <div class="map-node">
+          <span>Input</span>
+          <strong>Registration form</strong>
+          <small>New response received</small>
+        </div>
+        <div class="map-node">
+          <span>Record</span>
+          <strong>Working table</strong>
+          <small>Status updated</small>
+        </div>
+        <div class="map-node">
+          <span>Action</span>
+          <strong>Email + document</strong>
+          <small>Created automatically</small>
+        </div>
+        <div class="map-node">
+          <span>Overview</span>
+          <strong>Live dashboard</strong>
+          <small>Current and visible</small>
+        </div>
+      </div>
     </section>
 
-    <section class="outro" id="contact" aria-labelledby="outro-title" data-motion-region="outro">
-      <div class="outro-planet" aria-hidden="true">
-        <div class="outro-horizon"></div>
+    <section class="process" id="process" aria-labelledby="process-title">
+      <div class="process-intro">
+        <p class="section-label">How it works</p>
+        <h2 id="process-title">From bottleneck to working system.</h2>
+        <p>No oversized transformation project. We start with the part of the work that will make the clearest difference.</p>
       </div>
-      <p class="eyebrow"><span></span> Open a channel</p>
-      <h2 id="outro-title">Ready to simplify<br><em>your work?</em></h2>
-      <p>Tell Vooglin which repetitive process takes too much of your time. We will look at what can be simplified and propose a practical solution.</p>
-      <a class="contact-email" href="mailto:info@vooglin.ee">info@vooglin.ee</a>
-      <a class="button button-primary magnetic" href="mailto:info@vooglin.ee">
-        Start a conversation <span aria-hidden="true">↗</span>
-      </a>
+
+      <ol class="process-list">
+        <li>
+          <span>01</span>
+          <div>
+            <h3>Understand</h3>
+            <p>We map what happens now, who is involved, and where the work gets stuck.</p>
+          </div>
+        </li>
+        <li>
+          <span>02</span>
+          <div>
+            <h3>Build</h3>
+            <p>We create the smallest useful solution and test it with real information.</p>
+          </div>
+        </li>
+        <li>
+          <span>03</span>
+          <div>
+            <h3>Put it to work</h3>
+            <p>We document the system, help the team use it, and improve what matters in everyday work.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="founder" id="about" aria-labelledby="founder-title">
+      <div class="founder-copy">
+        <p class="section-label">Behind Vooglin</p>
+        <h2 id="founder-title">Your workflow,<br>handled personally.</h2>
+        <p>You work directly with the person who maps, builds and improves your system. That keeps decisions clear, communication simple and every automation grounded in how your team actually works.</p>
+        <ul class="founder-points">
+          <li>One point of contact, start to finish.</li>
+          <li>Practical systems, built around real work.</li>
+        </ul>
+      </div>
+
+      <div class="portrait-frame">
+        <!-- Replace this placeholder with your portrait when the photo is ready. -->
+        <div class="portrait-placeholder" role="img" aria-label="Placeholder for the founder portrait">
+          <span class="portrait-index">Portrait / 4:5</span>
+          <span class="brand-symbol brand-symbol-large" aria-hidden="true"><i></i></span>
+          <div>
+            <strong>Your photo</strong>
+            <small>Add a vertical portrait here</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <canvas class="contact-network" data-wordmark-network data-network-variant="contact" aria-hidden="true"></canvas>
+      <div class="contact-inner">
+        <p class="eyebrow"><span></span> A process taking too much time?</p>
+        <h2 id="contact-title">Let’s make it simpler.</h2>
+        <p>Send us a short description of how it works today. We’ll help identify what can be automated and the sensible first step.</p>
+        <a class="contact-email" href="mailto:info@vooglin.ee">info@vooglin.ee</a>
+        <a class="button button-accent" href="mailto:info@vooglin.ee">Start a conversation</a>
+      </div>
     </section>
   </main>
 
   <footer>
     <div class="footer-top">
-      <a class="brand" href="#top">
-        <span class="brand-mark" aria-hidden="true"><i></i></span>
+      <a class="brand" href="#top" aria-label="Vooglin home">
+        <span class="brand-symbol" aria-hidden="true"><i></i></span>
         <span>VOOGLIN</span>
       </a>
-      <a class="footer-email" href="mailto:info@vooglin.ee">info@vooglin.ee <span>↗</span></a>
+      <a class="footer-email" href="mailto:info@vooglin.ee">info@vooglin.ee</a>
     </div>
     <div class="footer-bottom">
-      <p>Automation and digital workflows for small organisations and project teams.</p>
+      <p>Practical automation and digital workflows for small organisations and project teams.</p>
       <p>© <span data-year></span> Vooglin. All rights reserved.</p>
-      <a href="#top">Back to top <span aria-hidden="true">↑</span></a>
+      <a href="#top">Back to top</a>
     </div>
   </footer>
-
-  <noscript>
-    <div class="noscript">This experience uses JavaScript for its space animations. The service information remains available when JavaScript is enabled.</div>
-  </noscript>
 </body>
 </html>
