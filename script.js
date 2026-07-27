@@ -4,7 +4,7 @@ const mobileLinks = document.querySelectorAll(".mobile-nav a");
 const year = document.querySelector("[data-year]");
 const mainContent = document.querySelector("main");
 const footer = document.querySelector("footer");
-const wordmarkCanvas = document.querySelector("[data-wordmark-network]");
+const networkCanvases = document.querySelectorAll("[data-wordmark-network]");
 
 if (year) {
   year.textContent = new Date().getFullYear();
@@ -57,6 +57,7 @@ function createWordmarkNetwork(canvas) {
   const context = canvas.getContext("2d");
   if (!context) return;
 
+  const isContactVariant = canvas.dataset.networkVariant === "contact";
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const saveData = navigator.connection?.saveData === true;
   const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory < 4;
@@ -64,10 +65,12 @@ function createWordmarkNetwork(canvas) {
   const trackPoints = new Float32Array((trackSteps + 1) * 2);
   const nodes = Array.from({ length: 7 }, () => ({ x: 0, y: 0 }));
   const tau = Math.PI * 2;
-  const loopDuration = 18000;
+  const loopDuration = isContactVariant ? 28000 : 18000;
+  const supportsIntersectionObserver = typeof IntersectionObserver === "function";
 
   let width = 0;
   let height = 0;
+  let policyWidth = 0;
   let centerX = 0;
   let centerY = 0;
   let radiusX = 0;
@@ -77,7 +80,9 @@ function createWordmarkNetwork(canvas) {
   let elapsed = 0;
   let lastFrame = 0;
   let animationFrame = 0;
-  let isInView = true;
+  let resizeFrame = 0;
+  let isInView = !supportsIntersectionObserver;
+  let isDestroyed = false;
 
   function writePoint(target, phase) {
     const sine = Math.sin(phase);
@@ -103,12 +108,13 @@ function createWordmarkNetwork(canvas) {
     const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
     width = bounds.width;
     height = bounds.height;
-    centerX = width * 0.47;
+    policyWidth = isContactVariant ? (canvas.parentElement?.clientWidth || width) : width;
+    centerX = width * (isContactVariant ? 0.5 : 0.47);
     centerY = height * 0.51;
-    radiusX = Math.min(width * 0.43, 540);
-    radiusY = height * 0.72;
-    nodeCount = width < 720 ? 5 : 7;
-    frameRate = width < 720 ? 24 : 30;
+    radiusX = Math.min(width * 0.43, isContactVariant ? 480 : 540);
+    radiusY = height * (isContactVariant ? 0.62 : 0.72);
+    nodeCount = isContactVariant ? (policyWidth < 720 ? 2 : 3) : policyWidth < 720 ? 5 : 7;
+    frameRate = isContactVariant ? 20 : policyWidth < 720 ? 24 : 30;
     canvas.dataset.networkNodes = String(nodeCount);
     canvas.dataset.networkFps = String(frameRate);
 
@@ -193,7 +199,7 @@ function createWordmarkNetwork(canvas) {
       writePoint(nodes[index], basePhase + ((index / nodeCount) * tau));
     }
 
-    drawConnections();
+    if (!isContactVariant) drawConnections();
     drawNodes();
   }
 
@@ -210,7 +216,7 @@ function createWordmarkNetwork(canvas) {
       && !reducedMotion.matches
       && !saveData
       && !lowMemory
-      && width >= 340
+      && policyWidth >= 340
     );
   }
 
@@ -234,29 +240,40 @@ function createWordmarkNetwork(canvas) {
   }
 
   function syncAnimation() {
+    if (isDestroyed) return;
+
     stopAnimation();
 
     if (canAnimate()) {
       canvas.dataset.networkState = "running";
       animationFrame = requestAnimationFrame(animate);
     } else {
-      const usesStaticFrame = reducedMotion.matches || saveData || lowMemory || width < 340;
+      const usesStaticFrame = reducedMotion.matches || saveData || lowMemory || policyWidth < 340;
       canvas.dataset.networkState = usesStaticFrame ? "static" : "paused";
       draw(elapsed || loopDuration * 0.18);
     }
   }
 
+  function handleResize() {
+    if (resizeFrame) cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => {
+      resizeFrame = 0;
+      resizeCanvas();
+      syncAnimation();
+    });
+  }
+
   const resizeObserver = typeof ResizeObserver === "function"
-    ? new ResizeObserver(() => resizeCanvas())
+    ? new ResizeObserver(handleResize)
     : null;
 
   if (resizeObserver) {
     resizeObserver.observe(canvas);
   } else {
-    window.addEventListener("resize", resizeCanvas, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
   }
 
-  const visibilityObserver = typeof IntersectionObserver === "function"
+  const visibilityObserver = supportsIntersectionObserver
     ? new IntersectionObserver(([entry]) => {
         isInView = entry.isIntersecting;
         syncAnimation();
@@ -265,21 +282,42 @@ function createWordmarkNetwork(canvas) {
 
   visibilityObserver?.observe(canvas);
 
-  const handleMotionChange = () => syncAnimation();
+  const handleMotionChange = syncAnimation;
+  const handleVisibilityChange = syncAnimation;
+  const handlePageHide = stopAnimation;
+  const handlePageShow = syncAnimation;
   if (typeof reducedMotion.addEventListener === "function") {
     reducedMotion.addEventListener("change", handleMotionChange);
   } else {
     reducedMotion.addListener(handleMotionChange);
   }
 
-  document.addEventListener("visibilitychange", syncAnimation);
-  window.addEventListener("pagehide", stopAnimation);
-  window.addEventListener("pageshow", syncAnimation);
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener("pagehide", handlePageHide);
+  window.addEventListener("pageshow", handlePageShow);
 
   resizeCanvas();
   syncAnimation();
+
+  return {
+    destroy() {
+      if (isDestroyed) return;
+      isDestroyed = true;
+      stopAnimation();
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeObserver?.disconnect();
+      visibilityObserver?.disconnect();
+      if (!resizeObserver) window.removeEventListener("resize", handleResize);
+      if (typeof reducedMotion.removeEventListener === "function") {
+        reducedMotion.removeEventListener("change", handleMotionChange);
+      } else {
+        reducedMotion.removeListener(handleMotionChange);
+      }
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("pageshow", handlePageShow);
+    },
+  };
 }
 
-if (wordmarkCanvas) {
-  createWordmarkNetwork(wordmarkCanvas);
-}
+networkCanvases.forEach(createWordmarkNetwork);

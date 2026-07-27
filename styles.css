@@ -480,9 +480,13 @@ footer {
 }
 
 .workflow-number {
-  color: #80807b;
+  color: #b7b7b0;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: clamp(16px, 1.3vw, 19px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
 }
 
 .workflow-list strong,
@@ -588,9 +592,13 @@ footer {
 .principles span,
 .service-number,
 .process-list > li > span {
-  color: #868983;
+  color: #5f625e;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: clamp(16px, 1.3vw, 19px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
 }
 
 .principles h3 {
@@ -1046,25 +1054,22 @@ footer {
   -webkit-mask-image: linear-gradient(to right, transparent 5%, black 80%);
 }
 
-.contact-planet {
+.contact-network {
   position: absolute;
-  z-index: -1;
-  right: -18vw;
-  bottom: -36vw;
-  width: min(72vw, 1020px);
-  aspect-ratio: 1;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 34% 21%, rgba(255, 255, 255, 0.12), transparent 34%),
-    radial-gradient(circle at 50% 15%, #1b1b1b 0%, #101010 43%, #060606 72%);
-  box-shadow:
-    0 -2px 35px rgba(255, 255, 255, 0.06),
-    inset 0 3px 36px rgba(255, 255, 255, 0.045);
+  z-index: 0;
+  top: 50%;
+  right: -10vw;
+  width: min(72vw, 980px);
+  height: min(38vw, 440px);
+  display: block;
+  pointer-events: none;
+  opacity: 0.46;
+  transform: translateY(-50%);
 }
 
 .contact-inner {
   position: relative;
+  z-index: 1;
 }
 
 .contact h2 {
@@ -1205,9 +1210,20 @@ footer {
 
 .pricing-number,
 .quote-steps > li > span {
-  color: #868983;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: clamp(16px, 1.3vw, 19px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.pricing-number {
+  color: #5f625e;
+}
+
+.quote-steps > li > span {
+  color: #b7b7b0;
 }
 
 .pricing-row h3 {
@@ -1833,10 +1849,12 @@ footer {
     font-size: clamp(56px, 17vw, 82px);
   }
 
-  .contact-planet {
-    right: -55vw;
-    bottom: -30vw;
-    width: 125vw;
+  .contact-network {
+    top: 58%;
+    right: -68vw;
+    width: 150vw;
+    height: 82vw;
+    opacity: 0.3;
   }
 
   .contact-email {
