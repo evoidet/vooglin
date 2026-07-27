@@ -16,6 +16,13 @@
   --header-height: 72px;
   --body: "Manrope", Arial, sans-serif;
   --mono: "DM Mono", monospace;
+  --star-field:
+    radial-gradient(circle at 17% 29%, rgba(255, 255, 255, 0.38) 0 0.65px, transparent 0.95px),
+    radial-gradient(circle at 71% 43%, rgba(255, 255, 255, 0.25) 0 0.55px, transparent 0.85px),
+    radial-gradient(circle at 38% 79%, rgba(255, 255, 255, 0.16) 0 0.75px, transparent 1.05px),
+    radial-gradient(circle at 83% 17%, rgba(255, 255, 255, 0.3) 0 0.8px, transparent 1.1px);
+  --star-field-size: 211px 187px, 307px 263px, 419px 353px, 677px 521px;
+  --star-field-position: 17px 31px, 89px 113px, 157px 53px, 283px 149px;
 }
 
 * {
@@ -1112,11 +1119,13 @@ footer {
 .pricing-hero {
   padding: calc(var(--header-height) + clamp(78px, 10vw, 148px)) var(--page-pad) clamp(72px, 8vw, 112px);
   color: var(--white);
-  background:
+  background-color: #080808;
+  background-image:
+    var(--star-field),
     linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    #080808;
-  background-size: 72px 72px;
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-position: var(--star-field-position), 0 0, 0 0;
+  background-size: var(--star-field-size), 72px 72px, 72px 72px;
 }
 
 .pricing-hero-inner,
@@ -1374,6 +1383,19 @@ footer {
   padding: 0 max(var(--page-pad), calc((100vw - var(--content-width)) / 2));
   color: #b2b2ac;
   background: #050505;
+}
+
+.example,
+.quote-process,
+.contact,
+footer {
+  background-image: var(--star-field);
+  background-position: var(--star-field-position);
+  background-size: var(--star-field-size);
+}
+
+footer {
+  background-position: 91px 37px, 23px 119px, 167px 53px, 311px 151px;
 }
 
 .footer-top {
