@@ -5,6 +5,8 @@ import path from "node:path";
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const distDirectory = path.join(projectRoot, "dist");
 const serverDirectory = path.join(distDirectory, "server");
+const publicDirectory = path.join(projectRoot, "public");
+const publicPricingDirectory = path.join(publicDirectory, "pricing");
 
 const [html, pricingHtml, css, javascript, socialImage, favicon] = await Promise.all([
   readFile(path.join(projectRoot, "index.html"), "utf8"),
@@ -86,8 +88,24 @@ export default {
 };
 `.trimStart();
 
-await rm(distDirectory, { recursive: true, force: true });
-await mkdir(serverDirectory, { recursive: true });
-await writeFile(path.join(serverDirectory, "index.js"), workerSource);
+await Promise.all([
+  rm(distDirectory, { recursive: true, force: true }),
+  rm(publicDirectory, { recursive: true, force: true }),
+]);
 
-console.log("Built Vooglin site for deployment.");
+await Promise.all([
+  mkdir(serverDirectory, { recursive: true }),
+  mkdir(publicPricingDirectory, { recursive: true }),
+]);
+
+await Promise.all([
+  writeFile(path.join(serverDirectory, "index.js"), workerSource),
+  writeFile(path.join(publicDirectory, "index.html"), html),
+  writeFile(path.join(publicPricingDirectory, "index.html"), pricingHtml),
+  writeFile(path.join(publicDirectory, "styles.css"), css),
+  writeFile(path.join(publicDirectory, "script.js"), javascript),
+  writeFile(path.join(publicDirectory, "og-brand.png"), socialImage),
+  writeFile(path.join(publicDirectory, "favicon.png"), favicon),
+]);
+
+console.log("Built Vooglin site for Sites and Vercel deployment.");
