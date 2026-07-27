@@ -48,6 +48,6 @@ if (header && menuToggle) {
   });
 
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 980) closeMenu();
+    if (window.innerWidth > 1080) closeMenu();
   });
 }

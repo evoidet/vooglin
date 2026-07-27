@@ -6,22 +6,27 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const distDirectory = path.join(projectRoot, "dist");
 const serverDirectory = path.join(distDirectory, "server");
 
-const [html, css, javascript, socialImage] = await Promise.all([
+const [html, pricingHtml, css, javascript, socialImage, favicon] = await Promise.all([
   readFile(path.join(projectRoot, "index.html"), "utf8"),
+  readFile(path.join(projectRoot, "pricing", "index.html"), "utf8"),
   readFile(path.join(projectRoot, "styles.css"), "utf8"),
   readFile(path.join(projectRoot, "script.js"), "utf8"),
-  readFile(path.join(projectRoot, "og-mono.png")),
+  readFile(path.join(projectRoot, "og-brand.png")),
+  readFile(path.join(projectRoot, "favicon.png")),
 ]);
 
 const workerSource = `
 const assets = new Map([
   ["/", { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" }],
   ["/index.html", { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" }],
+  ["/pricing/", { body: ${JSON.stringify(pricingHtml)}, type: "text/html; charset=utf-8" }],
+  ["/pricing/index.html", { body: ${JSON.stringify(pricingHtml)}, type: "text/html; charset=utf-8" }],
   ["/styles.css", { body: ${JSON.stringify(css)}, type: "text/css; charset=utf-8" }],
   ["/script.js", { body: ${JSON.stringify(javascript)}, type: "text/javascript; charset=utf-8" }],
 ]);
 
 const socialImageBase64 = ${JSON.stringify(socialImage.toString("base64"))};
+const faviconBase64 = ${JSON.stringify(favicon.toString("base64"))};
 
 function decodeBase64(value) {
   const binary = atob(value);
@@ -50,8 +55,18 @@ export default {
   async fetch(request) {
     const url = new URL(request.url);
 
-    if (url.pathname === "/og-mono.png") {
+    if (url.pathname === "/pricing") {
+      return Response.redirect(new URL("/pricing/", url), 308);
+    }
+
+    if (url.pathname === "/og-brand.png") {
       return new Response(decodeBase64(socialImageBase64), {
+        headers: securityHeaders("image/png"),
+      });
+    }
+
+    if (url.pathname === "/favicon.png") {
+      return new Response(decodeBase64(faviconBase64), {
         headers: securityHeaders("image/png"),
       });
     }
