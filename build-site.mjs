@@ -10,7 +10,7 @@ const [html, css, javascript, socialImage] = await Promise.all([
   readFile(path.join(projectRoot, "index.html"), "utf8"),
   readFile(path.join(projectRoot, "styles.css"), "utf8"),
   readFile(path.join(projectRoot, "script.js"), "utf8"),
-  readFile(path.join(projectRoot, "og.png")),
+  readFile(path.join(projectRoot, "og-mono.png")),
 ]);
 
 const workerSource = `
@@ -50,7 +50,7 @@ export default {
   async fetch(request) {
     const url = new URL(request.url);
 
-    if (url.pathname === "/og.png") {
+    if (url.pathname === "/og-mono.png") {
       return new Response(decodeBase64(socialImageBase64), {
         headers: securityHeaders("image/png"),
       });
