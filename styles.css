@@ -242,7 +242,7 @@ button {
   color: #aaa9a3;
   border: 1px solid #3a3a37;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.04em;
   transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
 }
@@ -306,11 +306,36 @@ button {
   white-space: nowrap;
 }
 
-.hero-wordmark span {
+.hero-wordmark-name {
   position: relative;
   z-index: 2;
   display: block;
   text-shadow: 0 0 32px rgba(0, 0, 0, 0.65);
+}
+
+.hero-wordmark-tagline {
+  position: relative;
+  z-index: 2;
+  margin-top: clamp(19px, 2vw, 28px);
+  padding-right: 0.25em;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(12px, 1.4vw, 20px);
+  color: #aaa9a3;
+  font-family: var(--mono);
+  font-size: clamp(10px, 0.8vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1;
+  text-shadow: none;
+}
+
+.hero-wordmark-tagline::before {
+  width: clamp(32px, 4vw, 60px);
+  height: 1px;
+  content: "";
+  background: #555550;
 }
 
 .wordmark-network {
@@ -369,7 +394,7 @@ footer {
   margin: 0;
   color: var(--muted-dark);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.08em;
   line-height: 1.4;
@@ -468,7 +493,7 @@ footer {
   gap: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -540,14 +565,15 @@ footer {
 
 .workflow-list strong {
   color: #f3f3ee;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .workflow-list small {
   margin-top: 2px;
   color: #969690;
-  font-size: 11px;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .panel-note {
@@ -555,7 +581,7 @@ footer {
   padding: 14px 18px;
   color: #b8b8b2;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .hero-footer {
@@ -569,7 +595,7 @@ footer {
   color: #93938d;
   border-top: 1px solid var(--line-dark);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.03em;
   line-height: 1.6;
   text-transform: uppercase;
@@ -654,7 +680,7 @@ footer {
 .principles p {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -714,7 +740,7 @@ footer {
   display: block;
   color: #7e817c;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.02em;
   line-height: 1.7;
   text-transform: uppercase;
@@ -761,7 +787,7 @@ footer {
   color: #e4e4df;
   border-left: 1px solid rgba(255, 255, 255, 0.22);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.6;
   text-transform: uppercase;
 }
@@ -852,7 +878,7 @@ footer {
   left: 20px;
   color: #81817c;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 11px;
   text-transform: uppercase;
 }
 
@@ -863,14 +889,14 @@ footer {
 
 .map-node strong {
   color: #efefeb;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .map-node small {
   margin-top: 5px;
   color: #91918b;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .process {
@@ -916,7 +942,7 @@ footer {
   max-width: 460px;
   margin: 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .founder {
@@ -960,7 +986,7 @@ footer {
   color: #4b4b47;
   border-bottom: 1px solid var(--line);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.02em;
   line-height: 1.5;
   text-transform: uppercase;
@@ -1003,7 +1029,7 @@ footer {
 .portrait-index {
   color: #a2a29c;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -1073,7 +1099,7 @@ footer {
 .portrait-placeholder small {
   margin-top: 4px;
   color: #9b9b96;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .contact {
@@ -1214,7 +1240,7 @@ footer {
   color: #90908a;
   border-top: 1px solid var(--line-dark);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -1284,7 +1310,7 @@ footer {
   max-width: 560px;
   margin: 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .pricing-value strong,
@@ -1302,7 +1328,7 @@ footer {
   margin-top: 11px;
   color: #777772;
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.6;
   text-transform: uppercase;
 }
@@ -1350,7 +1376,7 @@ footer {
   max-width: 340px;
   margin: 0;
   color: #a8a8a2;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .pricing-details {
@@ -1382,7 +1408,7 @@ footer {
   color: #50504c;
   border-bottom: 1px solid var(--line);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.55;
   text-transform: uppercase;
 }
@@ -1457,7 +1483,7 @@ footer {
   align-items: center;
   color: #90908a;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.7;
   text-transform: uppercase;
 }
@@ -1473,6 +1499,16 @@ footer {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
+}
+
+@media (max-width: 1320px) {
+  .desktop-nav {
+    gap: 22px;
+  }
+
+  .header-cta {
+    display: none;
+  }
 }
 
 @media (max-width: 1080px) {
