@@ -22,7 +22,7 @@ function closeMenu(restoreFocus = false) {
   document.body.classList.remove("menu-open");
   setPageInert(false);
   menuToggle.setAttribute("aria-expanded", "false");
-  menuToggle.querySelector("span").textContent = "Menu";
+  menuToggle.querySelector("span").textContent = menuToggle.dataset.menuLabel || "Menu";
 
   if (restoreFocus) menuToggle.focus();
 }
@@ -35,7 +35,9 @@ if (header && menuToggle) {
     document.body.classList.toggle("menu-open", shouldOpen);
     setPageInert(shouldOpen);
     menuToggle.setAttribute("aria-expanded", String(shouldOpen));
-    menuToggle.querySelector("span").textContent = shouldOpen ? "Close" : "Menu";
+    menuToggle.querySelector("span").textContent = shouldOpen
+      ? (menuToggle.dataset.closeLabel || "Close")
+      : (menuToggle.dataset.menuLabel || "Menu");
 
     if (shouldOpen) {
       requestAnimationFrame(() => mobileLinks[0]?.focus());

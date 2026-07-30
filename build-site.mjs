@@ -1,12 +1,17 @@
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { localizePage } from "./localize.mjs";
 
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const distDirectory = path.join(projectRoot, "dist");
 const serverDirectory = path.join(distDirectory, "server");
 const publicDirectory = path.join(projectRoot, "public");
 const publicPricingDirectory = path.join(publicDirectory, "pricing");
+const publicEtDirectory = path.join(publicDirectory, "et");
+const publicRuDirectory = path.join(publicDirectory, "ru");
+const publicEtPricingDirectory = path.join(publicEtDirectory, "pricing");
+const publicRuPricingDirectory = path.join(publicRuDirectory, "pricing");
 
 const [html, pricingHtml, css, javascript, socialImage, favicon] = await Promise.all([
   readFile(path.join(projectRoot, "index.html"), "utf8"),
@@ -17,12 +22,25 @@ const [html, pricingHtml, css, javascript, socialImage, favicon] = await Promise
   readFile(path.join(projectRoot, "favicon.png")),
 ]);
 
+const etHtml = localizePage(html, "et", "home");
+const ruHtml = localizePage(html, "ru", "home");
+const etPricingHtml = localizePage(pricingHtml, "et", "pricing");
+const ruPricingHtml = localizePage(pricingHtml, "ru", "pricing");
+
 const workerSource = `
 const assets = new Map([
   ["/", { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" }],
   ["/index.html", { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" }],
   ["/pricing/", { body: ${JSON.stringify(pricingHtml)}, type: "text/html; charset=utf-8" }],
   ["/pricing/index.html", { body: ${JSON.stringify(pricingHtml)}, type: "text/html; charset=utf-8" }],
+  ["/et/", { body: ${JSON.stringify(etHtml)}, type: "text/html; charset=utf-8" }],
+  ["/et/index.html", { body: ${JSON.stringify(etHtml)}, type: "text/html; charset=utf-8" }],
+  ["/et/pricing/", { body: ${JSON.stringify(etPricingHtml)}, type: "text/html; charset=utf-8" }],
+  ["/et/pricing/index.html", { body: ${JSON.stringify(etPricingHtml)}, type: "text/html; charset=utf-8" }],
+  ["/ru/", { body: ${JSON.stringify(ruHtml)}, type: "text/html; charset=utf-8" }],
+  ["/ru/index.html", { body: ${JSON.stringify(ruHtml)}, type: "text/html; charset=utf-8" }],
+  ["/ru/pricing/", { body: ${JSON.stringify(ruPricingHtml)}, type: "text/html; charset=utf-8" }],
+  ["/ru/pricing/index.html", { body: ${JSON.stringify(ruPricingHtml)}, type: "text/html; charset=utf-8" }],
   ["/styles.css", { body: ${JSON.stringify(css)}, type: "text/css; charset=utf-8" }],
   ["/script.js", { body: ${JSON.stringify(javascript)}, type: "text/javascript; charset=utf-8" }],
 ]);
@@ -57,8 +75,16 @@ export default {
   async fetch(request) {
     const url = new URL(request.url);
 
-    if (url.pathname === "/pricing") {
-      return Response.redirect(new URL("/pricing/", url), 308);
+    const trailingSlashRoutes = new Map([
+      ["/pricing", "/pricing/"],
+      ["/et", "/et/"],
+      ["/et/pricing", "/et/pricing/"],
+      ["/ru", "/ru/"],
+      ["/ru/pricing", "/ru/pricing/"],
+    ]);
+    const redirectPath = trailingSlashRoutes.get(url.pathname);
+    if (redirectPath) {
+      return Response.redirect(new URL(redirectPath, url), 308);
     }
 
     if (url.pathname === "/og-brand.png") {
@@ -96,12 +122,18 @@ await Promise.all([
 await Promise.all([
   mkdir(serverDirectory, { recursive: true }),
   mkdir(publicPricingDirectory, { recursive: true }),
+  mkdir(publicEtPricingDirectory, { recursive: true }),
+  mkdir(publicRuPricingDirectory, { recursive: true }),
 ]);
 
 await Promise.all([
   writeFile(path.join(serverDirectory, "index.js"), workerSource),
   writeFile(path.join(publicDirectory, "index.html"), html),
   writeFile(path.join(publicPricingDirectory, "index.html"), pricingHtml),
+  writeFile(path.join(publicEtDirectory, "index.html"), etHtml),
+  writeFile(path.join(publicEtPricingDirectory, "index.html"), etPricingHtml),
+  writeFile(path.join(publicRuDirectory, "index.html"), ruHtml),
+  writeFile(path.join(publicRuPricingDirectory, "index.html"), ruPricingHtml),
   writeFile(path.join(publicDirectory, "styles.css"), css),
   writeFile(path.join(publicDirectory, "script.js"), javascript),
   writeFile(path.join(publicDirectory, "og-brand.png"), socialImage),

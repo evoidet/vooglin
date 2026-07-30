@@ -20,14 +20,18 @@
   <meta name="twitter:image" content="https://vooglin.ee/og-brand.png">
   <title>Pricing — Clear scope and fixed quotes | Vooglin</title>
   <link rel="canonical" href="https://vooglin.ee/pricing/">
+  <link rel="alternate" hreflang="en" href="https://vooglin.ee/pricing/">
+  <link rel="alternate" hreflang="et" href="https://vooglin.ee/et/pricing/">
+  <link rel="alternate" hreflang="ru" href="https://vooglin.ee/ru/pricing/">
+  <link rel="alternate" hreflang="x-default" href="https://vooglin.ee/pricing/">
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
   <link rel="shortcut icon" href="/favicon.png">
   <link rel="apple-touch-icon" href="/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260727-stars">
-  <script src="/script.js?v=20260727-stars" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20260730-i18n">
+  <script src="/script.js?v=20260730-i18n" defer></script>
 </head>
 <body class="pricing-page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -47,9 +51,16 @@
         <a href="/#contact">Contact</a>
       </nav>
 
-      <a class="header-cta" href="mailto:info@vooglin.ee?subject=Project%20quote">Request a quote</a>
+      <div class="header-actions">
+        <nav class="language-switcher" aria-label="Language">
+          <a href="/pricing/" lang="en" hreflang="en" aria-current="page">EN</a>
+          <a href="/et/pricing/" lang="et" hreflang="et">ET</a>
+          <a href="/ru/pricing/" lang="ru" hreflang="ru">RU</a>
+        </nav>
+        <a class="header-cta" href="mailto:info@vooglin.ee?subject=Project%20quote">Request a quote</a>
+      </div>
 
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" data-menu-label="Menu" data-close-label="Close">
         <span>Menu</span>
         <i aria-hidden="true"></i>
       </button>
@@ -61,7 +72,12 @@
       <a href="/pricing/" aria-current="page">Pricing</a>
       <a href="/#about">About</a>
       <a href="/#contact">Contact</a>
-      <a href="mailto:info@vooglin.ee">info@vooglin.ee</a>
+      <div class="mobile-language-switcher language-switcher" aria-label="Language">
+        <a href="/pricing/" lang="en" hreflang="en" aria-current="page">EN</a>
+        <a href="/et/pricing/" lang="et" hreflang="et">ET</a>
+        <a href="/ru/pricing/" lang="ru" hreflang="ru">RU</a>
+      </div>
+      <a class="mobile-email" href="mailto:info@vooglin.ee">info@vooglin.ee</a>
     </nav>
   </header>
 

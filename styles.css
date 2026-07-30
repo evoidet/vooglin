@@ -206,7 +206,6 @@ button {
 }
 
 .header-cta {
-  justify-self: end;
   padding: 9px 15px;
   color: var(--ink);
   background: var(--white);
@@ -220,6 +219,44 @@ button {
 .header-cta:focus-visible {
   color: var(--white);
   background: transparent;
+}
+
+.header-actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.language-switcher a {
+  width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  color: #aaa9a3;
+  border: 1px solid #3a3a37;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.language-switcher a:hover,
+.language-switcher a:focus-visible {
+  color: var(--white);
+  border-color: #777771;
+}
+
+.language-switcher a[aria-current="page"] {
+  color: var(--ink);
+  border-color: var(--accent);
+  background: var(--accent);
 }
 
 .menu-toggle,
@@ -1440,7 +1477,7 @@ footer {
 
 @media (max-width: 1080px) {
   .desktop-nav,
-  .header-cta {
+  .header-actions {
     display: none;
   }
 
@@ -1525,7 +1562,22 @@ footer {
     color: var(--accent);
   }
 
-  .mobile-nav a:last-child {
+  .mobile-nav .mobile-language-switcher {
+    margin-top: 28px;
+    padding: 0;
+    display: flex;
+    gap: 8px;
+  }
+
+  .mobile-nav .language-switcher a {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid #3a3a37;
+    font-size: 11px;
+  }
+
+  .mobile-nav .mobile-email {
     margin-top: auto;
     color: var(--accent);
     border: 0;
