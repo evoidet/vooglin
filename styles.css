@@ -174,7 +174,7 @@ main :where(h1, h2, h3) {
   display: inline-flex;
   width: max-content;
   align-items: center;
-  gap: 13px;
+  gap: 10px;
   font-family: var(--mono);
   font-size: 14px;
   font-weight: 500;
@@ -182,63 +182,12 @@ main :where(h1, h2, h3) {
   line-height: 1;
 }
 
-.brand-symbol {
-  position: relative;
-  width: 34px;
-  height: 30px;
-  display: inline-block;
-  flex: 0 0 34px;
-}
-
-.brand-symbol::before,
-.brand-symbol::after {
-  position: absolute;
-  top: 4px;
-  width: 2px;
-  height: 22px;
-  content: "";
-  background: currentColor;
-  transform-origin: bottom center;
-}
-
-.brand-symbol::before {
-  left: 8px;
-  transform: rotate(-29deg);
-}
-
-.brand-symbol::after {
-  right: 8px;
-  transform: rotate(29deg);
-}
-
-.brand-symbol i {
-  position: absolute;
-  z-index: 2;
-  bottom: 0;
-  left: 50%;
-  width: 7px;
-  height: 7px;
-  background: var(--accent);
-  box-shadow: 0 0 14px rgba(221, 255, 106, 0.3);
-  transform: translateX(-50%);
-}
-
-.brand-symbol i::before,
-.brand-symbol i::after {
-  position: absolute;
-  top: -23px;
-  width: 5px;
-  height: 5px;
-  content: "";
-  border: 1px solid currentColor;
-}
-
-.brand-symbol i::before {
-  left: -13px;
-}
-
-.brand-symbol i::after {
-  right: -13px;
+.brand-mark {
+  width: 40px;
+  height: 31px;
+  display: block;
+  flex: 0 0 40px;
+  object-fit: contain;
 }
 
 .desktop-nav {
@@ -358,26 +307,26 @@ main :where(h1, h2, h3) {
   background-size: cover;
 }
 
+.cosmic-field {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  contain: paint;
+}
+
 .hero-logo-watermark {
   position: absolute;
-  bottom: clamp(84px, 10vw, 146px);
-  left: clamp(58px, 9vw, 150px);
-  width: 34px;
-  height: 30px;
-  color: var(--white);
-  opacity: 0.075;
-}
-
-.hero-logo-watermark .brand-symbol {
+  z-index: 2;
+  bottom: clamp(22px, calc(10vw - 62px), 84px);
+  left: clamp(-25px, calc(9vw - 83px), 67px);
+  width: 200px;
+  height: auto;
   display: block;
-  color: currentColor;
-  transform: scale(5);
-  transform-origin: center;
-}
-
-.hero-logo-watermark .brand-symbol i {
-  background: currentColor;
-  box-shadow: none;
+  opacity: 0.075;
 }
 
 .hero::before {
@@ -1142,51 +1091,15 @@ footer {
   text-transform: uppercase;
 }
 
-.brand-symbol-large {
+.brand-mark-large {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 112px;
-  height: 96px;
-  color: var(--white);
+  width: 128px;
+  height: auto;
+  display: block;
   opacity: 0.95;
-  transform: translate(-50%, -55%);
-}
-
-.brand-symbol-large::before,
-.brand-symbol-large::after {
-  top: 11px;
-  width: 3px;
-  height: 69px;
-}
-
-.brand-symbol-large::before {
-  left: 28px;
-}
-
-.brand-symbol-large::after {
-  right: 28px;
-}
-
-.brand-symbol-large i {
-  width: 16px;
-  height: 16px;
-  box-shadow: 0 0 24px rgba(221, 255, 106, 0.26);
-}
-
-.brand-symbol-large i::before,
-.brand-symbol-large i::after {
-  top: -83px;
-  width: 10px;
-  height: 10px;
-}
-
-.brand-symbol-large i::before {
-  left: -38px;
-}
-
-.brand-symbol-large i::after {
-  right: -38px;
+  transform: translate(-50%, -50%);
 }
 
 .portrait-placeholder > div {
@@ -1673,6 +1586,39 @@ footer {
   isolation: isolate;
 }
 
+.privacy-hero::before,
+.pricing-hero::before {
+  position: absolute;
+  z-index: 0;
+  inset: -8%;
+  content: "";
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(118deg, transparent 0 48%, rgba(221, 255, 106, 0.055) 49%, transparent 50%);
+  background-size: 92px 92px, 92px 92px, 280px 280px;
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.78) 66%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.78) 66%, transparent 100%);
+  animation: cosmic-grid-drift 48s linear infinite;
+}
+
+.privacy-hero::after,
+.pricing-hero::after {
+  position: absolute;
+  z-index: 0;
+  top: -28%;
+  right: -12%;
+  width: min(64vw, 920px);
+  aspect-ratio: 1;
+  content: "";
+  pointer-events: none;
+  opacity: 0.3;
+  background: radial-gradient(circle, rgba(221, 255, 106, 0.07), rgba(255, 255, 255, 0.025) 27%, transparent 67%);
+  animation: cosmic-glow 12s ease-in-out infinite alternate;
+}
+
 .privacy-hero-inner {
   position: relative;
   z-index: 1;
@@ -1990,6 +1936,49 @@ footer {
   padding-bottom: clamp(100px, 12vw, 172px);
 }
 
+.pricing-formats {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.pricing-formats::before {
+  position: absolute;
+  z-index: 0;
+  inset: -8%;
+  content: "";
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    var(--star-field),
+    linear-gradient(rgba(17, 17, 17, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 17, 17, 0.055) 1px, transparent 1px);
+  background-position: var(--star-field-position), 0 0, 0 0;
+  background-size: var(--star-field-size), 84px 84px, 84px 84px;
+  mask-image: radial-gradient(circle at 78% 42%, #000 0%, rgba(0, 0, 0, 0.72) 48%, transparent 82%);
+  -webkit-mask-image: radial-gradient(circle at 78% 42%, #000 0%, rgba(0, 0, 0, 0.72) 48%, transparent 82%);
+  animation: cosmic-surface-drift 56s ease-in-out infinite alternate;
+}
+
+.pricing-formats::after {
+  position: absolute;
+  z-index: 0;
+  top: 3%;
+  right: -18%;
+  width: min(70vw, 860px);
+  aspect-ratio: 1;
+  content: "";
+  pointer-events: none;
+  opacity: 0.34;
+  background: radial-gradient(circle, rgba(221, 255, 106, 0.14), rgba(221, 255, 106, 0.025) 28%, transparent 66%);
+  animation: cosmic-glow 14s ease-in-out infinite alternate-reverse;
+}
+
+.pricing-formats > * {
+  position: relative;
+  z-index: 1;
+}
+
 .pricing-heading {
   display: grid;
   grid-template-columns: 0.42fr 1.58fr;
@@ -2018,6 +2007,7 @@ footer {
   grid-template-columns: 0.17fr minmax(0, 0.98fr) minmax(260px, 0.58fr);
   gap: clamp(28px, 5vw, 76px);
   border-bottom: 1px solid var(--line);
+  background: linear-gradient(90deg, rgba(241, 241, 237, 0.92), rgba(241, 241, 237, 0.7));
 }
 
 .pricing-number,
@@ -2250,6 +2240,38 @@ footer {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
+}
+
+@keyframes cosmic-grid-drift {
+  from {
+    transform: translate3d(-1.5%, -1%, 0);
+  }
+
+  to {
+    transform: translate3d(2.5%, 2%, 0);
+  }
+}
+
+@keyframes cosmic-surface-drift {
+  from {
+    transform: translate3d(-1.5%, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(2%, -1.5%, 0) scale(1.025);
+  }
+}
+
+@keyframes cosmic-glow {
+  from {
+    opacity: 0.2;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 0.36;
+    transform: scale(1.04);
+  }
 }
 
 @media (max-width: 1440px) {
@@ -2528,29 +2550,10 @@ footer {
     font-size: 11px;
   }
 
-  .brand-symbol {
-    width: 30px;
-    height: 27px;
-    flex-basis: 30px;
-  }
-
-  .brand-symbol::before,
-  .brand-symbol::after {
-    top: 4px;
-    height: 19px;
-  }
-
-  .brand-symbol i::before,
-  .brand-symbol i::after {
-    top: -20px;
-  }
-
-  .brand-symbol i::before {
-    left: -11px;
-  }
-
-  .brand-symbol i::after {
-    right: -11px;
+  .brand-mark {
+    width: 36px;
+    height: auto;
+    flex-basis: 36px;
   }
 
   .hero {
@@ -2571,18 +2574,15 @@ footer {
     background-image:
       linear-gradient(180deg, rgba(5, 5, 5, 0.46) 0%, rgba(5, 5, 5, 0.2) 45%, rgba(5, 5, 5, 0.52) 100%),
       url("/cosmic-convergence.png");
-    background-position: center, right center;
+    background-position: center, calc(100% + clamp(56px, 19vw, 82px)) center;
     background-size: cover;
   }
 
   .hero-logo-watermark {
-    bottom: 76px;
-    left: 38px;
+    bottom: 38px;
+    left: -14px;
+    width: 134px;
     opacity: 0.06;
-  }
-
-  .hero-logo-watermark .brand-symbol {
-    transform: scale(3.35);
   }
 
   .wordmark-network {
@@ -2780,28 +2780,8 @@ footer {
     padding: 20px;
   }
 
-  .brand-symbol-large {
-    width: 100px;
-    height: 88px;
-  }
-
-  .brand-symbol-large::before,
-  .brand-symbol-large::after {
-    top: 10px;
-    height: 63px;
-  }
-
-  .brand-symbol-large::before {
-    left: 25px;
-  }
-
-  .brand-symbol-large::after {
-    right: 25px;
-  }
-
-  .brand-symbol-large i::before,
-  .brand-symbol-large i::after {
-    top: -76px;
+  .brand-mark-large {
+    width: 114px;
   }
 
   .contact h2 {
@@ -3036,6 +3016,10 @@ footer {
   .wordmark-network {
     opacity: 0.56;
   }
+
+  .cosmic-field {
+    opacity: 0.72;
+  }
 }
 
 @media (prefers-contrast: more) {
@@ -3054,7 +3038,20 @@ footer {
     opacity: 0.35;
   }
 
+  .cosmic-field {
+    opacity: 0.42;
+  }
+
   .hero-logo-watermark {
     display: none;
+  }
+
+  .pricing-formats::before,
+  .pricing-formats::after,
+  .privacy-hero::before,
+  .privacy-hero::after,
+  .pricing-hero::before,
+  .pricing-hero::after {
+    opacity: 0.1;
   }
 }

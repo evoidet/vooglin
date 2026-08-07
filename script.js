@@ -5,6 +5,7 @@ const year = document.querySelector("[data-year]");
 const mainContent = document.querySelector("main");
 const footer = document.querySelector("footer");
 const networkCanvases = document.querySelectorAll("[data-wordmark-network]");
+const cosmicCanvases = document.querySelectorAll("[data-cosmic-field]");
 
 if (year) {
   year.textContent = new Date().getFullYear();
@@ -544,3 +545,342 @@ function createWordmarkNetwork(canvas) {
 }
 
 networkCanvases.forEach(createWordmarkNetwork);
+
+function createCosmicField(canvas) {
+  const context = canvas.getContext("2d");
+  if (!context) return;
+
+  const variant = canvas.dataset.cosmicVariant || "hero";
+  const settingsByVariant = {
+    hero: {
+      counts: [24, 16, 10],
+      frameRates: [30, 24, 20],
+      lifetime: [9000, 18000],
+      particleAlpha: 0.78,
+      ringAlpha: 1,
+    },
+    pricing: {
+      counts: [16, 11, 8],
+      frameRates: [24, 22, 20],
+      lifetime: [12000, 22000],
+      particleAlpha: 0.58,
+      ringAlpha: 0.72,
+    },
+    privacy: {
+      counts: [12, 8, 6],
+      frameRates: [24, 20, 18],
+      lifetime: [15000, 26000],
+      particleAlpha: 0.46,
+      ringAlpha: 0.58,
+    },
+  };
+  const settings = settingsByVariant[variant] || settingsByVariant.hero;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const connection = navigator.connection;
+  const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory < 4;
+  const supportsIntersectionObserver = typeof IntersectionObserver === "function";
+  const particles = [];
+  const tau = Math.PI * 2;
+  const sourceWidth = 1672;
+  const sourceHeight = 940;
+  const sourceHoleX = 1515;
+  const sourceHoleY = 479;
+  const orbitScaleY = 0.68;
+  const particlePoint = { x: 0, y: 0 };
+  const particleTail = { x: 0, y: 0 };
+
+  let width = 0;
+  let height = 0;
+  let policyWidth = 0;
+  let holeX = 0;
+  let holeY = 0;
+  let horizonRadius = 22;
+  let particleCount = 0;
+  let frameRate = 24;
+  let sceneTime = 4200;
+  let lastFrame = 0;
+  let animationFrame = 0;
+  let resizeFrame = 0;
+  let isInView = !supportsIntersectionObserver;
+  let isDestroyed = false;
+
+  function randomBetween(minimum, maximum) {
+    return minimum + (Math.random() * (maximum - minimum));
+  }
+
+  function respawnParticle(particle, initialProgress = 0) {
+    let startX = 0;
+    let startY = 0;
+    let startRadius = 0;
+    let attempts = 0;
+
+    do {
+      startX = randomBetween(width * 0.02, width * 0.98);
+      startY = randomBetween(height * 0.04, height * 0.96);
+      const deltaX = startX - holeX;
+      const deltaY = (startY - holeY) / orbitScaleY;
+      startRadius = Math.hypot(deltaX, deltaY);
+      attempts += 1;
+    } while (startRadius < horizonRadius * 4.2 && attempts < 12);
+
+    particle.startRadius = Math.max(startRadius, horizonRadius * 4.2);
+    particle.startAngle = Math.atan2((startY - holeY) / orbitScaleY, startX - holeX);
+    particle.direction = Math.random() > 0.5 ? 1 : -1;
+    particle.turns = randomBetween(0.22, 0.58);
+    particle.lifetime = randomBetween(settings.lifetime[0], settings.lifetime[1]);
+    particle.age = particle.lifetime * initialProgress;
+    particle.size = randomBetween(0.7, 1.85);
+    particle.opacity = randomBetween(0.38, 0.92) * settings.particleAlpha;
+    particle.signal = Math.random() > 0.9;
+  }
+
+  function rebuildParticles() {
+    const tier = policyWidth <= 480 ? 2 : policyWidth < 900 ? 1 : 0;
+    particleCount = settings.counts[tier];
+    frameRate = settings.frameRates[tier];
+
+    while (particles.length < particleCount) particles.push({});
+    particles.length = particleCount;
+    particles.forEach((particle, index) => {
+      const progress = (index + Math.random()) / Math.max(1, particleCount);
+      respawnParticle(particle, Math.min(progress, 0.96));
+    });
+
+    canvas.dataset.cosmicParticles = String(particleCount);
+    canvas.dataset.cosmicFps = String(frameRate);
+  }
+
+  function mapBlackHole() {
+    const scale = Math.max(width / sourceWidth, height / sourceHeight);
+    const mobileShift = policyWidth <= 720
+      ? Math.min(82, Math.max(56, policyWidth * 0.19))
+      : 0;
+
+    holeX = width - (sourceWidth * scale) + (sourceHoleX * scale) + mobileShift;
+    holeY = ((height - (sourceHeight * scale)) / 2) + (sourceHoleY * scale);
+    horizonRadius = Math.max(18, Math.min(44, 18 * scale * 1.22));
+  }
+
+  function pointAtProgress(particle, progress, target) {
+    const fall = progress ** 2.35;
+    const radius = particle.startRadius + ((horizonRadius * 0.72 - particle.startRadius) * fall);
+    const angle = particle.startAngle + (
+      particle.direction
+      * tau
+      * ((0.08 * progress) + (particle.turns * (progress ** 1.65)))
+    );
+
+    target.x = holeX + (Math.cos(angle) * radius);
+    target.y = holeY + (Math.sin(angle) * radius * orbitScaleY);
+  }
+
+  function drawAccretionRing(time, foreground = false) {
+    const pulse = 1 + (Math.sin((time / 7000) * tau) * 0.07);
+    const rotation = (time / 32000) * tau;
+    const ringRadius = horizonRadius * (foreground ? 1.42 : 1.68) * pulse;
+    const baseAlpha = settings.ringAlpha * (foreground ? 0.42 : 0.13);
+
+    context.save();
+    context.translate(holeX, holeY);
+    context.rotate(rotation * (foreground ? 1 : -0.46));
+    context.scale(1, foreground ? 0.42 : 0.5);
+    context.beginPath();
+    context.arc(0, 0, ringRadius, foreground ? -0.18 : 0.52, foreground ? 2.72 : 4.86);
+    context.strokeStyle = `rgba(247, 247, 242, ${baseAlpha})`;
+    context.lineWidth = foreground ? 1.35 : 2.6;
+    context.stroke();
+
+    context.beginPath();
+    context.arc(0, 0, ringRadius * 1.07, foreground ? 3.04 : -0.72, foreground ? 5.92 : 1.42);
+    context.strokeStyle = `rgba(221, 255, 106, ${baseAlpha * 0.62})`;
+    context.lineWidth = foreground ? 0.85 : 1.4;
+    context.stroke();
+    context.restore();
+  }
+
+  function drawParticles() {
+    particles.forEach((particle) => {
+      const progress = Math.min(1, particle.age / particle.lifetime);
+      const tailProgress = Math.max(0, progress - 0.018 - (progress * 0.016));
+      pointAtProgress(particle, progress, particlePoint);
+      pointAtProgress(particle, tailProgress, particleTail);
+
+      const fadeIn = Math.min(1, progress / 0.08);
+      const fadeOut = progress > 0.82 ? Math.max(0, (1 - progress) / 0.18) : 1;
+      const alpha = particle.opacity * fadeIn * fadeOut;
+      const size = Math.max(0.25, particle.size * (1 - (progress * 0.82)));
+      const red = particle.signal ? 221 : 247;
+      const green = particle.signal ? 255 : 247;
+      const blue = particle.signal ? 106 : 242;
+
+      context.beginPath();
+      context.moveTo(particleTail.x, particleTail.y);
+      context.lineTo(particlePoint.x, particlePoint.y);
+      context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${alpha * 0.28})`;
+      context.lineWidth = Math.max(0.45, size * 0.58);
+      context.stroke();
+
+      context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+      context.fillRect(particlePoint.x - (size / 2), particlePoint.y - (size / 2), size, size);
+    });
+  }
+
+  function draw(time) {
+    if (!width || !height) return;
+
+    context.clearRect(0, 0, width, height);
+    drawAccretionRing(time, false);
+    drawParticles();
+
+    context.beginPath();
+    context.ellipse(holeX, holeY, horizonRadius, horizonRadius * 0.58, 0, 0, tau);
+    context.fillStyle = "rgba(0, 0, 0, 0.94)";
+    context.fill();
+    drawAccretionRing(time, true);
+  }
+
+  function advanceParticles(delta) {
+    particles.forEach((particle) => {
+      particle.age += delta;
+      if (particle.age >= particle.lifetime) respawnParticle(particle, 0);
+    });
+  }
+
+  function resizeCanvas() {
+    const bounds = canvas.getBoundingClientRect();
+    if (bounds.width < 1 || bounds.height < 1) return;
+
+    width = bounds.width;
+    height = bounds.height;
+    policyWidth = canvas.parentElement?.clientWidth || width;
+    const pixelRatio = policyWidth <= 720 ? 1 : Math.min(window.devicePixelRatio || 1, 1.25);
+
+    canvas.width = Math.round(width * pixelRatio);
+    canvas.height = Math.round(height * pixelRatio);
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    mapBlackHole();
+    rebuildParticles();
+    draw(sceneTime);
+  }
+
+  function stopAnimation() {
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+    lastFrame = 0;
+  }
+
+  function canAnimate() {
+    return (
+      isInView
+      && !document.hidden
+      && !reducedMotion.matches
+      && connection?.saveData !== true
+      && !lowMemory
+    );
+  }
+
+  function animate(timestamp) {
+    if (!canAnimate()) {
+      stopAnimation();
+      return;
+    }
+
+    const frameInterval = 1000 / frameRate;
+    if (!lastFrame) lastFrame = timestamp;
+    const delta = timestamp - lastFrame;
+
+    if (delta >= frameInterval) {
+      const safeDelta = Math.min(delta, 80);
+      sceneTime += safeDelta;
+      advanceParticles(safeDelta);
+      lastFrame = timestamp - (delta % frameInterval);
+      draw(sceneTime);
+    }
+
+    animationFrame = requestAnimationFrame(animate);
+  }
+
+  function syncAnimation() {
+    if (isDestroyed) return;
+    stopAnimation();
+
+    if (canAnimate()) {
+      canvas.dataset.cosmicState = "running";
+      animationFrame = requestAnimationFrame(animate);
+    } else {
+      const isStatic = reducedMotion.matches || connection?.saveData === true || lowMemory;
+      canvas.dataset.cosmicState = isStatic ? "static" : "paused";
+      draw(sceneTime);
+    }
+  }
+
+  function handleResize() {
+    if (resizeFrame) cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => {
+      resizeFrame = 0;
+      resizeCanvas();
+      syncAnimation();
+    });
+  }
+
+  const resizeObserver = typeof ResizeObserver === "function"
+    ? new ResizeObserver(handleResize)
+    : null;
+
+  if (resizeObserver) {
+    resizeObserver.observe(canvas);
+  } else {
+    window.addEventListener("resize", handleResize, { passive: true });
+  }
+
+  const visibilityObserver = supportsIntersectionObserver
+    ? new IntersectionObserver(([entry]) => {
+        isInView = entry.isIntersecting;
+        syncAnimation();
+      }, { rootMargin: "100px" })
+    : null;
+
+  visibilityObserver?.observe(canvas);
+
+  const handleMotionChange = syncAnimation;
+  const handleConnectionChange = syncAnimation;
+  const handleVisibilityChange = syncAnimation;
+  const handlePageHide = stopAnimation;
+  const handlePageShow = syncAnimation;
+
+  if (typeof reducedMotion.addEventListener === "function") {
+    reducedMotion.addEventListener("change", handleMotionChange);
+  } else {
+    reducedMotion.addListener(handleMotionChange);
+  }
+  connection?.addEventListener?.("change", handleConnectionChange);
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener("pagehide", handlePageHide);
+  window.addEventListener("pageshow", handlePageShow);
+
+  resizeCanvas();
+  syncAnimation();
+
+  return {
+    destroy() {
+      if (isDestroyed) return;
+      isDestroyed = true;
+      stopAnimation();
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeObserver?.disconnect();
+      visibilityObserver?.disconnect();
+      if (!resizeObserver) window.removeEventListener("resize", handleResize);
+      if (typeof reducedMotion.removeEventListener === "function") {
+        reducedMotion.removeEventListener("change", handleMotionChange);
+      } else {
+        reducedMotion.removeListener(handleMotionChange);
+      }
+      connection?.removeEventListener?.("change", handleConnectionChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("pageshow", handlePageShow);
+    },
+  };
+}
+
+cosmicCanvases.forEach(createCosmicField);

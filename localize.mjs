@@ -644,9 +644,7 @@ export function localizePage(source, locale, page) {
   html = html.replace('<html lang="en">', `<html lang="${locale}">`);
   html = html.replace(/href="\/pricing\/"/g, `href="${basePath}pricing/"`);
   html = html.replace(/href="\/privacy\/"/g, `href="${basePath}privacy/"`);
-  if (page === "home") {
-    html = html.replace(/https:\/\/vooglin\.ee\/(?!og-brand\.png|og-savings\.png|favicon\.png)/g, `https://vooglin.ee${basePath}`);
-  } else {
+  if (page !== "home") {
     html = html.replace(/href="\/#([a-z-]+)"/g, `href="${basePath}#$1"`);
     html = html.replace(/href="\/"/g, `href="${basePath}"`);
   }

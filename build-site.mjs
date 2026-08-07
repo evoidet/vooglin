@@ -27,6 +27,21 @@ const partnerAssetTypes = new Map([
   [".avif", "image/avif"],
 ]);
 
+const binaryAssetDefinitions = [
+  { url: "/og-brand.png", filename: "og-brand.png", type: "image/png" },
+  { url: "/og-savings.png", filename: "og-brand.png", outputFilename: "og-savings.png", type: "image/png" },
+  { url: "/cosmic-convergence.png", filename: "cosmic-convergence.png", type: "image/png" },
+  { url: "/vooglin-mark.png", filename: "vooglin-mark.png", type: "image/png" },
+  { url: "/favicon.ico", filename: "favicon.ico", type: "image/x-icon" },
+  { url: "/favicon-48x48.png", filename: "favicon-48x48.png", type: "image/png" },
+  { url: "/favicon-96x96.png", filename: "favicon-96x96.png", type: "image/png" },
+  { url: "/favicon-192x192.png", filename: "favicon-192x192.png", type: "image/png" },
+  { url: "/favicon-512x512.png", filename: "favicon-512x512.png", type: "image/png" },
+  { url: "/apple-touch-icon.png", filename: "apple-touch-icon.png", type: "image/png" },
+  { url: "/vooglin-organization-logo.png", filename: "vooglin-organization-logo.png", type: "image/png" },
+  { url: "/favicon.png", filename: "favicon.png", type: "image/png" },
+];
+
 async function readPartnerAssets() {
   let entries = [];
 
@@ -47,17 +62,21 @@ async function readPartnerAssets() {
     })));
 }
 
-const [html, pricingHtml, privacyHtml, css, javascript, siteConfig, socialImage, favicon, cosmicBackground] = await Promise.all([
+const [html, pricingHtml, privacyHtml, css, javascript, siteConfig, robots, sitemap, manifest] = await Promise.all([
   readFile(path.join(projectRoot, "index.html"), "utf8"),
   readFile(path.join(projectRoot, "pricing", "index.html"), "utf8"),
   readFile(path.join(projectRoot, "privacy", "index.html"), "utf8"),
   readFile(path.join(projectRoot, "styles.css"), "utf8"),
   readFile(path.join(projectRoot, "script.js"), "utf8"),
   readFile(path.join(projectRoot, "site-config.js"), "utf8"),
-  readFile(path.join(projectRoot, "og-savings.png")),
-  readFile(path.join(projectRoot, "favicon.png")),
-  readFile(path.join(projectRoot, "cosmic-convergence.png")),
+  readFile(path.join(projectRoot, "robots.txt"), "utf8"),
+  readFile(path.join(projectRoot, "sitemap.xml"), "utf8"),
+  readFile(path.join(projectRoot, "site.webmanifest"), "utf8"),
 ]);
+const binaryAssets = await Promise.all(binaryAssetDefinitions.map(async (asset) => ({
+  ...asset,
+  body: await readFile(path.join(projectRoot, asset.filename)),
+})));
 const partnerAssets = await readPartnerAssets();
 
 const etHtml = localizePage(html, "et", "home");
@@ -90,15 +109,18 @@ const assets = new Map([
   ["/styles.css", { body: ${JSON.stringify(css)}, type: "text/css; charset=utf-8" }],
   ["/script.js", { body: ${JSON.stringify(javascript)}, type: "text/javascript; charset=utf-8" }],
   ["/site-config.js", { body: ${JSON.stringify(siteConfig)}, type: "text/javascript; charset=utf-8" }],
+  ["/robots.txt", { body: ${JSON.stringify(robots)}, type: "text/plain; charset=utf-8" }],
+  ["/sitemap.xml", { body: ${JSON.stringify(sitemap)}, type: "application/xml; charset=utf-8" }],
+  ["/site.webmanifest", { body: ${JSON.stringify(manifest)}, type: "application/manifest+json; charset=utf-8" }],
+]);
+
+const binaryAssets = new Map([
+${binaryAssets.map((asset) => `  [${JSON.stringify(asset.url)}, { body: ${JSON.stringify(asset.body.toString("base64"))}, type: ${JSON.stringify(asset.type)} }]`).join(",\n")}
 ]);
 
 const partnerAssets = new Map([
 ${partnerAssets.map((asset) => `  [${JSON.stringify(asset.url)}, { body: ${JSON.stringify(asset.body.toString("base64"))}, type: ${JSON.stringify(asset.type)} }]`).join(",\n")}
 ]);
-
-const socialImageBase64 = ${JSON.stringify(socialImage.toString("base64"))};
-const faviconBase64 = ${JSON.stringify(favicon.toString("base64"))};
-const cosmicBackgroundBase64 = ${JSON.stringify(cosmicBackground.toString("base64"))};
 
 function decodeBase64(value) {
   const binary = atob(value);
@@ -127,6 +149,11 @@ export default {
   async fetch(request) {
     const url = new URL(request.url);
 
+    if (url.hostname === "www.vooglin.ee") {
+      url.hostname = "vooglin.ee";
+      return Response.redirect(url, 308);
+    }
+
     const trailingSlashRoutes = new Map([
       ["/pricing", "/pricing/"],
       ["/privacy", "/privacy/"],
@@ -142,21 +169,10 @@ export default {
       return Response.redirect(new URL(redirectPath, url), 308);
     }
 
-    if (url.pathname === "/og-savings.png") {
-      return new Response(decodeBase64(socialImageBase64), {
-        headers: securityHeaders("image/png"),
-      });
-    }
-
-    if (url.pathname === "/favicon.png") {
-      return new Response(decodeBase64(faviconBase64), {
-        headers: securityHeaders("image/png"),
-      });
-    }
-
-    if (url.pathname === "/cosmic-convergence.png") {
-      return new Response(decodeBase64(cosmicBackgroundBase64), {
-        headers: securityHeaders("image/png"),
+    const binaryAsset = binaryAssets.get(url.pathname);
+    if (binaryAsset) {
+      return new Response(decodeBase64(binaryAsset.body), {
+        headers: securityHeaders(binaryAsset.type),
       });
     }
 
@@ -212,9 +228,10 @@ await Promise.all([
   writeFile(path.join(publicDirectory, "styles.css"), css),
   writeFile(path.join(publicDirectory, "script.js"), javascript),
   writeFile(path.join(publicDirectory, "site-config.js"), siteConfig),
-  writeFile(path.join(publicDirectory, "og-savings.png"), socialImage),
-  writeFile(path.join(publicDirectory, "favicon.png"), favicon),
-  writeFile(path.join(publicDirectory, "cosmic-convergence.png"), cosmicBackground),
+  writeFile(path.join(publicDirectory, "robots.txt"), robots),
+  writeFile(path.join(publicDirectory, "sitemap.xml"), sitemap),
+  writeFile(path.join(publicDirectory, "site.webmanifest"), manifest),
+  ...binaryAssets.map((asset) => writeFile(path.join(publicDirectory, asset.outputFilename || asset.filename), asset.body)),
   ...partnerAssets.map((asset) => writeFile(path.join(publicPartnerDirectory, asset.filename), asset.body)),
 ]);
 

@@ -11,27 +11,29 @@
   <meta property="og:title" content="Clear scope. Fixed price before we build.">
   <meta property="og:description" content="A transparent way to price practical automation and workflow projects.">
   <meta property="og:url" content="https://vooglin.ee/pricing/">
-  <meta property="og:image" content="https://vooglin.ee/og-savings.png">
-  <meta property="og:image:width" content="1730">
-  <meta property="og:image:height" content="909">
+  <meta property="og:image" content="https://vooglin.ee/og-brand.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Clear scope. Fixed price before we build.">
   <meta name="twitter:description" content="A transparent way to price practical automation and workflow projects.">
-  <meta name="twitter:image" content="https://vooglin.ee/og-savings.png">
+  <meta name="twitter:image" content="https://vooglin.ee/og-brand.png">
   <title>Pricing — Clear scope and fixed quotes | Vooglin</title>
   <link rel="canonical" href="https://vooglin.ee/pricing/">
   <link rel="alternate" hreflang="en" href="https://vooglin.ee/pricing/">
   <link rel="alternate" hreflang="et" href="https://vooglin.ee/et/pricing/">
   <link rel="alternate" hreflang="ru" href="https://vooglin.ee/ru/pricing/">
   <link rel="alternate" hreflang="x-default" href="https://vooglin.ee/pricing/">
-  <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
-  <link rel="shortcut icon" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/favicon.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260807-privacy">
-  <script src="/script.js?v=20260807-cosmic" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20260807-cosmic-v2">
+  <script src="/script.js?v=20260807-cosmic-v2" defer></script>
 </head>
 <body class="pricing-page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -39,7 +41,7 @@
   <header class="site-header" data-header>
     <div class="header-inner">
       <a class="brand" href="/" aria-label="Vooglin home">
-        <span class="brand-symbol" aria-hidden="true"><i></i></span>
+        <img class="brand-mark" src="/vooglin-mark.png" width="40" height="31" alt="">
         <span>VOOGLIN</span>
       </a>
 
@@ -86,7 +88,8 @@
   <main id="main">
     <section class="pricing-hero" id="top" aria-labelledby="pricing-title">
       <div class="hero-atmosphere" aria-hidden="true">
-        <span class="hero-logo-watermark"><span class="brand-symbol"><i></i></span></span>
+        <canvas class="cosmic-field" data-cosmic-field data-cosmic-variant="pricing" aria-hidden="true"></canvas>
+        <img class="hero-logo-watermark" src="/vooglin-mark.png" width="200" height="155" alt="">
       </div>
 
       <div class="pricing-hero-inner">
@@ -103,7 +106,7 @@
       </div>
     </section>
 
-    <section class="pricing-section pricing-formats" aria-labelledby="formats-title">
+    <section class="pricing-section pricing-formats cosmic-surface" aria-labelledby="formats-title">
       <div class="pricing-heading">
         <p class="section-label">Project types</p>
         <h2 id="formats-title">Priced around the work that needs to change.</h2>
@@ -224,7 +227,7 @@
   <footer>
     <div class="footer-top">
       <a class="brand" href="/" aria-label="Vooglin home">
-        <span class="brand-symbol" aria-hidden="true"><i></i></span>
+        <img class="brand-mark" src="/vooglin-mark.png" width="40" height="31" alt="">
         <span>VOOGLIN</span>
       </a>
       <a class="footer-email" href="mailto:egor@vooglin.ee">egor@vooglin.ee</a>
