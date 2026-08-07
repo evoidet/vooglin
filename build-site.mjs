@@ -44,7 +44,7 @@ async function readPartnerAssets() {
     })));
 }
 
-const [html, pricingHtml, css, javascript, siteConfig, socialImage, favicon] = await Promise.all([
+const [html, pricingHtml, css, javascript, siteConfig, socialImage, favicon, cosmicBackground] = await Promise.all([
   readFile(path.join(projectRoot, "index.html"), "utf8"),
   readFile(path.join(projectRoot, "pricing", "index.html"), "utf8"),
   readFile(path.join(projectRoot, "styles.css"), "utf8"),
@@ -52,6 +52,7 @@ const [html, pricingHtml, css, javascript, siteConfig, socialImage, favicon] = a
   readFile(path.join(projectRoot, "site-config.js"), "utf8"),
   readFile(path.join(projectRoot, "og-savings.png")),
   readFile(path.join(projectRoot, "favicon.png")),
+  readFile(path.join(projectRoot, "cosmic-convergence.png")),
 ]);
 const partnerAssets = await readPartnerAssets();
 
@@ -85,6 +86,7 @@ ${partnerAssets.map((asset) => `  [${JSON.stringify(asset.url)}, { body: ${JSON.
 
 const socialImageBase64 = ${JSON.stringify(socialImage.toString("base64"))};
 const faviconBase64 = ${JSON.stringify(favicon.toString("base64"))};
+const cosmicBackgroundBase64 = ${JSON.stringify(cosmicBackground.toString("base64"))};
 
 function decodeBase64(value) {
   const binary = atob(value);
@@ -137,6 +139,12 @@ export default {
       });
     }
 
+    if (url.pathname === "/cosmic-convergence.png") {
+      return new Response(decodeBase64(cosmicBackgroundBase64), {
+        headers: securityHeaders("image/png"),
+      });
+    }
+
     const partnerAsset = partnerAssets.get(url.pathname);
     if (partnerAsset) {
       return new Response(decodeBase64(partnerAsset.body), {
@@ -185,6 +193,7 @@ await Promise.all([
   writeFile(path.join(publicDirectory, "site-config.js"), siteConfig),
   writeFile(path.join(publicDirectory, "og-savings.png"), socialImage),
   writeFile(path.join(publicDirectory, "favicon.png"), favicon),
+  writeFile(path.join(publicDirectory, "cosmic-convergence.png"), cosmicBackground),
   ...partnerAssets.map((asset) => writeFile(path.join(publicPartnerDirectory, asset.filename), asset.body)),
 ]);
 

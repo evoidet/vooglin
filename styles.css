@@ -175,6 +175,7 @@ main :where(h1, h2, h3) {
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.14em;
+  line-height: 1;
 }
 
 .brand-symbol {
@@ -221,7 +222,7 @@ main :where(h1, h2, h3) {
 .brand-symbol i::before,
 .brand-symbol i::after {
   position: absolute;
-  top: -26px;
+  top: -23px;
   width: 5px;
   height: 5px;
   content: "";
@@ -335,6 +336,44 @@ main :where(h1, h2, h3) {
     radial-gradient(circle at 83% 32%, rgba(255, 255, 255, 0.065), transparent 27%),
     linear-gradient(135deg, #0b0b0b 0%, #070707 62%, #0c0c0c 100%);
   isolation: isolate;
+}
+
+.hero-atmosphere {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.8;
+  background-image:
+    linear-gradient(90deg, rgba(5, 5, 5, 0.72) 0%, rgba(5, 5, 5, 0.34) 45%, rgba(5, 5, 5, 0.08) 76%, rgba(5, 5, 5, 0.18) 100%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.08) 0%, transparent 52%, rgba(5, 5, 5, 0.24) 100%),
+    url("/cosmic-convergence.png");
+  background-position: center, center, right center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.hero-logo-watermark {
+  position: absolute;
+  bottom: clamp(84px, 10vw, 146px);
+  left: clamp(58px, 9vw, 150px);
+  width: 34px;
+  height: 30px;
+  color: var(--white);
+  opacity: 0.075;
+}
+
+.hero-logo-watermark .brand-symbol {
+  display: block;
+  color: currentColor;
+  transform: scale(5);
+  transform-origin: center;
+}
+
+.hero-logo-watermark .brand-symbol i {
+  background: currentColor;
+  box-shadow: none;
 }
 
 .hero::before {
@@ -1617,6 +1656,8 @@ footer {
 }
 
 .pricing-hero {
+  position: relative;
+  overflow: hidden;
   padding: calc(var(--header-height) + clamp(78px, 10vw, 148px)) var(--page-pad) clamp(72px, 8vw, 112px);
   color: var(--white);
   background-color: #080808;
@@ -1626,6 +1667,7 @@ footer {
     linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
   background-position: var(--star-field-position), 0 0, 0 0;
   background-size: var(--star-field-size), 72px 72px, 72px 72px;
+  isolation: isolate;
 }
 
 .pricing-hero-inner,
@@ -1639,6 +1681,8 @@ footer {
 }
 
 .pricing-hero-inner {
+  position: relative;
+  z-index: 1;
   width: min(100%, var(--content-width));
   padding-right: 0;
   padding-left: 0;
@@ -2209,7 +2253,7 @@ footer {
 
   .brand-symbol i::before,
   .brand-symbol i::after {
-    top: -23px;
+    top: -20px;
   }
 
   .brand-symbol i::before {
@@ -2231,6 +2275,25 @@ footer {
   .hero::before {
     opacity: 0.43;
     background-size: 190px 180px, 280px 250px, 400px 340px, 620px 500px;
+  }
+
+  .hero-atmosphere {
+    opacity: 0.68;
+    background-image:
+      linear-gradient(180deg, rgba(5, 5, 5, 0.46) 0%, rgba(5, 5, 5, 0.2) 45%, rgba(5, 5, 5, 0.52) 100%),
+      url("/cosmic-convergence.png");
+    background-position: center, right center;
+    background-size: cover;
+  }
+
+  .hero-logo-watermark {
+    bottom: 76px;
+    left: 38px;
+    opacity: 0.06;
+  }
+
+  .hero-logo-watermark .brand-symbol {
+    transform: scale(3.35);
   }
 
   .wordmark-network {
@@ -2642,5 +2705,13 @@ footer {
 
   .hero::before {
     opacity: 0.62;
+  }
+
+  .hero-atmosphere {
+    opacity: 0.35;
+  }
+
+  .hero-logo-watermark {
+    display: none;
   }
 }
