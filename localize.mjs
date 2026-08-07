@@ -11,6 +11,8 @@ const translations = {
       ["Pricing", "Hinnad"],
       ["About", "Meist"],
       ["Contact", "Kontakt"],
+      ["Privacy", "Privaatsus"],
+      ["Footer navigation", "Jaluse navigeerimine"],
       ["Menu", "Menüü"],
       ["Close", "Sulge"],
       ["Practical automation and digital workflows for small organisations and project teams.", "Praktiline automatiseerimine ja digitaalsed töövood väikestele organisatsioonidele ja projektitiimidele."],
@@ -188,6 +190,115 @@ const translations = {
       ["Send a short description of how the work runs today. We’ll explain what should be simplified, what the project would include and what it would cost.", "Saada lühike kirjeldus sellest, kuidas töö täna käib. Selgitame, mida tasub lihtsustada, mida projekt sisaldaks ja kui palju see maksaks."],
       ["Request a project quote", "Küsi projektipakkumist"],
     ],
+    privacy: [
+      ["Learn how Vooglin processes personal data for enquiries, automation projects, integrations, support and customer relationships.", "Loe, kuidas Vooglin töötleb isikuandmeid päringute, automatiseerimisprojektide, integratsioonide, toe ja kliendisuhete raames."],
+      ["Privacy Policy | Vooglin", "Privaatsuspoliitika | Vooglin"],
+      ["How Vooglin handles personal data, customer-system access, integrations, retention and privacy requests.", "Kuidas Vooglin käsitleb isikuandmeid, juurdepääsu kliendisüsteemidele, integratsioone, andmete säilitamist ja privaatsustaotlusi."],
+      ["Discuss your workflow", "Räägime sinu töövoost"],
+      ["Legal / privacy", "Õigusinfo / privaatsus"],
+      ["Privacy Policy", "Privaatsuspoliitika"],
+      ["This policy explains how Vooglin handles personal data when you contact us, work with us, or use services we configure, maintain or support.", "See poliitika selgitab, kuidas Vooglin käsitleb isikuandmeid, kui võtate meiega ühendust, töötate meiega või kasutate teenuseid, mida me seadistame, hooldame või toetame."],
+      ["Last updated: 7 August 2026", "Viimati uuendatud: 7. august 2026"],
+      ["Privacy policy sections", "Privaatsuspoliitika jaotised"],
+      ["Contents", "Sisukord"],
+      ["01. Who we are", "01. Kes me oleme"],
+      ["02. Information we process", "02. Andmed, mida töötleme"],
+      ["03. Why we process information", "03. Miks me andmeid töötleme"],
+      ["04. Customer systems and integrations", "04. Kliendi süsteemid ja integratsioonid"],
+      ["05. API keys and account access", "05. API-võtmed ja juurdepääs kontodele"],
+      ["06. CRM and customer relationships", "06. CRM ja kliendisuhted"],
+      ["07. Data retention", "07. Andmete säilitamine"],
+      ["08. Service providers", "08. Teenusepakkujad"],
+      ["09. Security", "09. Turvalisus"],
+      ["10. Your rights", "10. Teie õigused"],
+      ["11. Data deletion", "11. Andmete kustutamine"],
+      ["12. Changes to this policy", "12. Privaatsuspoliitika muudatused"],
+      ["13. Contact", "13. Kontakt"],
+      ["01 / Controller", "01 / Vastutav töötleja"],
+      ["Who we are", "Kes me oleme"],
+      ["Vooglin provides workflow automation, digital systems, integrations, websites, forms, spreadsheets, email and document automation, technical support and related services.", "Vooglin pakub töövoogude automatiseerimist, digisüsteeme, integratsioone, veebilehti, vorme, arvutustabeleid, e-posti ja dokumentide automatiseerimist, tehnilist tuge ning seotud teenuseid."],
+      ["Vooglin processes personal data in connection with enquiries, offers, projects, automation services, integrations, support and customer relationships. For this information, Vooglin acts as the data controller.", "Vooglin töötleb isikuandmeid seoses päringute, pakkumiste, projektide, automatiseerimisteenuste, integratsioonide, toe ja kliendisuhetega. Nende andmete puhul tegutseb Vooglin vastutava töötlejana."],
+      ["For privacy questions and requests, email", "Privaatsusküsimuste ja taotluste korral kirjutage aadressil"],
+      ["02 / Data", "02 / Andmed"],
+      ["Information we process", "Andmed, mida töötleme"],
+      ["Depending on the enquiry, project or service, Vooglin may process:", "Olenevalt päringust, projektist või teenusest võib Vooglin töödelda järgmisi andmeid:"],
+      ["first and last name;", "ees- ja perekonnanime;"],
+      ["organisation or company name and job or role information;", "organisatsiooni või ettevõtte nime ning ametikoha või rolli teavet;"],
+      ["email address and telephone number;", "e-posti aadressi ja telefoninumbrit;"],
+      ["information submitted through website forms and customer requests;", "veebivormide kaudu edastatud teavet ja kliendi päringuid;"],
+      ["project and service information and communication history;", "projekti- ja teenuseinfot ning suhtlusajalugu;"],
+      ["workflow and process information;", "töövoo- ja protsessiinfot;"],
+      ["files and documents supplied by the customer;", "kliendi esitatud faile ja dokumente;"],
+      ["information required to set up, maintain or support an automation;", "automatiseerimise seadistamiseks, hooldamiseks või toetamiseks vajalikku teavet;"],
+      ["information stored in customer systems where access is required to perform the service;", "kliendisüsteemides olevat teavet, millele juurdepääs on teenuse osutamiseks vajalik;"],
+      ["customer relationship management information; and", "kliendisuhte haldamise teavet; ning"],
+      ["technical information necessary to configure or maintain integrations.", "integratsioonide seadistamiseks või hooldamiseks vajalikku tehnilist teavet."],
+      ["Vooglin seeks to process only the information reasonably necessary for the relevant purpose.", "Vooglin püüab töödelda ainult asjaomase eesmärgi jaoks mõistlikult vajalikku teavet."],
+      ["03 / Purpose", "03 / Eesmärk"],
+      ["Why we process information", "Miks me andmeid töötleme"],
+      ["Information may be processed to respond to enquiries, communicate with potential and existing customers, prepare offers, deliver projects, configure automations, maintain integrations, provide technical support, manage customer relationships, improve service quality, protect security, resolve technical problems, fulfil contracts and comply with applicable legal obligations.", "Andmeid võidakse töödelda päringutele vastamiseks, võimalike ja olemasolevate klientidega suhtlemiseks, pakkumiste koostamiseks, projektide teostamiseks, automatiseerimiste seadistamiseks, integratsioonide hooldamiseks, tehnilise toe pakkumiseks, kliendisuhete haldamiseks, teenuse kvaliteedi parandamiseks, turvalisuse kaitsmiseks, tehniliste probleemide lahendamiseks, lepingute täitmiseks ning kohaldatavate õiguslike kohustuste järgimiseks."],
+      ["Depending on the situation, the legal basis may be taking steps at your request before entering into a contract, performing a contract, Vooglin’s legitimate interests in operating and protecting its services and customer relationships, consent where applicable, or compliance with a legal obligation.", "Olenevalt olukorrast võib töötlemise õiguslik alus olla teie taotlusel lepingu sõlmimisele eelnevate meetmete võtmine, lepingu täitmine, Vooglini õigustatud huvi oma teenuste ja kliendisuhete toimimise ning kaitsmise vastu, vajaduse korral nõusolek või õigusliku kohustuse täitmine."],
+      ["04 / Systems", "04 / Süsteemid"],
+      ["Customer systems and integrations", "Kliendi süsteemid ja integratsioonid"],
+      ["Some projects require temporary or continuing access to customer-controlled services such as Google services, email systems, forms, spreadsheets, APIs, CRM systems, websites, automation platforms or other services selected by the customer.", "Mõni projekt nõuab ajutist või jätkuvat juurdepääsu kliendi kontrolli all olevatele teenustele, näiteks Google’i teenustele, e-posti süsteemidele, vormidele, arvutustabelitele, API-dele, CRM-süsteemidele, veebilehtedele, automatiseerimisplatvormidele või muudele kliendi valitud teenustele."],
+      ["Vooglin uses this access only where necessary to configure, maintain or support the agreed automation or service. The customer continues to own and control its accounts.", "Vooglin kasutab sellist juurdepääsu ainult siis, kui see on vajalik kokkulepitud automatiseerimise või teenuse seadistamiseks, hooldamiseks või toetamiseks. Klient jääb oma kontode omanikuks ja kontrollib neid edasi."],
+      ["Where an automation processes personal data belonging to a customer or the customer’s users, Vooglin processes that data only as needed to provide the agreed service. The customer is responsible for ensuring it has a lawful basis and the necessary authority to provide and use that data. Access should be limited to what the project requires.", "Kui automatiseerimine töötleb kliendile või kliendi kasutajatele kuuluvaid isikuandmeid, töötleb Vooglin neid ainult kokkulepitud teenuse osutamiseks vajalikus ulatuses. Klient vastutab selle eest, et tal oleks andmete edastamiseks ja kasutamiseks õiguslik alus ning vajalikud õigused. Juurdepääs tuleb piirata projekti jaoks vajalikuga."],
+      ["Where Vooglin handles personal data solely on a customer’s documented instructions, Vooglin may act as a data processor and the applicable project terms and instructions also govern that processing.", "Kui Vooglin töötleb isikuandmeid üksnes kliendi dokumenteeritud juhiste alusel, võib Vooglin tegutseda volitatud töötlejana ning sellisele töötlemisele kohalduvad ka asjaomase projekti tingimused ja juhised."],
+      ["05 / Access", "05 / Juurdepääs"],
+      ["API keys and account access", "API-võtmed ja juurdepääs kontodele"],
+      ["Some integrations require API keys, access tokens, OAuth permissions, service credentials or other technical secrets. These credentials are processed only when necessary to provide the agreed service, should be stored carefully, and access should be limited to what is required.", "Mõni integratsioon vajab API-võtmeid, juurdepääsutokeneid, OAuthi õigusi, teenuse juurdepääsuandmeid või muid tehnilisi autentimisandmeid. Neid juurdepääsuandmeid töödeldakse ainult siis, kui see on kokkulepitud teenuse osutamiseks vajalik, neid tuleb hoolikalt säilitada ning juurdepääs tuleb piirata vajalikuga."],
+      ["Where possible, scoped tokens, OAuth permissions or dedicated API credentials should be used instead of sharing a primary account password.", "Võimaluse korral tuleks konto põhiparooli jagamise asemel kasutada piiratud õigustega tokeneid, OAuthi õigusi või selleks loodud API juurdepääsuandmeid."],
+      ["Credentials and access should be deleted, revoked or returned when they are no longer required. Customers may ask Vooglin to remove its access at any time. Credentials required for an active maintenance or support service may remain in use while that service remains active, but they do not automatically remain active for the general three-year record-retention period.", "Juurdepääsuandmed ja juurdepääs tuleb kustutada, tühistada või tagastada, kui neid enam ei vajata. Klient võib igal ajal paluda Vooglinil oma juurdepääs eemaldada. Aktiivse hooldus- või tugiteenuse jaoks vajalikud juurdepääsuandmed võivad olla kasutusel teenuse kehtivuse ajal, kuid need ei jää automaatselt aktiivseks üldise kolmeaastase andmete säilitamise perioodi lõpuni."],
+      ["06 / CRM", "06 / CRM"],
+      ["CRM and customer relationships", "CRM ja kliendisuhted"],
+      ["Vooglin may maintain a customer or contact CRM containing organisation name, contact person, email address, telephone number, communication history, project or service information, enquiry or project status, and notes necessary to manage the customer relationship.", "Vooglin võib pidada klientide või kontaktide CRM-i, mis sisaldab organisatsiooni nime, kontaktisiku nime, e-posti aadressi, telefoninumbrit, suhtlusajalugu, projekti- või teenuseinfot, päringu või projekti staatust ning kliendisuhte haldamiseks vajalikke märkmeid."],
+      ["CRM and customer-contact information may generally be retained for up to three years after the most recent meaningful interaction. If the same person or organisation contacts Vooglin again, the retention period may restart from the latest meaningful interaction.", "CRM-i ja kliendi kontaktandmeid võidakse üldjuhul säilitada kuni kolm aastat pärast viimast sisulist suhtlust. Kui sama isik või organisatsioon võtab Voogliniga uuesti ühendust, võib säilitustähtaeg alata uuesti viimase sisulise suhtluse kuupäevast."],
+      ["Information needed to provide an active maintenance or support service may be retained throughout that service relationship.", "Aktiivse hooldus- või tugiteenuse osutamiseks vajalikku teavet võib säilitada kogu selle teenusesuhte vältel."],
+      ["07 / Retention", "07 / Säilitamine"],
+      ["Data retention", "Andmete säilitamine"],
+      ["CRM and contact information", "CRM-i ja kontaktandmed"],
+      ["Generally up to three years after the latest meaningful interaction. A new meaningful interaction may restart this period.", "Üldjuhul kuni kolm aastat pärast viimast sisulist suhtlust. Uus sisuline suhtlus võib selle perioodi uuesti käivitada."],
+      ["Project and customer records", "Projekti- ja kliendiandmed"],
+      ["Generally up to three years after the project or customer relationship ends where reasonably necessary for service history, dispute resolution, follow-up work or the protection of legitimate interests, unless a longer period is required by law.", "Üldjuhul kuni kolm aastat pärast projekti või kliendisuhte lõppu, kui see on mõistlikult vajalik teenuse ajaloo, vaidluste lahendamise, jätkutööde või õigustatud huvide kaitsmiseks, välja arvatud juhul, kui seadus nõuab pikemat säilitamist."],
+      ["Active maintenance and support", "Aktiivne hooldus ja tugi"],
+      ["Information necessary to provide the service may be retained while the service remains active.", "Teenuse osutamiseks vajalikku teavet võib säilitada teenuse kehtivuse ajal."],
+      ["API keys and access credentials", "API-võtmed ja juurdepääsuandmed"],
+      ["Only for as long as reasonably necessary for the active integration, maintenance or support. They should be removed or revoked when no longer required.", "Ainult nii kaua, kui see on aktiivse integratsiooni, hoolduse või toe jaoks mõistlikult vajalik. Need tuleb eemaldada või tühistada, kui neid enam ei vajata."],
+      ["Accounting and legal records", "Raamatupidamis- ja õigusdokumendid"],
+      ["For the period required by applicable law.", "Kohaldatava õigusega nõutud aja jooksul."],
+      ["Some information may be deleted earlier when there is no longer a legitimate reason to retain it.", "Teatud andmed võidakse kustutada varem, kui nende säilitamiseks ei ole enam õigustatud põhjust."],
+      ["08 / Providers", "08 / Teenusepakkujad"],
+      ["Service providers and third-party services", "Teenusepakkujad ja kolmandate isikute teenused"],
+      ["Vooglin may use service providers for hosting, email, cloud storage, automation platforms, CRM, forms and customer-selected integrations where necessary to provide the requested service. Data may be processed by those providers to the extent required for their role.", "Vooglin võib tellitud teenuse osutamiseks vajaduse korral kasutada majutuse, e-posti, pilvesalvestuse, automatiseerimisplatvormide, CRM-i, vormide ja kliendi valitud integratsioonide teenusepakkujaid. Need teenusepakkujad võivad andmeid töödelda oma ülesande täitmiseks vajalikus ulatuses."],
+      ["Automations may connect to independent third-party services selected or used by the customer. Those services have their own privacy policies and terms. Vooglin does not control and is not responsible for changing the privacy practices of independent third-party platforms.", "Automatiseerimised võivad ühenduda kliendi valitud või kasutatavate sõltumatute kolmandate isikute teenustega. Neil teenustel on oma privaatsuspoliitikad ja tingimused. Vooglin ei kontrolli sõltumatute kolmandate isikute platvormide privaatsustavasid ega vastuta nende muutmise eest."],
+      ["Information may also be disclosed where required by applicable law or necessary to establish, exercise or defend legal claims.", "Teavet võidakse avaldada ka juhul, kui seda nõuab kohaldatav õigus või kui see on vajalik õigusnõuete koostamiseks, esitamiseks või kaitsmiseks."],
+      ["09 / Security", "09 / Turvalisus"],
+      ["Security", "Turvalisus"],
+      ["Vooglin applies appropriate technical and organisational measures in light of the information and service involved. Access should be limited to the people and services that need it, data access should be minimised, credentials should be handled carefully, and unnecessary access should be revoked.", "Vooglin rakendab asjaomast teavet ja teenust arvestades asjakohaseid tehnilisi ja korralduslikke meetmeid. Juurdepääs tuleb piirata seda vajavate inimeste ja teenustega, andmetele juurdepääsu tuleb minimeerida, juurdepääsuandmeid hoolikalt käsitleda ning ebavajalik juurdepääs tühistada."],
+      ["No method of storage or transmission can guarantee absolute security, but Vooglin aims to reduce risk through proportionate safeguards and careful access management.", "Ükski säilitus- ega edastusviis ei saa tagada täielikku turvalisust, kuid Vooglin püüab riske vähendada proportsionaalsete kaitsemeetmete ja hoolika juurdepääsuhaldusega."],
+      ["10 / Rights", "10 / Õigused"],
+      ["Your rights", "Teie õigused"],
+      ["Where applicable under data protection law, you may have the right to:", "Kui andmekaitseõigus seda ette näeb, võib teil olla õigus:"],
+      ["request access to your personal data;", "taotleda juurdepääsu oma isikuandmetele;"],
+      ["request correction of inaccurate or incomplete data;", "nõuda ebaõigete või puudulike andmete parandamist;"],
+      ["request erasure of your personal data;", "nõuda oma isikuandmete kustutamist;"],
+      ["request restriction of processing;", "nõuda töötlemise piiramist;"],
+      ["object to processing based on legitimate interests;", "esitada õigustatud huvil põhinevale töötlemisele vastuväide;"],
+      ["receive or transfer certain data in a portable format where applicable; and", "saada või edastada teatud andmeid ülekantavas vormingus, kui see on kohaldatav; ning"],
+      ["withdraw consent at any time where processing is based on consent.", "võtta nõusolek igal ajal tagasi, kui töötlemine põhineb nõusolekul."],
+      ["You may also lodge a complaint with the competent data protection authority. Some information may still need to be retained where required by law or necessary for legitimate legal claims.", "Samuti võite esitada kaebuse pädevale andmekaitse järelevalveasutusele. Teatud andmeid võib siiski olla vaja säilitada, kui seda nõuab seadus või kui see on vajalik õigustatud õigusnõuete jaoks."],
+      ["To exercise a privacy right, email", "Oma andmekaitseõiguse kasutamiseks kirjutage aadressil"],
+      ["11 / Deletion", "11 / Kustutamine"],
+      ["Data deletion", "Andmete kustutamine"],
+      ["You may ask Vooglin to delete your personal information by emailing", "Võite paluda Vooglinil oma isikuandmed kustutada, kirjutades aadressil"],
+      ["Where there is no legal, contractual or legitimate reason requiring continued retention, the information will be deleted.", "Kui andmete edasiseks säilitamiseks puudub õiguslik, lepinguline või õigustatud põhjus, kustutatakse andmed."],
+      ["If a request concerns an API key, token, account permission or other access, you may also ask Vooglin to revoke or remove that access. You can additionally revoke access directly in the relevant customer-controlled service where that option is available.", "Kui taotlus puudutab API-võtit, tokenit, kontoõigust või muud juurdepääsu, võite paluda Vooglinil ka selle juurdepääsu tühistada või eemaldada. Kui asjaomane kliendi hallatav teenus seda võimaldab, saate juurdepääsu ka otse seal tühistada."],
+      ["12 / Updates", "12 / Uuendused"],
+      ["Changes to this policy", "Privaatsuspoliitika muudatused"],
+      ["This Privacy Policy may be updated when Vooglin’s services, working practices or legal requirements change. The latest version will be published on this page, and the date at the top shows when it was last updated.", "Käesolevat privaatsuspoliitikat võidakse uuendada, kui muutuvad Vooglini teenused, tööpraktikad või õigusnõuded. Uusim versioon avaldatakse sellel lehel ning lehe ülaosas olev kuupäev näitab, millal poliitikat viimati uuendati."],
+      ["13 / Contact", "13 / Kontakt"],
+      ["For questions about this Privacy Policy, personal data, deletion or access credentials, contact Vooglin at:", "Käesoleva privaatsuspoliitika, isikuandmete, kustutamise või juurdepääsuandmetega seotud küsimuste korral võtke Voogliniga ühendust aadressil:"],
+    ],
   },
   ru: {
     common: [
@@ -201,6 +312,8 @@ const translations = {
       ["Pricing", "Цены"],
       ["About", "О нас"],
       ["Contact", "Контакты"],
+      ["Privacy", "Конфиденциальность"],
+      ["Footer navigation", "Навигация в подвале"],
       ["Menu", "Меню"],
       ["Close", "Закрыть"],
       ["Practical automation and digital workflows for small organisations and project teams.", "Практичная автоматизация и цифровые процессы для небольших организаций и проектных команд."],
@@ -378,21 +491,142 @@ const translations = {
       ["Send a short description of how the work runs today. We’ll explain what should be simplified, what the project would include and what it would cost.", "Коротко опишите, как работа устроена сейчас. Мы объясним, что стоит упростить, что войдёт в проект и сколько это будет стоить."],
       ["Request a project quote", "Запросить расчёт проекта"],
     ],
+    privacy: [
+      ["Learn how Vooglin processes personal data for enquiries, automation projects, integrations, support and customer relationships.", "Узнайте, как Vooglin обрабатывает персональные данные при работе с запросами, проектами автоматизации, интеграциями, поддержкой и отношениями с клиентами."],
+      ["Privacy Policy | Vooglin", "Политика конфиденциальности | Vooglin"],
+      ["How Vooglin handles personal data, customer-system access, integrations, retention and privacy requests.", "Как Vooglin обрабатывает персональные данные, доступ к системам клиентов, интеграции, хранение данных и запросы по вопросам конфиденциальности."],
+      ["Discuss your workflow", "Обсудить ваш процесс"],
+      ["Legal / privacy", "Правовая информация / конфиденциальность"],
+      ["Privacy Policy", "Политика конфиденциальности"],
+      ["This policy explains how Vooglin handles personal data when you contact us, work with us, or use services we configure, maintain or support.", "Эта политика объясняет, как Vooglin обрабатывает персональные данные, когда вы связываетесь или работаете с нами либо используете услуги, которые мы настраиваем, обслуживаем или поддерживаем."],
+      ["Last updated: 7 August 2026", "Последнее обновление: 7 августа 2026"],
+      ["Privacy policy sections", "Разделы политики конфиденциальности"],
+      ["Contents", "Содержание"],
+      ["01. Who we are", "01. Кто мы"],
+      ["02. Information we process", "02. Какие данные мы обрабатываем"],
+      ["03. Why we process information", "03. Для чего мы обрабатываем данные"],
+      ["04. Customer systems and integrations", "04. Системы клиентов и интеграции"],
+      ["05. API keys and account access", "05. Ключи API и доступ к учётным записям"],
+      ["06. CRM and customer relationships", "06. CRM и отношения с клиентами"],
+      ["07. Data retention", "07. Хранение данных"],
+      ["08. Service providers", "08. Поставщики услуг"],
+      ["09. Security", "09. Безопасность"],
+      ["10. Your rights", "10. Ваши права"],
+      ["11. Data deletion", "11. Удаление данных"],
+      ["12. Changes to this policy", "12. Изменения политики"],
+      ["13. Contact", "13. Контакты"],
+      ["01 / Controller", "01 / Контролёр"],
+      ["Who we are", "Кто мы"],
+      ["Vooglin provides workflow automation, digital systems, integrations, websites, forms, spreadsheets, email and document automation, technical support and related services.", "Vooglin предоставляет услуги по автоматизации рабочих процессов, созданию цифровых систем, интеграций, сайтов, форм, электронных таблиц, автоматизации электронной почты и документов, технической поддержке и другим связанным направлениям."],
+      ["Vooglin processes personal data in connection with enquiries, offers, projects, automation services, integrations, support and customer relationships. For this information, Vooglin acts as the data controller.", "Vooglin обрабатывает персональные данные в связи с запросами, предложениями, проектами, услугами автоматизации, интеграциями, поддержкой и отношениями с клиентами. В отношении этих данных Vooglin выступает контролёром персональных данных."],
+      ["For privacy questions and requests, email", "По вопросам конфиденциальности и для направления запросов пишите на"],
+      ["02 / Data", "02 / Данные"],
+      ["Information we process", "Какие данные мы обрабатываем"],
+      ["Depending on the enquiry, project or service, Vooglin may process:", "В зависимости от запроса, проекта или услуги Vooglin может обрабатывать:"],
+      ["first and last name;", "имя и фамилию;"],
+      ["organisation or company name and job or role information;", "название организации или компании, а также сведения о должности или профессиональной роли;"],
+      ["email address and telephone number;", "адрес электронной почты и номер телефона;"],
+      ["information submitted through website forms and customer requests;", "информацию, переданную через формы на сайте, и запросы клиентов;"],
+      ["project and service information and communication history;", "сведения о проекте и услуге, а также историю переписки;"],
+      ["workflow and process information;", "информацию о рабочих процессах и процедурах;"],
+      ["files and documents supplied by the customer;", "файлы и документы, предоставленные клиентом;"],
+      ["information required to set up, maintain or support an automation;", "информацию, необходимую для настройки, обслуживания или поддержки автоматизации;"],
+      ["information stored in customer systems where access is required to perform the service;", "информацию в системах клиента, доступ к которой необходим для оказания услуги;"],
+      ["customer relationship management information; and", "информацию для управления отношениями с клиентами; а также"],
+      ["technical information necessary to configure or maintain integrations.", "техническую информацию, необходимую для настройки или обслуживания интеграций."],
+      ["Vooglin seeks to process only the information reasonably necessary for the relevant purpose.", "Vooglin стремится обрабатывать только информацию, разумно необходимую для соответствующей цели."],
+      ["03 / Purpose", "03 / Цель"],
+      ["Why we process information", "Для чего мы обрабатываем данные"],
+      ["Information may be processed to respond to enquiries, communicate with potential and existing customers, prepare offers, deliver projects, configure automations, maintain integrations, provide technical support, manage customer relationships, improve service quality, protect security, resolve technical problems, fulfil contracts and comply with applicable legal obligations.", "Данные могут обрабатываться, чтобы отвечать на запросы, общаться с потенциальными и действующими клиентами, готовить предложения, выполнять проекты, настраивать автоматизации, поддерживать интеграции, оказывать техническую поддержку, вести отношения с клиентами, повышать качество услуг, обеспечивать безопасность, устранять технические проблемы, исполнять договоры и соблюдать применимые юридические обязанности."],
+      ["Depending on the situation, the legal basis may be taking steps at your request before entering into a contract, performing a contract, Vooglin’s legitimate interests in operating and protecting its services and customer relationships, consent where applicable, or compliance with a legal obligation.", "В зависимости от ситуации правовым основанием может быть принятие мер по вашему запросу до заключения договора, исполнение договора, законные интересы Vooglin в работе и защите своих услуг и отношений с клиентами, согласие, когда оно применимо, либо исполнение юридической обязанности."],
+      ["04 / Systems", "04 / Системы"],
+      ["Customer systems and integrations", "Системы клиентов и интеграции"],
+      ["Some projects require temporary or continuing access to customer-controlled services such as Google services, email systems, forms, spreadsheets, APIs, CRM systems, websites, automation platforms or other services selected by the customer.", "Для некоторых проектов требуется временный или постоянный доступ к сервисам под управлением клиента, например сервисам Google, системам электронной почты, формам, электронным таблицам, API, CRM-системам, сайтам, платформам автоматизации или другим сервисам, выбранным клиентом."],
+      ["Vooglin uses this access only where necessary to configure, maintain or support the agreed automation or service. The customer continues to own and control its accounts.", "Vooglin использует такой доступ только там, где он необходим для настройки, обслуживания или поддержки согласованной автоматизации либо услуги. Клиент остаётся владельцем своих учётных записей и сохраняет контроль над ними."],
+      ["Where an automation processes personal data belonging to a customer or the customer’s users, Vooglin processes that data only as needed to provide the agreed service. The customer is responsible for ensuring it has a lawful basis and the necessary authority to provide and use that data. Access should be limited to what the project requires.", "Если автоматизация обрабатывает персональные данные клиента или пользователей клиента, Vooglin обрабатывает их только в объёме, необходимом для оказания согласованной услуги. Клиент отвечает за наличие правового основания и необходимых полномочий для передачи и использования этих данных. Доступ должен быть ограничен тем, что требуется для проекта."],
+      ["Where Vooglin handles personal data solely on a customer’s documented instructions, Vooglin may act as a data processor and the applicable project terms and instructions also govern that processing.", "Если Vooglin обрабатывает персональные данные исключительно по документированным инструкциям клиента, Vooglin может выступать обработчиком данных; такая обработка также регулируется применимыми условиями и инструкциями проекта."],
+      ["05 / Access", "05 / Доступ"],
+      ["API keys and account access", "Ключи API и доступ к учётным записям"],
+      ["Some integrations require API keys, access tokens, OAuth permissions, service credentials or other technical secrets. These credentials are processed only when necessary to provide the agreed service, should be stored carefully, and access should be limited to what is required.", "Для некоторых интеграций требуются ключи API, токены доступа, разрешения OAuth, учётные данные сервисов или другие технические данные доступа. Они обрабатываются только тогда, когда это необходимо для оказания согласованной услуги, должны храниться с должной осторожностью, а доступ к ним должен быть ограничен необходимым объёмом."],
+      ["Where possible, scoped tokens, OAuth permissions or dedicated API credentials should be used instead of sharing a primary account password.", "По возможности вместо передачи основного пароля учётной записи следует использовать токены с ограниченными правами, разрешения OAuth или специально созданные учётные данные API."],
+      ["Credentials and access should be deleted, revoked or returned when they are no longer required. Customers may ask Vooglin to remove its access at any time. Credentials required for an active maintenance or support service may remain in use while that service remains active, but they do not automatically remain active for the general three-year record-retention period.", "Когда учётные данные и доступ больше не нужны, их следует удалить, отозвать или вернуть. Клиент может в любое время попросить Vooglin удалить свой доступ. Учётные данные, необходимые для действующего обслуживания или поддержки, могут использоваться, пока эта услуга активна, но они не остаются автоматически активными в течение общего трёхлетнего срока хранения документации."],
+      ["06 / CRM", "06 / CRM"],
+      ["CRM and customer relationships", "CRM и отношения с клиентами"],
+      ["Vooglin may maintain a customer or contact CRM containing organisation name, contact person, email address, telephone number, communication history, project or service information, enquiry or project status, and notes necessary to manage the customer relationship.", "Vooglin может вести CRM клиентов или контактов, содержащую название организации, имя контактного лица, адрес электронной почты, номер телефона, историю переписки, сведения о проекте или услуге, статус запроса или проекта и заметки, необходимые для управления отношениями с клиентом."],
+      ["CRM and customer-contact information may generally be retained for up to three years after the most recent meaningful interaction. If the same person or organisation contacts Vooglin again, the retention period may restart from the latest meaningful interaction.", "Данные CRM и контактная информация клиента обычно могут храниться до трёх лет после последнего содержательного взаимодействия. Если тот же человек или организация снова обращается в Vooglin, срок хранения может исчисляться заново с даты последнего содержательного взаимодействия."],
+      ["Information needed to provide an active maintenance or support service may be retained throughout that service relationship.", "Информация, необходимая для действующего обслуживания или поддержки, может храниться на протяжении всего периода оказания этой услуги."],
+      ["07 / Retention", "07 / Хранение"],
+      ["Data retention", "Хранение данных"],
+      ["CRM and contact information", "Данные CRM и контактная информация"],
+      ["Generally up to three years after the latest meaningful interaction. A new meaningful interaction may restart this period.", "Обычно до трёх лет после последнего содержательного взаимодействия. Новое содержательное взаимодействие может запустить этот срок заново."],
+      ["Project and customer records", "Данные проектов и клиентов"],
+      ["Generally up to three years after the project or customer relationship ends where reasonably necessary for service history, dispute resolution, follow-up work or the protection of legitimate interests, unless a longer period is required by law.", "Обычно до трёх лет после завершения проекта или отношений с клиентом, если это разумно необходимо для истории обслуживания, разрешения споров, последующих работ или защиты законных интересов, кроме случаев, когда закон требует более длительного хранения."],
+      ["Active maintenance and support", "Действующее обслуживание и поддержка"],
+      ["Information necessary to provide the service may be retained while the service remains active.", "Информация, необходимая для оказания услуги, может храниться, пока услуга остаётся активной."],
+      ["API keys and access credentials", "Ключи API и учётные данные доступа"],
+      ["Only for as long as reasonably necessary for the active integration, maintenance or support. They should be removed or revoked when no longer required.", "Только пока они разумно необходимы для действующей интеграции, обслуживания или поддержки. Когда необходимость прекращается, их следует удалить или отозвать."],
+      ["Accounting and legal records", "Бухгалтерские и юридические документы"],
+      ["For the period required by applicable law.", "В течение срока, установленного применимым законодательством."],
+      ["Some information may be deleted earlier when there is no longer a legitimate reason to retain it.", "Некоторая информация может быть удалена раньше, если для её хранения больше нет законной причины."],
+      ["08 / Providers", "08 / Поставщики"],
+      ["Service providers and third-party services", "Поставщики услуг и сторонние сервисы"],
+      ["Vooglin may use service providers for hosting, email, cloud storage, automation platforms, CRM, forms and customer-selected integrations where necessary to provide the requested service. Data may be processed by those providers to the extent required for their role.", "Для оказания заказанной услуги Vooglin может при необходимости использовать поставщиков хостинга, электронной почты, облачного хранения, платформ автоматизации, CRM, форм и выбранных клиентом интеграций. Эти поставщики могут обрабатывать данные в объёме, необходимом для выполнения своей роли."],
+      ["Automations may connect to independent third-party services selected or used by the customer. Those services have their own privacy policies and terms. Vooglin does not control and is not responsible for changing the privacy practices of independent third-party platforms.", "Автоматизации могут подключаться к независимым сторонним сервисам, выбранным или используемым клиентом. У таких сервисов есть собственные политики конфиденциальности и условия. Vooglin не контролирует правила конфиденциальности независимых сторонних платформ и не отвечает за их изменение."],
+      ["Information may also be disclosed where required by applicable law or necessary to establish, exercise or defend legal claims.", "Информация также может быть раскрыта, если этого требует применимое законодательство либо если раскрытие необходимо для предъявления, осуществления или защиты правовых требований."],
+      ["09 / Security", "09 / Безопасность"],
+      ["Security", "Безопасность"],
+      ["Vooglin applies appropriate technical and organisational measures in light of the information and service involved. Access should be limited to the people and services that need it, data access should be minimised, credentials should be handled carefully, and unnecessary access should be revoked.", "Vooglin применяет надлежащие технические и организационные меры с учётом соответствующих данных и услуги. Доступ должен быть ограничен людьми и сервисами, которым он необходим, объём доступа к данным следует минимизировать, с учётными данными следует обращаться осторожно, а ненужный доступ — отзывать."],
+      ["No method of storage or transmission can guarantee absolute security, but Vooglin aims to reduce risk through proportionate safeguards and careful access management.", "Ни один способ хранения или передачи не может гарантировать абсолютную безопасность, однако Vooglin стремится снижать риски с помощью соразмерных мер защиты и тщательного управления доступом."],
+      ["10 / Rights", "10 / Права"],
+      ["Your rights", "Ваши права"],
+      ["Where applicable under data protection law, you may have the right to:", "В случаях, предусмотренных законодательством о защите данных, вы можете иметь право:"],
+      ["request access to your personal data;", "запросить доступ к своим персональным данным;"],
+      ["request correction of inaccurate or incomplete data;", "потребовать исправления неточных или неполных данных;"],
+      ["request erasure of your personal data;", "потребовать удаления своих персональных данных;"],
+      ["request restriction of processing;", "потребовать ограничения обработки;"],
+      ["object to processing based on legitimate interests;", "возразить против обработки, основанной на законных интересах;"],
+      ["receive or transfer certain data in a portable format where applicable; and", "получить или передать определённые данные в переносимом формате, когда это применимо; а также"],
+      ["withdraw consent at any time where processing is based on consent.", "в любое время отозвать согласие, если обработка основана на согласии."],
+      ["You may also lodge a complaint with the competent data protection authority. Some information may still need to be retained where required by law or necessary for legitimate legal claims.", "Вы также можете подать жалобу в компетентный орган по защите данных. Некоторую информацию всё же может потребоваться сохранить, если это предусмотрено законом или необходимо для законных правовых требований."],
+      ["To exercise a privacy right, email", "Чтобы воспользоваться правом в области защиты данных, напишите на"],
+      ["11 / Deletion", "11 / Удаление"],
+      ["Data deletion", "Удаление данных"],
+      ["You may ask Vooglin to delete your personal information by emailing", "Вы можете попросить Vooglin удалить ваши персональные данные, написав на"],
+      ["Where there is no legal, contractual or legitimate reason requiring continued retention, the information will be deleted.", "Если для дальнейшего хранения нет юридической, договорной или иной законной причины, информация будет удалена."],
+      ["If a request concerns an API key, token, account permission or other access, you may also ask Vooglin to revoke or remove that access. You can additionally revoke access directly in the relevant customer-controlled service where that option is available.", "Если запрос касается ключа API, токена, разрешения учётной записи или другого доступа, вы также можете попросить Vooglin отозвать или удалить этот доступ. Если соответствующий сервис под управлением клиента предоставляет такую возможность, вы можете дополнительно отозвать доступ непосредственно в нём."],
+      ["12 / Updates", "12 / Обновления"],
+      ["Changes to this policy", "Изменения политики"],
+      ["This Privacy Policy may be updated when Vooglin’s services, working practices or legal requirements change. The latest version will be published on this page, and the date at the top shows when it was last updated.", "Настоящая Политика конфиденциальности может обновляться при изменении услуг Vooglin, рабочих практик или юридических требований. Актуальная версия будет опубликована на этой странице, а дата вверху покажет, когда она была обновлена в последний раз."],
+      ["13 / Contact", "13 / Контакты"],
+      ["For questions about this Privacy Policy, personal data, deletion or access credentials, contact Vooglin at:", "По вопросам настоящей Политики конфиденциальности, персональных данных, удаления или учётных данных доступа свяжитесь с Vooglin по адресу:"],
+    ],
   },
 };
 
 function replaceAll(source, pairs) {
   return [...pairs]
-    .sort(([left], [right]) => right.length - left.length)
+    .sort(([firstSource], [secondSource]) => secondSource.length - firstSource.length)
     .reduce((result, [from, to]) => result.split(from).join(to), source);
 }
 
+const pageSuffixes = Object.freeze({
+  home: "",
+  pricing: "pricing/",
+  privacy: "privacy/",
+});
+
+function pageSuffix(page) {
+  const suffix = pageSuffixes[page];
+  if (suffix === undefined) throw new Error(`Unsupported page type: ${page}`);
+  return suffix;
+}
+
 function languageSwitcher(locale, page) {
-  const pricing = page === "pricing" ? "pricing/" : "";
+  const suffix = pageSuffix(page);
   const links = [
-    ["en", `/${pricing}`, "EN"],
-    ["et", `/et/${pricing}`, "ET"],
-    ["ru", `/ru/${pricing}`, "RU"],
+    ["en", `/${suffix}`, "EN"],
+    ["et", `/et/${suffix}`, "ET"],
+    ["ru", `/ru/${suffix}`, "RU"],
   ];
 
   return links.map(([code, href, label]) =>
@@ -404,13 +638,14 @@ export function localizePage(source, locale, page) {
   const dictionary = translations[locale];
   let html = source;
   const basePath = `/${locale}/`;
-  const pagePath = page === "pricing" ? `${basePath}pricing/` : basePath;
+  const suffix = pageSuffix(page);
+  const pagePath = `${basePath}${suffix}`;
 
   html = html.replace('<html lang="en">', `<html lang="${locale}">`);
-  html = html.replace(/https:\/\/vooglin\.ee\/pricing\//g, `https://vooglin.ee${basePath}pricing/`);
+  html = html.replace(/href="\/pricing\/"/g, `href="${basePath}pricing/"`);
+  html = html.replace(/href="\/privacy\/"/g, `href="${basePath}privacy/"`);
   if (page === "home") {
     html = html.replace(/https:\/\/vooglin\.ee\/(?!og-brand\.png|og-savings\.png|favicon\.png)/g, `https://vooglin.ee${basePath}`);
-    html = html.replace(/href="\/pricing\/"/g, `href="${basePath}pricing/"`);
   } else {
     html = html.replace(/href="\/#([a-z-]+)"/g, `href="${basePath}#$1"`);
     html = html.replace(/href="\/"/g, `href="${basePath}"`);
@@ -427,15 +662,14 @@ export function localizePage(source, locale, page) {
 
   html = html.replace(/<link rel="canonical" href="[^"]+">/, `<link rel="canonical" href="https://vooglin.ee${pagePath}">`);
   html = html.replace(/<meta property="og:url" content="[^"]+">/, `<meta property="og:url" content="https://vooglin.ee${pagePath}">`);
-  const pricingSuffix = page === "pricing" ? "pricing/" : "";
   html = html.replace(
     /  <link rel="alternate" hreflang="en"[^>]+>\n  <link rel="alternate" hreflang="et"[^>]+>\n  <link rel="alternate" hreflang="ru"[^>]+>\n  <link rel="alternate" hreflang="x-default"[^>]+>/,
-    `  <link rel="alternate" hreflang="en" href="https://vooglin.ee/${pricingSuffix}">\n` +
-    `  <link rel="alternate" hreflang="et" href="https://vooglin.ee/et/${pricingSuffix}">\n` +
-    `  <link rel="alternate" hreflang="ru" href="https://vooglin.ee/ru/${pricingSuffix}">\n` +
-    `  <link rel="alternate" hreflang="x-default" href="https://vooglin.ee/${pricingSuffix}">`
+    `  <link rel="alternate" hreflang="en" href="https://vooglin.ee/${suffix}">\n` +
+    `  <link rel="alternate" hreflang="et" href="https://vooglin.ee/et/${suffix}">\n` +
+    `  <link rel="alternate" hreflang="ru" href="https://vooglin.ee/ru/${suffix}">\n` +
+    `  <link rel="alternate" hreflang="x-default" href="https://vooglin.ee/${suffix}">`
   );
-  html = replaceAll(html, [...dictionary.home.filter(() => page === "home"), ...dictionary.pricing.filter(() => page === "pricing"), ...dictionary.common]);
+  html = replaceAll(html, [...dictionary[page], ...dictionary.common]);
   html = html.replace(
     /data-menu-label="[^"]+" data-close-label="[^"]+"/,
     `data-menu-label="${locale === "et" ? "Menüü" : "Меню"}" data-close-label="${locale === "et" ? "Sulge" : "Закрыть"}"`

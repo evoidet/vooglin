@@ -8,10 +8,13 @@ const distDirectory = path.join(projectRoot, "dist");
 const serverDirectory = path.join(distDirectory, "server");
 const publicDirectory = path.join(projectRoot, "public");
 const publicPricingDirectory = path.join(publicDirectory, "pricing");
+const publicPrivacyDirectory = path.join(publicDirectory, "privacy");
 const publicEtDirectory = path.join(publicDirectory, "et");
 const publicRuDirectory = path.join(publicDirectory, "ru");
 const publicEtPricingDirectory = path.join(publicEtDirectory, "pricing");
 const publicRuPricingDirectory = path.join(publicRuDirectory, "pricing");
+const publicEtPrivacyDirectory = path.join(publicEtDirectory, "privacy");
+const publicRuPrivacyDirectory = path.join(publicRuDirectory, "privacy");
 const partnerSourceDirectory = path.join(projectRoot, "images", "partners");
 const publicPartnerDirectory = path.join(publicDirectory, "images", "partners");
 
@@ -44,9 +47,10 @@ async function readPartnerAssets() {
     })));
 }
 
-const [html, pricingHtml, css, javascript, siteConfig, socialImage, favicon, cosmicBackground] = await Promise.all([
+const [html, pricingHtml, privacyHtml, css, javascript, siteConfig, socialImage, favicon, cosmicBackground] = await Promise.all([
   readFile(path.join(projectRoot, "index.html"), "utf8"),
   readFile(path.join(projectRoot, "pricing", "index.html"), "utf8"),
+  readFile(path.join(projectRoot, "privacy", "index.html"), "utf8"),
   readFile(path.join(projectRoot, "styles.css"), "utf8"),
   readFile(path.join(projectRoot, "script.js"), "utf8"),
   readFile(path.join(projectRoot, "site-config.js"), "utf8"),
@@ -60,6 +64,8 @@ const etHtml = localizePage(html, "et", "home");
 const ruHtml = localizePage(html, "ru", "home");
 const etPricingHtml = localizePage(pricingHtml, "et", "pricing");
 const ruPricingHtml = localizePage(pricingHtml, "ru", "pricing");
+const etPrivacyHtml = localizePage(privacyHtml, "et", "privacy");
+const ruPrivacyHtml = localizePage(privacyHtml, "ru", "privacy");
 
 const workerSource = `
 const assets = new Map([
@@ -67,14 +73,20 @@ const assets = new Map([
   ["/index.html", { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" }],
   ["/pricing/", { body: ${JSON.stringify(pricingHtml)}, type: "text/html; charset=utf-8" }],
   ["/pricing/index.html", { body: ${JSON.stringify(pricingHtml)}, type: "text/html; charset=utf-8" }],
+  ["/privacy/", { body: ${JSON.stringify(privacyHtml)}, type: "text/html; charset=utf-8" }],
+  ["/privacy/index.html", { body: ${JSON.stringify(privacyHtml)}, type: "text/html; charset=utf-8" }],
   ["/et/", { body: ${JSON.stringify(etHtml)}, type: "text/html; charset=utf-8" }],
   ["/et/index.html", { body: ${JSON.stringify(etHtml)}, type: "text/html; charset=utf-8" }],
   ["/et/pricing/", { body: ${JSON.stringify(etPricingHtml)}, type: "text/html; charset=utf-8" }],
   ["/et/pricing/index.html", { body: ${JSON.stringify(etPricingHtml)}, type: "text/html; charset=utf-8" }],
+  ["/et/privacy/", { body: ${JSON.stringify(etPrivacyHtml)}, type: "text/html; charset=utf-8" }],
+  ["/et/privacy/index.html", { body: ${JSON.stringify(etPrivacyHtml)}, type: "text/html; charset=utf-8" }],
   ["/ru/", { body: ${JSON.stringify(ruHtml)}, type: "text/html; charset=utf-8" }],
   ["/ru/index.html", { body: ${JSON.stringify(ruHtml)}, type: "text/html; charset=utf-8" }],
   ["/ru/pricing/", { body: ${JSON.stringify(ruPricingHtml)}, type: "text/html; charset=utf-8" }],
   ["/ru/pricing/index.html", { body: ${JSON.stringify(ruPricingHtml)}, type: "text/html; charset=utf-8" }],
+  ["/ru/privacy/", { body: ${JSON.stringify(ruPrivacyHtml)}, type: "text/html; charset=utf-8" }],
+  ["/ru/privacy/index.html", { body: ${JSON.stringify(ruPrivacyHtml)}, type: "text/html; charset=utf-8" }],
   ["/styles.css", { body: ${JSON.stringify(css)}, type: "text/css; charset=utf-8" }],
   ["/script.js", { body: ${JSON.stringify(javascript)}, type: "text/javascript; charset=utf-8" }],
   ["/site-config.js", { body: ${JSON.stringify(siteConfig)}, type: "text/javascript; charset=utf-8" }],
@@ -117,10 +129,13 @@ export default {
 
     const trailingSlashRoutes = new Map([
       ["/pricing", "/pricing/"],
+      ["/privacy", "/privacy/"],
       ["/et", "/et/"],
       ["/et/pricing", "/et/pricing/"],
+      ["/et/privacy", "/et/privacy/"],
       ["/ru", "/ru/"],
       ["/ru/pricing", "/ru/pricing/"],
+      ["/ru/privacy", "/ru/privacy/"],
     ]);
     const redirectPath = trailingSlashRoutes.get(url.pathname);
     if (redirectPath) {
@@ -175,8 +190,11 @@ await Promise.all([
 await Promise.all([
   mkdir(serverDirectory, { recursive: true }),
   mkdir(publicPricingDirectory, { recursive: true }),
+  mkdir(publicPrivacyDirectory, { recursive: true }),
   mkdir(publicEtPricingDirectory, { recursive: true }),
   mkdir(publicRuPricingDirectory, { recursive: true }),
+  mkdir(publicEtPrivacyDirectory, { recursive: true }),
+  mkdir(publicRuPrivacyDirectory, { recursive: true }),
   mkdir(publicPartnerDirectory, { recursive: true }),
 ]);
 
@@ -184,10 +202,13 @@ await Promise.all([
   writeFile(path.join(serverDirectory, "index.js"), workerSource),
   writeFile(path.join(publicDirectory, "index.html"), html),
   writeFile(path.join(publicPricingDirectory, "index.html"), pricingHtml),
+  writeFile(path.join(publicPrivacyDirectory, "index.html"), privacyHtml),
   writeFile(path.join(publicEtDirectory, "index.html"), etHtml),
   writeFile(path.join(publicEtPricingDirectory, "index.html"), etPricingHtml),
+  writeFile(path.join(publicEtPrivacyDirectory, "index.html"), etPrivacyHtml),
   writeFile(path.join(publicRuDirectory, "index.html"), ruHtml),
   writeFile(path.join(publicRuPricingDirectory, "index.html"), ruPricingHtml),
+  writeFile(path.join(publicRuPrivacyDirectory, "index.html"), ruPrivacyHtml),
   writeFile(path.join(publicDirectory, "styles.css"), css),
   writeFile(path.join(publicDirectory, "script.js"), javascript),
   writeFile(path.join(publicDirectory, "site-config.js"), siteConfig),
