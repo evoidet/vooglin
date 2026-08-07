@@ -11,13 +11,13 @@
   <meta property="og:title" content="Automate the work that slows you down.">
   <meta property="og:description" content="Practical automation and digital workflows for small organisations and project teams.">
   <meta property="og:url" content="https://vooglin.ee/">
-  <meta property="og:image" content="https://vooglin.ee/og-brand.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
+  <meta property="og:image" content="https://vooglin.ee/og-savings.png">
+  <meta property="og:image:width" content="1730">
+  <meta property="og:image:height" content="909">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Automate the work that slows you down.">
   <meta name="twitter:description" content="Practical automation and digital workflows for small organisations and project teams.">
-  <meta name="twitter:image" content="https://vooglin.ee/og-brand.png">
+  <meta name="twitter:image" content="https://vooglin.ee/og-savings.png">
   <title>Vooglin — Practical automation for everyday work</title>
   <link rel="canonical" href="https://vooglin.ee/">
   <link rel="alternate" hreflang="en" href="https://vooglin.ee/">
@@ -30,8 +30,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260730-readability">
-  <script src="/script.js?v=20260730-readability" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20260807-savings-final">
+  <script src="/site-config.js?v=20260807-savings-final" defer></script>
+  <script src="/script.js?v=20260807-savings-final" defer></script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -82,7 +83,7 @@
       <a href="/pricing/">Pricing</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
-      <div class="mobile-language-switcher language-switcher" aria-label="Language">
+      <div class="mobile-language-switcher language-switcher" role="group" aria-label="Language">
         <a href="/" lang="en" hreflang="en" aria-current="page">EN</a>
         <a href="/et/" lang="et" hreflang="et">ET</a>
         <a href="/ru/" lang="ru" hreflang="ru">RU</a>
@@ -112,7 +113,7 @@
           </div>
         </div>
 
-        <div class="workflow-panel" aria-label="An example Vooglin workflow">
+        <div class="workflow-panel" role="group" aria-label="An example Vooglin workflow">
           <div class="panel-header">
             <p>A typical workflow</p>
             <span><i></i> Connected</span>
@@ -163,18 +164,18 @@
         <h2 id="positioning-title">Built around your process.<br>Not around a platform.</h2>
         <p>We find the repeated steps, connect the tools you already use, and build only what the work needs.</p>
       </div>
-      <div class="principles" aria-label="How Vooglin works">
-        <div>
+      <div class="principles" role="list" aria-label="How Vooglin works">
+        <div role="listitem">
           <span>01</span>
           <h3>Practical by design</h3>
           <p>Every part of the system has a clear job.</p>
         </div>
-        <div>
+        <div role="listitem">
           <span>02</span>
           <h3>Easy to understand</h3>
           <p>Your team can see how it works and use it with confidence.</p>
         </div>
-        <div>
+        <div role="listitem">
           <span>03</span>
           <h3>Ready to improve</h3>
           <p>Start with the useful core, then grow it when the work changes.</p>
@@ -237,6 +238,96 @@
       </div>
     </section>
 
+    <section class="savings" id="savings" aria-labelledby="savings-title">
+      <div class="savings-intro">
+        <p class="section-label">Time savings calculator</p>
+        <div class="savings-intro-copy">
+          <h2 id="savings-title">How much time could automation save your team?</h2>
+          <p>Adjust the sliders to estimate the time your team could save by automating recurring manual work.</p>
+        </div>
+      </div>
+
+      <div class="calculator-shell" data-savings-calculator>
+        <div class="calculator-controls">
+          <div class="calculator-field">
+            <div class="calculator-field-heading">
+              <label for="weekly-manual-hours">How many hours per week does each person spend on repetitive administrative work?</label>
+              <output for="weekly-manual-hours" data-range-output><span data-range-number>8</span></output>
+            </div>
+            <input id="weekly-manual-hours" name="weeklyManualHours" type="range" min="1" max="40" value="8" step="1" data-calculator-input>
+            <div class="range-scale" aria-hidden="true"><span>1</span><span>40</span></div>
+          </div>
+
+          <div class="calculator-field">
+            <div class="calculator-field-heading">
+              <label for="people-involved">How many people regularly do this work?</label>
+              <output for="people-involved" data-range-output><span data-range-number>3</span></output>
+            </div>
+            <input id="people-involved" name="people" type="range" min="1" max="20" value="3" step="1" data-calculator-input>
+            <div class="range-scale" aria-hidden="true"><span>1</span><span>20</span></div>
+          </div>
+
+          <div class="calculator-field">
+            <div class="calculator-field-heading">
+              <label for="automation-potential">How much of this work could potentially be automated?</label>
+              <output for="automation-potential" data-range-output><span data-range-number>50</span><span aria-hidden="true">%</span></output>
+            </div>
+            <input id="automation-potential" name="automationPercentage" type="range" min="10" max="90" value="50" step="5" data-calculator-input>
+            <div class="range-scale" aria-hidden="true"><span>10%</span><span>90%</span></div>
+          </div>
+        </div>
+
+        <div class="calculator-results">
+          <p class="calculator-result-label">Estimated time saved</p>
+          <p class="calculator-result-main"><strong>≈ <span data-result="yearly">624</span></strong><span>Hours saved per year</span></p>
+          <p class="calculator-result-days"><strong>≈ <span data-result="days">78</span></strong><span>Working days saved per year</span></p>
+
+          <div class="calculator-result-grid">
+            <div>
+              <span>Hours saved per week</span>
+              <strong data-result="weekly">12</strong>
+            </div>
+            <div>
+              <span>Hours saved per month</span>
+              <strong data-result="monthly">52</strong>
+            </div>
+            <div>
+              <span>Hours saved per year</span>
+              <strong data-result="yearlySecondary">624</strong>
+            </div>
+          </div>
+
+          <p class="calculator-disclaimer">Based on an 8-hour working day. Estimated potential savings. Actual results depend on the workflow, tools, and organisation.</p>
+          <p class="visually-hidden" data-calculator-live data-template="Estimated time saved. Hours per year: {hours}. Working days per year: {days}." aria-live="polite" aria-atomic="true"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="statistics" id="results" aria-labelledby="statistics-title" data-statistics-section hidden>
+      <div class="statistics-heading">
+        <p class="section-label">Vooglin in numbers</p>
+        <h2 id="statistics-title">Practical work. Measurable results.</h2>
+      </div>
+      <div class="statistics-grid">
+        <article data-stat-card="organisations" hidden>
+          <strong data-stat-value>0</strong>
+          <p>Organisations worked with</p>
+        </article>
+        <article data-stat-card="automations" hidden>
+          <strong data-stat-value>0</strong>
+          <p>Automations delivered</p>
+        </article>
+        <article data-stat-card="workflows" hidden>
+          <strong data-stat-value>0</strong>
+          <p>Workflows improved</p>
+        </article>
+        <article data-stat-card="estimatedHoursSaved" hidden>
+          <strong data-stat-value>0</strong>
+          <p>Estimated hours saved</p>
+        </article>
+      </div>
+    </section>
+
     <section class="example" aria-labelledby="example-title">
       <div class="example-copy">
         <p class="eyebrow eyebrow-dark"><span></span> One process, kept in sync</p>
@@ -249,7 +340,7 @@
         </ul>
       </div>
 
-      <div class="system-map" aria-label="A connected automation example">
+      <div class="system-map" role="group" aria-label="A connected automation example">
         <div class="system-map-header">
           <p>Registration workflow</p>
           <span>4 connected steps</span>
@@ -334,6 +425,17 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <section class="collaborations" id="collaborations" aria-labelledby="collaborations-title" data-collaborations-section hidden>
+      <div class="collaborations-heading">
+        <p class="section-label">Collaborations</p>
+        <div>
+          <h2 id="collaborations-title">Organisations we have worked with.</h2>
+          <p>Selected organisations and teams Vooglin has supported or collaborated with.</p>
+        </div>
+      </div>
+      <div class="collaboration-grid" data-collaboration-grid></div>
     </section>
 
     <section class="contact" id="contact" aria-labelledby="contact-title">

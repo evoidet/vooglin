@@ -55,6 +55,227 @@ if (header && menuToggle) {
   });
 }
 
+const siteConfig = window.vooglinSiteConfig || { stats: {}, collaborations: [] };
+const pageLocale = document.documentElement.lang || "en";
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function formatEstimate(value, forceWholeNumber = false) {
+  const useDecimal = !forceWholeNumber && value < 10 && !Number.isInteger(value);
+  return new Intl.NumberFormat(pageLocale, {
+    maximumFractionDigits: useDecimal ? 1 : 0,
+  }).format(value);
+}
+
+function initialiseSavingsCalculator() {
+  const calculator = document.querySelector("[data-savings-calculator]");
+  if (!calculator) return;
+
+  const inputs = Array.from(calculator.querySelectorAll("[data-calculator-input]"));
+  const resultsPanel = calculator.querySelector(".calculator-results");
+  const liveStatus = calculator.querySelector("[data-calculator-live]");
+  const resultElements = new Map(
+    Array.from(calculator.querySelectorAll("[data-result]"))
+      .map((element) => [element.dataset.result, element])
+  );
+  let latestSavings = null;
+
+  function updateInput(input) {
+    const value = Number(input.value);
+    const minimum = Number(input.min);
+    const maximum = Number(input.max);
+    const progress = ((value - minimum) / (maximum - minimum)) * 100;
+    const output = input.closest(".calculator-field")?.querySelector("[data-range-output]");
+
+    input.style.setProperty("--range-progress", `${progress}%`);
+    if (output) {
+      const number = output.querySelector("[data-range-number]");
+      if (number) number.textContent = formatEstimate(value, true);
+    }
+  }
+
+  function updateResult(name, value, forceWholeNumber = false) {
+    const element = resultElements.get(name);
+    if (element) element.textContent = formatEstimate(value, forceWholeNumber);
+  }
+
+  function calculateSavings(animate = true) {
+    const values = Object.fromEntries(
+      inputs.map((input) => [input.name, Number(input.value)])
+    );
+    const weeklySaved = values.weeklyManualHours * values.people * (values.automationPercentage / 100);
+    const monthlySaved = weeklySaved * 4.33;
+    const yearlySaved = weeklySaved * 52;
+    const workingDaysSaved = yearlySaved / 8;
+    latestSavings = { yearlySaved, workingDaysSaved };
+
+    updateResult("weekly", weeklySaved);
+    updateResult("monthly", monthlySaved);
+    updateResult("yearly", yearlySaved, true);
+    updateResult("yearlySecondary", yearlySaved, true);
+    updateResult("days", workingDaysSaved);
+
+    if (animate && !prefersReducedMotion.matches && typeof resultsPanel?.animate === "function") {
+      resultsPanel.animate(
+        [
+          { opacity: 0.88, transform: "translateY(2px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        { duration: 180, easing: "ease-out" }
+      );
+    }
+  }
+
+  function announceSavings() {
+    if (!liveStatus || !latestSavings) return;
+    const template = liveStatus.dataset.template || "";
+    liveStatus.textContent = template
+      .replace("{hours}", formatEstimate(latestSavings.yearlySaved, true))
+      .replace("{days}", formatEstimate(latestSavings.workingDaysSaved));
+  }
+
+  inputs.forEach((input) => {
+    updateInput(input);
+    input.addEventListener("input", () => {
+      updateInput(input);
+      calculateSavings();
+    });
+    input.addEventListener("change", announceSavings);
+  });
+
+  calculateSavings(false);
+}
+
+function animateCounter(element, target) {
+  if (prefersReducedMotion.matches || typeof requestAnimationFrame !== "function") {
+    element.textContent = new Intl.NumberFormat(pageLocale).format(target);
+    return;
+  }
+
+  const duration = 720;
+  let startTime;
+
+  function draw(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const progress = Math.min((timestamp - startTime) / duration, 1);
+    const easedProgress = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(target * easedProgress);
+    element.textContent = new Intl.NumberFormat(pageLocale).format(current);
+
+    if (progress < 1) requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+function initialiseStatistics() {
+  const section = document.querySelector("[data-statistics-section]");
+  if (!section) return;
+
+  const stats = siteConfig.stats || {};
+  const visibleCards = Array.from(section.querySelectorAll("[data-stat-card]"))
+    .map((card) => ({
+      card,
+      value: Number(stats[card.dataset.statCard]),
+      number: card.querySelector("[data-stat-value]"),
+    }))
+    .filter(({ value, number }) => Number.isFinite(value) && value > 0 && number);
+
+  if (!visibleCards.length) return;
+
+  visibleCards.forEach(({ card }) => {
+    card.hidden = false;
+  });
+  section.hidden = false;
+
+  let hasAnimated = false;
+  const showCounters = () => {
+    if (hasAnimated) return;
+    hasAnimated = true;
+    visibleCards.forEach(({ number, value }) => animateCounter(number, Math.round(value)));
+  };
+
+  if (typeof IntersectionObserver !== "function") {
+    showCounters();
+    return;
+  }
+
+  const observer = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    observer.disconnect();
+    showCounters();
+  }, { threshold: 0.2 });
+
+  observer.observe(section);
+}
+
+function localisedConfigText(value) {
+  if (typeof value === "string") return value;
+  if (!value || typeof value !== "object") return "";
+  return value[pageLocale] || value.en || value.et || value.ru || "";
+}
+
+function safeWebUrl(value) {
+  if (typeof value !== "string" || !value.trim()) return "";
+
+  try {
+    const url = new URL(value, document.baseURI);
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function initialiseCollaborations() {
+  const section = document.querySelector("[data-collaborations-section]");
+  const grid = section?.querySelector("[data-collaboration-grid]");
+  const collaborations = Array.isArray(siteConfig.collaborations)
+    ? siteConfig.collaborations.filter((item) => localisedConfigText(item?.name))
+    : [];
+
+  if (!section || !grid || !collaborations.length) return;
+
+  collaborations.forEach((item) => {
+    const name = localisedConfigText(item.name);
+    const description = localisedConfigText(item.description);
+    const website = safeWebUrl(item.url);
+    const card = document.createElement(website ? "a" : "div");
+    const inner = document.createElement("div");
+    const nameElement = document.createElement("strong");
+
+    card.className = "collaboration-card";
+    inner.className = "collaboration-card-inner";
+    nameElement.textContent = name;
+
+    if (website) card.href = website;
+
+    if (typeof item.logo === "string" && item.logo.trim()) {
+      const image = document.createElement("img");
+      image.src = item.logo;
+      image.alt = "";
+      image.loading = "lazy";
+      image.decoding = "async";
+      inner.append(image);
+    }
+
+    inner.append(nameElement);
+
+    if (description) {
+      const descriptionElement = document.createElement("small");
+      descriptionElement.textContent = description;
+      inner.append(descriptionElement);
+    }
+
+    card.append(inner);
+    grid.append(card);
+  });
+
+  section.hidden = false;
+}
+
+initialiseSavingsCalculator();
+initialiseStatistics();
+initialiseCollaborations();
+
 function createWordmarkNetwork(canvas) {
   const context = canvas.getContext("2d");
   if (!context) return;

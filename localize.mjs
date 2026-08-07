@@ -65,6 +65,25 @@ const translations = {
       ["Simple websites<br>& connected forms", "Lihtsad veebilehed<br>ja ühendatud vormid"],
       ["Create focused pages and forms that feed directly into the workflow behind them.", "Loome selged lehed ja vormid, mis suunavad andmed otse nende taga olevasse töövoogu."],
       ["Responsive pages · Useful forms · Reliable publishing", "Kohanduvad lehed · Kasulikud vormid · Usaldusväärne avaldamine"],
+      ["Time savings calculator", "Ajavõidu kalkulaator"],
+      ["How much time could automation save your team?", "Kui palju aega võiks sinu tiim automatiseerimisega säästa?"],
+      ["Adjust the sliders to estimate the time your team could save by automating recurring manual work.", "Kohanda liugureid, et hinnata, kui palju aega võiks sinu tiim korduvate käsitoimingute automatiseerimisega säästa."],
+      ["How many hours per week does each person spend on repetitive administrative work?", "Mitu tundi kulutab iga inimene nädalas korduvatele haldusülesannetele?"],
+      ["How many people regularly do this work?", "Mitu inimest teeb seda tööd regulaarselt?"],
+      ["How much of this work could potentially be automated?", "Kui suure osa sellest tööst saaks automatiseerida?"],
+      ["Estimated time saved", "Hinnanguline ajavõit"],
+      ["Estimated time saved. Hours per year: {hours}. Working days per year: {days}.", "Hinnanguline ajavõit. Tunde aastas: {hours}. Tööpäevi aastas: {days}."],
+      ["Hours saved per week", "Nädalas säästetud töötunnid"],
+      ["Hours saved per month", "Kuus säästetud töötunnid"],
+      ["Hours saved per year", "Aastas säästetud töötunnid"],
+      ["Working days saved per year", "Aastas säästetud tööpäevad"],
+      ["Based on an 8-hour working day. Estimated potential savings. Actual results depend on the workflow, tools, and organisation.", "Arvestuse aluseks on 8-tunnine tööpäev. Tegemist on hinnangulise võimaliku ajavõiduga. Tegelik tulemus sõltub töövoost, kasutatavatest tööriistadest ja organisatsioonist."],
+      ["Vooglin in numbers", "Vooglin arvudes"],
+      ["Practical work. Measurable results.", "Praktiline töö. Mõõdetavad tulemused."],
+      ["Organisations worked with", "Organisatsioonid, kellega oleme töötanud"],
+      ["Automations delivered", "Valminud automatiseerimislahendused"],
+      ["Workflows improved", "Täiustatud töövood"],
+      ["Estimated hours saved", "Hinnanguliselt säästetud töötunnid"],
       ["One process, kept in sync", "Üks protsess, alati sünkroonis"],
       ["Enter the information once.<br>Use it everywhere.", "Sisesta info üks kord.<br>Kasuta seda kõikjal."],
       ["One form can update a table, notify the right person, create a document and keep a dashboard current — without copying the same information four times.", "Üks vorm võib uuendada tabelit, teavitada õiget inimest, luua dokumendi ja hoida töölaua ajakohasena — ilma sama infot neli korda kopeerimata."],
@@ -104,6 +123,9 @@ const translations = {
       ["Portrait / 4:5", "Portree / 4:5"],
       ["Your photo", "Sinu foto"],
       ["Add a vertical portrait here", "Lisa siia vertikaalne portree"],
+      ["Collaborations", "Koostöö"],
+      ["Organisations we have worked with.", "Organisatsioonid, kellega oleme koostööd teinud."],
+      ["Selected organisations and teams Vooglin has supported or collaborated with.", "Valik organisatsioone ja tiime, keda Vooglin on aidanud või kellega koostööd teinud."],
       ["A process taking too much time?", "Kas mõni protsess võtab liiga palju aega?"],
       ["Let’s make it simpler.", "Teeme selle lihtsamaks."],
       ["Send us a short description of how it works today. We’ll help identify what can be automated and the sensible first step.", "Saada meile lühike kirjeldus sellest, kuidas töö täna käib. Aitame leida, mida saab automatiseerida ja milline on mõistlik esimene samm."],
@@ -233,6 +255,25 @@ const translations = {
       ["Simple websites<br>& connected forms", "Простые сайты<br>и связанные формы"],
       ["Create focused pages and forms that feed directly into the workflow behind them.", "Создаём понятные страницы и формы, которые сразу передают данные в связанный процесс."],
       ["Responsive pages · Useful forms · Reliable publishing", "Адаптивные страницы · Полезные формы · Надёжная публикация"],
+      ["Time savings calculator", "Калькулятор экономии времени"],
+      ["How much time could automation save your team?", "Сколько времени ваша команда могла бы сэкономить благодаря автоматизации?"],
+      ["Adjust the sliders to estimate the time your team could save by automating recurring manual work.", "Настройте ползунки, чтобы оценить, сколько времени ваша команда могла бы сэкономить, автоматизировав повторяющиеся ручные операции."],
+      ["How many hours per week does each person spend on repetitive administrative work?", "Сколько часов в неделю каждый человек тратит на повторяющиеся административные задачи?"],
+      ["How many people regularly do this work?", "Сколько человек регулярно выполняют эту работу?"],
+      ["How much of this work could potentially be automated?", "Какую часть этой работы можно автоматизировать?"],
+      ["Estimated time saved", "Ориентировочная экономия времени"],
+      ["Estimated time saved. Hours per year: {hours}. Working days per year: {days}.", "Ориентировочная экономия времени. Часов в год: {hours}. Рабочих дней в год: {days}."],
+      ["Hours saved per week", "Сэкономлено часов в неделю"],
+      ["Hours saved per month", "Сэкономлено часов в месяц"],
+      ["Hours saved per year", "Сэкономлено часов в год"],
+      ["Working days saved per year", "Сэкономлено рабочих дней в год"],
+      ["Based on an 8-hour working day. Estimated potential savings. Actual results depend on the workflow, tools, and organisation.", "Расчёт основан на 8-часовом рабочем дне. Это ориентировочная оценка возможной экономии времени. Фактический результат зависит от рабочего процесса, инструментов и особенностей организации."],
+      ["Vooglin in numbers", "Vooglin в цифрах"],
+      ["Practical work. Measurable results.", "Практическая работа. Измеримые результаты."],
+      ["Organisations worked with", "Организации, с которыми мы работали"],
+      ["Automations delivered", "Реализованные решения по автоматизации"],
+      ["Workflows improved", "Улучшенные рабочие процессы"],
+      ["Estimated hours saved", "Расчётная экономия времени в часах"],
       ["One process, kept in sync", "Один процесс, всегда синхронизирован"],
       ["Enter the information once.<br>Use it everywhere.", "Введите данные один раз.<br>Используйте их везде."],
       ["One form can update a table, notify the right person, create a document and keep a dashboard current — without copying the same information four times.", "Одна форма может обновить таблицу, уведомить нужного человека, создать документ и поддерживать панель в актуальном состоянии — без четырёхкратного копирования данных."],
@@ -272,6 +313,9 @@ const translations = {
       ["Portrait / 4:5", "Портрет / 4:5"],
       ["Your photo", "Ваше фото"],
       ["Add a vertical portrait here", "Добавьте сюда вертикальный портрет"],
+      ["Collaborations", "Сотрудничество"],
+      ["Organisations we have worked with.", "Организации, с которыми мы работали."],
+      ["Selected organisations and teams Vooglin has supported or collaborated with.", "Некоторые организации и команды, которым Vooglin помогал или с которыми сотрудничал."],
       ["A process taking too much time?", "Какой-то процесс отнимает слишком много времени?"],
       ["Let’s make it simpler.", "Давайте сделаем его проще."],
       ["Send us a short description of how it works today. We’ll help identify what can be automated and the sensible first step.", "Коротко опишите, как всё работает сейчас. Мы поможем определить, что можно автоматизировать и с чего разумно начать."],
@@ -365,7 +409,7 @@ export function localizePage(source, locale, page) {
   html = html.replace('<html lang="en">', `<html lang="${locale}">`);
   html = html.replace(/https:\/\/vooglin\.ee\/pricing\//g, `https://vooglin.ee${basePath}pricing/`);
   if (page === "home") {
-    html = html.replace(/https:\/\/vooglin\.ee\/(?!og-brand\.png|favicon\.png)/g, `https://vooglin.ee${basePath}`);
+    html = html.replace(/https:\/\/vooglin\.ee\/(?!og-brand\.png|og-savings\.png|favicon\.png)/g, `https://vooglin.ee${basePath}`);
     html = html.replace(/href="\/pricing\/"/g, `href="${basePath}pricing/"`);
   } else {
     html = html.replace(/href="\/#([a-z-]+)"/g, `href="${basePath}#$1"`);
@@ -377,8 +421,8 @@ export function localizePage(source, locale, page) {
     `<nav class="language-switcher" aria-label="Language">\n          ${languageSwitcher(locale, page)}\n        </nav>`
   );
   html = html.replace(
-    /<div class="mobile-language-switcher language-switcher" aria-label="Language">[\s\S]*?<\/div>/,
-    `<div class="mobile-language-switcher language-switcher" aria-label="Language">\n        ${languageSwitcher(locale, page)}\n      </div>`
+    /<div class="mobile-language-switcher language-switcher"[^>]*>[\s\S]*?<\/div>/,
+    `<div class="mobile-language-switcher language-switcher" role="group" aria-label="Language">\n        ${languageSwitcher(locale, page)}\n      </div>`
   );
 
   html = html.replace(/<link rel="canonical" href="[^"]+">/, `<link rel="canonical" href="https://vooglin.ee${pagePath}">`);
