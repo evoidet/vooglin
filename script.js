@@ -49,7 +49,7 @@ if (header && menuToggle) {
   mobileLinks.forEach((link) => link.addEventListener("click", () => closeMenu(false)));
 
   window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMenu(true);
+    if (event.key === "Escape" && header.classList.contains("is-open")) closeMenu(true);
   });
 
   window.addEventListener("resize", () => {
@@ -57,7 +57,7 @@ if (header && menuToggle) {
   });
 }
 
-const siteConfig = window.vooglinSiteConfig || { stats: {}, collaborations: [] };
+const siteConfig = window.vooglinSiteConfig || { stats: [], clients: [], booking: {} };
 const pageLocale = document.documentElement.lang || "en";
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -147,9 +147,14 @@ function initialiseSavingsCalculator() {
   calculateSavings(false);
 }
 
-function animateCounter(element, target) {
+function animateCounter(element, target, suffix = "") {
+  const formatter = new Intl.NumberFormat(pageLocale);
+  const writeValue = (value) => {
+    element.textContent = `${formatter.format(value)}${suffix}`;
+  };
+
   if (prefersReducedMotion.matches || typeof requestAnimationFrame !== "function") {
-    element.textContent = new Intl.NumberFormat(pageLocale).format(target);
+    writeValue(target);
     return;
   }
 
@@ -161,7 +166,7 @@ function animateCounter(element, target) {
     const progress = Math.min((timestamp - startTime) / duration, 1);
     const easedProgress = 1 - Math.pow(1 - progress, 3);
     const current = Math.round(target * easedProgress);
-    element.textContent = new Intl.NumberFormat(pageLocale).format(current);
+    writeValue(current);
 
     if (progress < 1) requestAnimationFrame(draw);
   }
@@ -171,29 +176,50 @@ function animateCounter(element, target) {
 
 function initialiseStatistics() {
   const section = document.querySelector("[data-statistics-section]");
-  if (!section) return;
+  const grid = section?.querySelector("[data-statistics-grid]");
+  if (!section || !grid) return;
 
-  const stats = siteConfig.stats || {};
-  const visibleCards = Array.from(section.querySelectorAll("[data-stat-card]"))
-    .map((card) => ({
-      card,
-      value: Number(stats[card.dataset.statCard]),
-      number: card.querySelector("[data-stat-value]"),
-    }))
-    .filter(({ value, number }) => Number.isFinite(value) && value > 0 && number);
+  const verifiedClientCount = configuredClients().length;
+  const stats = Array.isArray(siteConfig.stats) ? siteConfig.stats : [];
+  const visibleCards = stats
+    .map((item) => {
+      const configuredValue = item?.id === "clientOrganisations"
+        ? verifiedClientCount
+        : Number(item?.value);
+      const value = Math.round(configuredValue);
+      const label = localisedConfigText(item?.label);
+      const suffix = typeof item?.suffix === "string" ? item.suffix : "";
 
-  if (!visibleCards.length) return;
+      if (!Number.isFinite(value) || value <= 0 || !label) return null;
 
-  visibleCards.forEach(({ card }) => {
-    card.hidden = false;
-  });
+      const card = document.createElement("article");
+      const number = document.createElement("strong");
+      const labelElement = document.createElement("p");
+
+      card.dataset.statCard = item.id || "stat";
+      card.setAttribute("data-reveal", "");
+      number.dataset.statValue = "";
+      number.textContent = `0${suffix}`;
+      labelElement.textContent = label;
+      card.append(number, labelElement);
+
+      return { card, number, value, suffix };
+    })
+    .filter(Boolean);
+
+  if (!visibleCards.length) {
+    section.hidden = true;
+    return;
+  }
+
+  grid.replaceChildren(...visibleCards.map(({ card }) => card));
   section.hidden = false;
 
   let hasAnimated = false;
   const showCounters = () => {
     if (hasAnimated) return;
     hasAnimated = true;
-    visibleCards.forEach(({ number, value }) => animateCounter(number, Math.round(value)));
+    visibleCards.forEach(({ number, value, suffix }) => animateCounter(number, value, suffix));
   };
 
   if (typeof IntersectionObserver !== "function") {
@@ -227,49 +253,301 @@ function safeWebUrl(value) {
   }
 }
 
-function initialiseCollaborations() {
-  const section = document.querySelector("[data-collaborations-section]");
-  const grid = section?.querySelector("[data-collaboration-grid]");
-  const collaborations = Array.isArray(siteConfig.collaborations)
-    ? siteConfig.collaborations.filter((item) => localisedConfigText(item?.name))
-    : [];
+function configuredClients() {
+  const clients = Array.isArray(siteConfig.clients)
+    ? siteConfig.clients
+    : Array.isArray(siteConfig.collaborations) ? siteConfig.collaborations : [];
 
-  if (!section || !grid || !collaborations.length) return;
+  return clients.filter((item) => {
+    const website = safeWebUrl(item?.website || item?.url);
+    const logo = typeof item?.logo === "string" ? item.logo.trim() : "";
+    return item?.verified === true
+      && Boolean(localisedConfigText(item.name))
+      && Boolean(website)
+      && /^\/images\/partners\/[a-z0-9._%+-]+$/i.test(logo);
+  });
+}
 
-  collaborations.forEach((item) => {
-    const name = localisedConfigText(item.name);
-    const description = localisedConfigText(item.description);
-    const website = safeWebUrl(item.url);
-    const card = document.createElement(website ? "a" : "div");
-    const inner = document.createElement("div");
-    const nameElement = document.createElement("strong");
+function configuredPeople() {
+  const people = Array.isArray(siteConfig.people) ? siteConfig.people : [];
+  return people.filter((person) => {
+    const image = typeof person?.image === "string" ? person.image.trim() : "";
+    return person?.approved === true
+      && Boolean(localisedConfigText(person.name))
+      && /^\/images\/people\/[a-z0-9._%+-]+$/i.test(image);
+  });
+}
 
-    card.className = "collaboration-card";
-    inner.className = "collaboration-card-inner";
-    nameElement.textContent = name;
+function createBouncingClientLogo(stage, logo, toggleButton) {
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const saveData = navigator.connection?.saveData === true;
+  const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory < 4;
+  const supportsIntersectionObserver = typeof IntersectionObserver === "function";
+  let bounds = { width: 0, height: 0, logoWidth: 0, logoHeight: 0 };
+  let x = 0;
+  let y = 0;
+  let velocityX = 42;
+  let velocityY = 34;
+  let lastTime = 0;
+  let animationFrame = 0;
+  let isInView = !supportsIntersectionObserver;
+  let isDestroyed = false;
+  let userPaused = false;
+  let hasMeasured = false;
 
-    if (website) card.href = website;
+  const stop = () => {
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+    lastTime = 0;
+  };
 
-    if (typeof item.logo === "string" && item.logo.trim()) {
+  const placeLogo = () => {
+    logo.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`;
+  };
+
+  const useStaticPosition = () => {
+    x = Math.max(0, (bounds.width - bounds.logoWidth) / 2);
+    y = Math.max(0, (bounds.height - bounds.logoHeight) / 2);
+    logo.dataset.clientMotionState = "static";
+    placeLogo();
+  };
+
+  const canAnimate = () => isInView
+    && !document.hidden
+    && !reducedMotion.matches
+    && !saveData
+    && !lowMemory
+    && !userPaused
+    && bounds.logoWidth > 0;
+
+  const animate = (timestamp) => {
+    if (!canAnimate()) {
+      stop();
+      return;
+    }
+
+    if (!lastTime) lastTime = timestamp;
+    const delta = Math.min((timestamp - lastTime) / 1000, 0.05);
+    lastTime = timestamp;
+    x += velocityX * delta;
+    y += velocityY * delta;
+
+    const maximumX = Math.max(0, bounds.width - bounds.logoWidth);
+    const maximumY = Math.max(0, bounds.height - bounds.logoHeight);
+
+    if (x <= 0 || x >= maximumX) {
+      x = Math.min(maximumX, Math.max(0, x));
+      velocityX *= -1;
+    }
+    if (y <= 0 || y >= maximumY) {
+      y = Math.min(maximumY, Math.max(0, y));
+      velocityY *= -1;
+    }
+
+    placeLogo();
+    animationFrame = requestAnimationFrame(animate);
+  };
+
+  const sync = () => {
+    stop();
+    if (canAnimate()) {
+      logo.dataset.clientMotionState = "running";
+      animationFrame = requestAnimationFrame(animate);
+    } else if (reducedMotion.matches || saveData || lowMemory) {
+      useStaticPosition();
+    } else {
+      logo.dataset.clientMotionState = "paused";
+      placeLogo();
+    }
+  };
+
+  const measure = () => {
+    const logoRect = logo.getBoundingClientRect();
+    const previousMaximumX = Math.max(1, bounds.width - bounds.logoWidth);
+    const previousMaximumY = Math.max(1, bounds.height - bounds.logoHeight);
+    const relativeX = x / previousMaximumX;
+    const relativeY = y / previousMaximumY;
+
+    bounds = {
+      width: stage.clientWidth,
+      height: stage.clientHeight,
+      logoWidth: logoRect.width,
+      logoHeight: logoRect.height,
+    };
+
+    const maximumX = Math.max(0, bounds.width - bounds.logoWidth);
+    const maximumY = Math.max(0, bounds.height - bounds.logoHeight);
+    x = hasMeasured ? Math.min(maximumX, Math.max(0, relativeX * maximumX)) : maximumX * 0.14;
+    y = hasMeasured ? Math.min(maximumY, Math.max(0, relativeY * maximumY)) : maximumY * 0.22;
+    const directionX = Math.sign(velocityX) || 1;
+    const directionY = Math.sign(velocityY) || 1;
+    const speedFactor = bounds.width <= 480 ? 0.62 : 1;
+    velocityX = directionX * 42 * speedFactor;
+    velocityY = directionY * 34 * speedFactor;
+    hasMeasured = true;
+    placeLogo();
+    sync();
+  };
+
+  const scheduleMeasure = () => requestAnimationFrame(measure);
+  const resizeObserver = typeof ResizeObserver === "function"
+    ? new ResizeObserver(scheduleMeasure)
+    : null;
+  if (resizeObserver) {
+    resizeObserver.observe(stage);
+    resizeObserver.observe(logo);
+  } else {
+    window.addEventListener("resize", scheduleMeasure, { passive: true });
+  }
+
+  const visibilityObserver = supportsIntersectionObserver
+    ? new IntersectionObserver(([entry]) => {
+        isInView = entry.isIntersecting;
+        sync();
+      }, { rootMargin: "80px" })
+    : null;
+  visibilityObserver?.observe(stage);
+
+  const handleVisibility = sync;
+  const handlePageHide = stop;
+  const updateToggle = () => {
+    if (!toggleButton) return;
+    const motionUnavailable = reducedMotion.matches || saveData || lowMemory;
+    toggleButton.hidden = motionUnavailable;
+    toggleButton.setAttribute("aria-pressed", String(userPaused));
+    toggleButton.textContent = userPaused
+      ? (toggleButton.dataset.resumeLabel || "Resume logo motion")
+      : (toggleButton.dataset.pauseLabel || "Pause logo motion");
+  };
+  const handleMotion = () => {
+    if (reducedMotion.matches) useStaticPosition();
+    updateToggle();
+    sync();
+  };
+  const handleToggle = () => {
+    userPaused = !userPaused;
+    updateToggle();
+    sync();
+  };
+
+  document.addEventListener("visibilitychange", handleVisibility);
+  window.addEventListener("pagehide", handlePageHide);
+  reducedMotion.addEventListener?.("change", handleMotion);
+  toggleButton?.addEventListener("click", handleToggle);
+  updateToggle();
+  requestAnimationFrame(measure);
+
+  return {
+    destroy() {
+      if (isDestroyed) return;
+      isDestroyed = true;
+      stop();
+      resizeObserver?.disconnect();
+      if (!resizeObserver) window.removeEventListener("resize", scheduleMeasure);
+      visibilityObserver?.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("pagehide", handlePageHide);
+      reducedMotion.removeEventListener?.("change", handleMotion);
+      toggleButton?.removeEventListener("click", handleToggle);
+    },
+  };
+}
+
+function initialiseClients() {
+  const section = document.querySelector("[data-clients-section]");
+  const stage = section?.querySelector("[data-client-motion-stage]");
+  const caption = section?.querySelector("[data-client-caption]");
+  const peopleContainer = section?.querySelector("[data-client-people]");
+  const motionToggle = section?.querySelector("[data-client-motion-toggle]");
+  const clients = configuredClients();
+  const people = configuredPeople();
+  if (!section || !stage || !caption || !clients.length) return;
+
+  const featuredClient = clients[0];
+  const movingLogo = document.createElement("div");
+  const movingImage = document.createElement("img");
+
+  movingLogo.className = "client-moving-logo";
+  movingLogo.setAttribute("aria-hidden", "true");
+  movingImage.src = featuredClient.logo;
+  movingImage.alt = "";
+  movingImage.width = 1000;
+  movingImage.height = 405;
+  movingImage.loading = "lazy";
+  movingImage.decoding = "async";
+  movingLogo.append(movingImage);
+
+  const captionEntries = clients.map((client, index) => {
+    const name = localisedConfigText(client.name);
+    const description = localisedConfigText(client.description);
+    const website = safeWebUrl(client.website || client.url);
+    const linkLabel = localisedConfigText(client.linkLabel) || name;
+    const entry = document.createElement("div");
+    const captionCopy = document.createElement("div");
+    const captionLabel = document.createElement("span");
+    const captionName = document.createElement("strong");
+    const captionDescription = document.createElement("small");
+    const websiteLink = document.createElement("a");
+
+    entry.className = "client-caption-entry";
+    captionCopy.className = "client-caption-copy";
+    captionLabel.textContent = localisedConfigText(client.captionLabel)
+      || `${String(index + 1).padStart(2, "0")} / Verified client`;
+    captionName.textContent = name;
+    captionDescription.textContent = description;
+    captionCopy.append(captionLabel, captionName, captionDescription);
+
+    websiteLink.className = "client-website-link";
+    websiteLink.href = website;
+    websiteLink.target = "_blank";
+    websiteLink.rel = "noopener noreferrer";
+    websiteLink.setAttribute("aria-label", linkLabel);
+    websiteLink.textContent = `${new URL(website).hostname.replace(/^www\./, "")} ↗`;
+    entry.append(captionCopy, websiteLink);
+    return entry;
+  });
+
+  stage.append(movingLogo);
+  caption.replaceChildren(...captionEntries);
+  if (peopleContainer && people.length) {
+    const peopleCards = people.map((person) => {
+      const name = localisedConfigText(person.name);
+      const role = localisedConfigText(person.role);
+      const figure = document.createElement("figure");
       const image = document.createElement("img");
-      image.src = item.logo;
-      image.alt = "";
+      const captionElement = document.createElement("figcaption");
+      const nameElement = document.createElement("strong");
+      const roleElement = document.createElement("small");
+
+      figure.className = "client-person";
+      image.src = person.image;
+      image.alt = name;
+      image.width = 640;
+      image.height = 800;
       image.loading = "lazy";
       image.decoding = "async";
-      inner.append(image);
-    }
-
-    inner.append(nameElement);
-
-    if (description) {
-      const descriptionElement = document.createElement("small");
-      descriptionElement.textContent = description;
-      inner.append(descriptionElement);
-    }
-
-    card.append(inner);
-    grid.append(card);
-  });
+      image.addEventListener("error", () => { figure.hidden = true; }, { once: true });
+      nameElement.textContent = name;
+      roleElement.textContent = role;
+      captionElement.append(nameElement);
+      if (role) captionElement.append(roleElement);
+      figure.append(image, captionElement);
+      return figure;
+    });
+    peopleContainer.replaceChildren(...peopleCards);
+    peopleContainer.hidden = false;
+  }
+  const handleLogoError = () => {
+    movingLogo.hidden = true;
+    stage.classList.add("is-logo-missing");
+  };
+  movingImage.addEventListener("error", handleLogoError, { once: true });
+  if (movingImage.complete) {
+    if (movingImage.naturalWidth > 0) createBouncingClientLogo(stage, movingLogo, motionToggle);
+    else handleLogoError();
+  } else {
+    movingImage.addEventListener("load", () => createBouncingClientLogo(stage, movingLogo, motionToggle), { once: true });
+  }
 
   section.hidden = false;
 }
@@ -314,9 +592,317 @@ function initialiseScrollReveal() {
   prefersReducedMotion.addEventListener?.("change", handleMotionChange, { once: true });
 }
 
+function initialiseBooking() {
+  const modal = document.querySelector("[data-booking-modal]");
+  const form = modal?.querySelector("[data-booking-form]");
+  const formView = modal?.querySelector("[data-booking-form-view]");
+  const successView = modal?.querySelector("[data-booking-success]");
+  const status = modal?.querySelector("[data-booking-status]");
+  const submitButton = modal?.querySelector("[data-booking-submit]");
+  const timeSelect = modal?.querySelector("[data-booking-time]");
+  const durationElement = modal?.querySelector("[data-booking-duration]");
+  const emailFallback = modal?.querySelector("[data-booking-email-fallback]");
+  const openButtons = Array.from(document.querySelectorAll("[data-booking-open]"));
+  const closeButtons = Array.from(modal?.querySelectorAll("[data-booking-close]") || []);
+  const booking = siteConfig.booking || {};
+
+  if (!modal || !form || !formView || !successView || !submitButton || !timeSelect || !openButtons.length) return;
+
+  const endpoint = typeof booking.endpoint === "string" && booking.endpoint.startsWith("/")
+    ? booking.endpoint
+    : "/api/booking";
+  const recipient = typeof booking.recipient === "string" && booking.recipient.includes("@")
+    ? booking.recipient
+    : "egor@vooglin.ee";
+  const minimumLeadDays = Number.isFinite(Number(booking.minimumLeadDays))
+    ? Math.max(0, Math.round(Number(booking.minimumLeadDays)))
+    : 1;
+  const maximumDaysAhead = Number.isFinite(Number(booking.maximumDaysAhead))
+    ? Math.max(minimumLeadDays + 1, Math.round(Number(booking.maximumDaysAhead)))
+    : 90;
+  const configuredDuration = Math.round(Number(booking.durationMinutes));
+  const durationMinutes = [15, 30, 45, 60, 90].includes(configuredDuration)
+    ? configuredDuration
+    : 30;
+  const preferredTimes = Array.isArray(booking.preferredTimes)
+    ? booking.preferredTimes.filter((value) => /^([01]\d|2[0-3]):[0-5]\d$/.test(value))
+    : [];
+  const emailCopy = booking.emailCopy || {};
+  let activeOpener = null;
+  let formStartedAt = Date.now();
+  let activeSubmission = 0;
+  let requestController = null;
+
+  function cancelPendingSubmission() {
+    activeSubmission += 1;
+    requestController?.abort();
+    requestController = null;
+  }
+
+  function tallinnDate(daysFromNow) {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Europe/Tallinn",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(new Date());
+    const valueByType = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+    return new Date(Date.UTC(
+      Number(valueByType.year),
+      Number(valueByType.month) - 1,
+      Number(valueByType.day) + daysFromNow,
+    )).toISOString().slice(0, 10);
+  }
+
+  const dateInput = form.elements.namedItem("preferredDate");
+  if (dateInput instanceof HTMLInputElement) {
+    dateInput.min = tallinnDate(minimumLeadDays);
+    dateInput.max = tallinnDate(maximumDaysAhead);
+  }
+
+  preferredTimes.forEach((time) => {
+    const option = document.createElement("option");
+    option.value = time;
+    option.textContent = time;
+    timeSelect.append(option);
+  });
+  if (durationElement) durationElement.textContent = String(durationMinutes);
+
+  function resetView() {
+    cancelPendingSubmission();
+    form.reset();
+    if (dateInput instanceof HTMLInputElement) {
+      dateInput.min = tallinnDate(minimumLeadDays);
+      dateInput.max = tallinnDate(maximumDaysAhead);
+    }
+    form.hidden = false;
+    formView.hidden = false;
+    successView.hidden = true;
+    form.removeAttribute("aria-busy");
+    submitButton.disabled = false;
+    submitButton.textContent = submitButton.dataset.defaultLabel || "Send meeting request";
+    if (status) {
+      status.textContent = "";
+      status.setAttribute("role", "status");
+    }
+    if (emailFallback) emailFallback.hidden = true;
+    formStartedAt = Date.now();
+  }
+
+  function openModal(event) {
+    event?.preventDefault();
+    activeOpener = event?.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+    closeMenu(false);
+    resetView();
+    document.body.classList.add("booking-open");
+
+    if (typeof modal.showModal === "function") modal.showModal();
+    else modal.setAttribute("open", "");
+
+    requestAnimationFrame(() => form.elements.namedItem("name")?.focus());
+  }
+
+  function closeModal() {
+    cancelPendingSubmission();
+    if (typeof modal.close === "function" && modal.open) modal.close();
+    else modal.removeAttribute("open");
+    document.body.classList.remove("booking-open");
+    activeOpener?.focus();
+    activeOpener = null;
+  }
+
+  function createEmailFallback(values) {
+    if (!emailFallback) return;
+    const label = (key, fallback) => localisedConfigText(emailCopy[key]) || fallback;
+    const subject = `${label("subject", "Meeting request")} — ${values.organisation || values.name}`;
+    const lines = [
+      `${label("name", "Name")}: ${values.name}`,
+      `${label("organisation", "Organisation")}: ${values.organisation}`,
+      `${label("email", "Email")}: ${values.email}`,
+      `${label("phone", "Phone")}: ${values.phone || "—"}`,
+      `${label("date", "Preferred date")}: ${values.preferredDate}`,
+      `${label("time", "Preferred time")}: ${values.preferredTime} Europe/Tallinn`,
+      "",
+      `${label("request", "What they would like to automate")}:`,
+      values.message,
+    ];
+    emailFallback.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
+    emailFallback.hidden = false;
+  }
+
+  function focusFirstInvalidField() {
+    const invalidField = form.querySelector(":invalid");
+    invalidField?.focus();
+  }
+
+  openButtons.forEach((button) => button.addEventListener("click", openModal));
+  closeButtons.forEach((button) => button.addEventListener("click", closeModal));
+
+  modal.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeModal();
+  });
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) closeModal();
+  });
+  modal.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeModal();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(modal.querySelectorAll(
+      'button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), a[href]'
+    )).filter((element) => !element.hidden && element.offsetParent !== null);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      focusFirstInvalidField();
+      return;
+    }
+
+    const values = Object.fromEntries(new FormData(form).entries());
+    const payload = {
+      name: String(values.name || "").trim(),
+      organisation: String(values.organisation || "").trim(),
+      email: String(values.email || "").trim(),
+      phone: String(values.phone || "").trim(),
+      message: String(values.message || "").trim(),
+      preferredDate: String(values.preferredDate || ""),
+      preferredTime: String(values.preferredTime || ""),
+      website: String(values.website || ""),
+      locale: pageLocale,
+      sourcePage: window.location.href,
+      durationMinutes,
+      formStartedAt,
+      submittedAt: Date.now(),
+    };
+    const submissionId = ++activeSubmission;
+    requestController = new AbortController();
+
+    form.setAttribute("aria-busy", "true");
+    submitButton.disabled = true;
+    submitButton.textContent = submitButton.dataset.loadingLabel || "Sending…";
+    if (status) status.textContent = "";
+    if (emailFallback) emailFallback.hidden = true;
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: requestController.signal,
+      });
+      if (submissionId !== activeSubmission) return;
+      if (!response.ok) throw new Error("Booking request was not accepted");
+
+      form.hidden = true;
+      formView.hidden = true;
+      successView.hidden = false;
+      requestAnimationFrame(() => successView.focus());
+    } catch (error) {
+      if (submissionId !== activeSubmission || error?.name === "AbortError") return;
+      if (status) {
+        status.setAttribute("role", "alert");
+        status.textContent = status.dataset.errorMessage || "We could not send the request.";
+      }
+      createEmailFallback(payload);
+    } finally {
+      if (submissionId !== activeSubmission) return;
+      requestController = null;
+      form.removeAttribute("aria-busy");
+      submitButton.disabled = false;
+      submitButton.textContent = submitButton.dataset.defaultLabel || "Send meeting request";
+    }
+  });
+}
+
+function initialiseSplitStory() {
+  const section = document.querySelector("[data-split-story]");
+  const left = section?.querySelector("[data-split-left]");
+  const right = section?.querySelector("[data-split-right]");
+  const reveal = section?.querySelector("[data-split-reveal]");
+  if (!section || !left || !right || !reveal) return;
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const supportsIntersectionObserver = typeof IntersectionObserver === "function";
+  let isActive = !supportsIntersectionObserver;
+  let updateFrame = 0;
+
+  const writeStaticState = () => {
+    section.classList.remove("split-ready");
+    section.dataset.splitState = "static";
+    section.style.setProperty("--split-shift", "0px");
+    section.style.setProperty("--split-reveal", "1");
+    section.style.setProperty("--split-reveal-y", "0px");
+  };
+
+  const update = () => {
+    updateFrame = 0;
+    if (reducedMotion.matches || window.innerWidth <= 840) {
+      writeStaticState();
+      return;
+    }
+
+    const bounds = section.getBoundingClientRect();
+    const scrollRange = Math.max(1, section.offsetHeight - window.innerHeight);
+    const progress = Math.min(1, Math.max(0, -bounds.top / scrollRange));
+    const revealProgress = Math.min(1, Math.max(0, (progress - 0.2) / 0.52));
+    const maximumShift = Math.min(window.innerWidth * 0.09, 140);
+
+    section.classList.add("split-ready");
+    section.dataset.splitState = "scrolling";
+    section.dataset.splitProgress = progress.toFixed(3);
+    section.style.setProperty("--split-shift", `${Math.round(maximumShift * progress)}px`);
+    section.style.setProperty("--split-reveal", revealProgress.toFixed(3));
+    section.style.setProperty("--split-reveal-y", `${Math.round((1 - revealProgress) * 18)}px`);
+  };
+
+  const scheduleUpdate = () => {
+    if (!isActive || updateFrame) return;
+    updateFrame = requestAnimationFrame(update);
+  };
+
+  const observer = supportsIntersectionObserver
+    ? new IntersectionObserver(([entry]) => {
+        isActive = entry.isIntersecting;
+        if (isActive) scheduleUpdate();
+      }, { rootMargin: "30% 0px" })
+    : null;
+  observer?.observe(section);
+
+  window.addEventListener("scroll", scheduleUpdate, { passive: true });
+  window.addEventListener("resize", () => {
+    isActive = true;
+    scheduleUpdate();
+  }, { passive: true });
+  reducedMotion.addEventListener?.("change", () => {
+    isActive = true;
+    scheduleUpdate();
+  });
+  update();
+}
+
 initialiseSavingsCalculator();
 initialiseStatistics();
-initialiseCollaborations();
+initialiseClients();
+initialiseBooking();
+initialiseSplitStory();
 initialiseScrollReveal();
 
 function createWordmarkNetwork(canvas) {

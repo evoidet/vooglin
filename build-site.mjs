@@ -1,6 +1,8 @@
 import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { runInNewContext } from "node:vm";
+import { normaliseBookingPolicy } from "./booking-runtime.mjs";
 import { localizePage } from "./localize.mjs";
 
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
@@ -17,8 +19,10 @@ const publicEtPrivacyDirectory = path.join(publicEtDirectory, "privacy");
 const publicRuPrivacyDirectory = path.join(publicRuDirectory, "privacy");
 const partnerSourceDirectory = path.join(projectRoot, "images", "partners");
 const publicPartnerDirectory = path.join(publicDirectory, "images", "partners");
+const peopleSourceDirectory = path.join(projectRoot, "images", "people");
+const publicPeopleDirectory = path.join(publicDirectory, "images", "people");
 
-const partnerAssetTypes = new Map([
+const imageAssetTypes = new Map([
   [".svg", "image/svg+xml"],
   [".png", "image/png"],
   [".jpg", "image/jpeg"],
@@ -44,23 +48,23 @@ const binaryAssetDefinitions = [
   { url: "/favicon.png", filename: "vooglin-v-black.png", outputFilename: "favicon.png", type: "image/png" },
 ];
 
-async function readPartnerAssets() {
+async function readImageAssets(sourceDirectory, publicPath) {
   let entries = [];
 
   try {
-    entries = await readdir(partnerSourceDirectory, { withFileTypes: true });
+    entries = await readdir(sourceDirectory, { withFileTypes: true });
   } catch (error) {
     if (error.code === "ENOENT") return [];
     throw error;
   }
 
   return Promise.all(entries
-    .filter((entry) => entry.isFile() && partnerAssetTypes.has(path.extname(entry.name).toLowerCase()))
+    .filter((entry) => entry.isFile() && imageAssetTypes.has(path.extname(entry.name).toLowerCase()))
     .map(async (entry) => ({
       filename: entry.name,
-      url: `/images/partners/${encodeURIComponent(entry.name)}`,
-      type: partnerAssetTypes.get(path.extname(entry.name).toLowerCase()),
-      body: await readFile(path.join(partnerSourceDirectory, entry.name)),
+      url: `${publicPath}/${encodeURIComponent(entry.name)}`,
+      type: imageAssetTypes.get(path.extname(entry.name).toLowerCase()),
+      body: await readFile(path.join(sourceDirectory, entry.name)),
     })));
 }
 
@@ -79,7 +83,15 @@ const binaryAssets = await Promise.all(binaryAssetDefinitions.map(async (asset) 
   ...asset,
   body: await readFile(path.join(projectRoot, asset.filename)),
 })));
-const partnerAssets = await readPartnerAssets();
+const [partnerAssets, peopleAssets] = await Promise.all([
+  readImageAssets(partnerSourceDirectory, "/images/partners"),
+  readImageAssets(peopleSourceDirectory, "/images/people"),
+]);
+
+const configContext = { window: {} };
+runInNewContext(siteConfig, configContext, { filename: "site-config.js" });
+const publicBookingConfig = configContext.window.vooglinSiteConfig?.booking || {};
+const bookingPolicy = normaliseBookingPolicy(publicBookingConfig);
 
 const etHtml = localizePage(html, "et", "home");
 const ruHtml = localizePage(html, "ru", "home");
@@ -89,6 +101,8 @@ const etPrivacyHtml = localizePage(privacyHtml, "et", "privacy");
 const ruPrivacyHtml = localizePage(privacyHtml, "ru", "privacy");
 
 const workerSource = `
+const bookingPolicy = ${JSON.stringify(bookingPolicy)};
+
 const assets = new Map([
   ["/", { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" }],
   ["/index.html", { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" }],
@@ -124,6 +138,10 @@ const partnerAssets = new Map([
 ${partnerAssets.map((asset) => `  [${JSON.stringify(asset.url)}, { body: ${JSON.stringify(asset.body.toString("base64"))}, type: ${JSON.stringify(asset.type)} }]`).join(",\n")}
 ]);
 
+const peopleAssets = new Map([
+${peopleAssets.map((asset) => `  [${JSON.stringify(asset.url)}, { body: ${JSON.stringify(asset.body.toString("base64"))}, type: ${JSON.stringify(asset.type)} }]`).join(",\n")}
+]);
+
 function decodeBase64(value) {
   const binary = atob(value);
   const bytes = new Uint8Array(binary.length);
@@ -147,13 +165,218 @@ function securityHeaders(contentType) {
   };
 }
 
+function bookingJson(payload, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff",
+      ...extraHeaders,
+    },
+  });
+}
+
+function normaliseBookingText(value, maximumLength) {
+  if (typeof value !== "string") return "";
+  return value.trim().replace(/\\s+/g, " ").slice(0, maximumLength);
+}
+
+function tallinnDateKey(daysFromNow) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Tallinn",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return new Date(Date.UTC(
+    Number(values.year),
+    Number(values.month) - 1,
+    Number(values.day) + daysFromNow,
+  )).toISOString().slice(0, 10);
+}
+
+function bookingDateEpoch(value) {
+  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return Number.NaN;
+  const [year, month, day] = value.split("-").map(Number);
+  const epoch = Date.UTC(year, month - 1, day);
+  const date = new Date(epoch);
+  return date.getUTCFullYear() === year
+    && date.getUTCMonth() === month - 1
+    && date.getUTCDate() === day
+    ? epoch
+    : Number.NaN;
+}
+
+function validateBookingRequest(body) {
+  const booking = {
+    name: normaliseBookingText(body.name, 120),
+    organisation: normaliseBookingText(body.organisation, 120),
+    email: normaliseBookingText(body.email, 254).toLowerCase(),
+    phone: normaliseBookingText(body.phone, 40),
+    message: normaliseBookingText(body.message, 2000),
+    preferredDate: normaliseBookingText(body.preferredDate, 10),
+    preferredTime: normaliseBookingText(body.preferredTime, 5),
+    locale: normaliseBookingText(body.locale, 5),
+    sourcePage: normaliseBookingText(body.sourcePage, 500),
+    durationMinutes: bookingPolicy.durationMinutes,
+  };
+  const emailIsValid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(booking.email);
+  const timeIsValid = bookingPolicy.preferredTimes.includes(booking.preferredTime);
+  const requestedDate = bookingDateEpoch(booking.preferredDate);
+  const earliestDate = bookingDateEpoch(tallinnDateKey(bookingPolicy.minimumLeadDays));
+  const latestDate = bookingDateEpoch(tallinnDateKey(bookingPolicy.maximumDaysAhead));
+  const dateInRange = Number.isFinite(requestedDate)
+    && requestedDate >= earliestDate
+    && requestedDate <= latestDate;
+
+  if (!booking.name || !booking.organisation || !booking.message || !emailIsValid || !timeIsValid || !dateInRange) {
+    return null;
+  }
+
+  return booking;
+}
+
+async function handleBookingRequest(request, env) {
+  if (request.method !== "POST") {
+    return bookingJson({ ok: false, code: "method_not_allowed" }, 405, { Allow: "POST" });
+  }
+
+  const requestUrl = new URL(request.url);
+  const origin = request.headers.get("Origin");
+  if (!origin) return bookingJson({ ok: false, code: "origin_not_allowed" }, 403);
+  try {
+    if (new URL(origin).host !== requestUrl.host) {
+      return bookingJson({ ok: false, code: "origin_not_allowed" }, 403);
+    }
+  } catch {
+    return bookingJson({ ok: false, code: "origin_not_allowed" }, 403);
+  }
+
+  const contentType = request.headers.get("Content-Type") || "";
+  const contentLength = Number(request.headers.get("Content-Length") || 0);
+  if (!contentType.toLowerCase().startsWith("application/json") || contentLength > 16384) {
+    return bookingJson({ ok: false, code: "invalid_request" }, 400);
+  }
+
+  let rawBody;
+  try {
+    rawBody = await request.text();
+  } catch {
+    return bookingJson({ ok: false, code: "invalid_json" }, 400);
+  }
+  if (new TextEncoder().encode(rawBody).byteLength > 16384) {
+    return bookingJson({ ok: false, code: "invalid_request" }, 400);
+  }
+
+  let body;
+  try {
+    body = JSON.parse(rawBody);
+  } catch {
+    return bookingJson({ ok: false, code: "invalid_json" }, 400);
+  }
+
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return bookingJson({ ok: false, code: "invalid_request" }, 400);
+  }
+
+  if (normaliseBookingText(body.website, 200)) {
+    return bookingJson({ ok: true });
+  }
+
+  const formStartedAt = Number(body.formStartedAt);
+  const submittedAt = Number(body.submittedAt);
+  const formAge = submittedAt - formStartedAt;
+  if (!Number.isFinite(formStartedAt)
+    || !Number.isFinite(submittedAt)
+    || formAge < 600
+    || formAge > 7200000) {
+    return bookingJson({ ok: false, code: "invalid_request" }, 400);
+  }
+
+  const booking = validateBookingRequest(body);
+  if (!booking) return bookingJson({ ok: false, code: "validation_failed" }, 400);
+
+  const webhookValue = typeof env?.BOOKING_WEBHOOK_URL === "string" ? env.BOOKING_WEBHOOK_URL : "";
+  let webhookUrl;
+  try {
+    webhookUrl = new URL(webhookValue);
+  } catch {
+    return bookingJson({ ok: false, code: "delivery_not_configured" }, 503);
+  }
+  if (webhookUrl.protocol !== "https:") {
+    return bookingJson({ ok: false, code: "delivery_not_configured" }, 503);
+  }
+
+  const requestId = crypto.randomUUID();
+  const webhookHeaders = {
+    "Content-Type": "application/json",
+    "X-Vooglin-Request-Id": requestId,
+  };
+  if (typeof env?.BOOKING_WEBHOOK_TOKEN === "string" && env.BOOKING_WEBHOOK_TOKEN) {
+    webhookHeaders.Authorization = "Bearer " + env.BOOKING_WEBHOOK_TOKEN;
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  let deliveryResponse;
+
+  try {
+    deliveryResponse = await fetch(webhookUrl.href, {
+      method: "POST",
+      headers: webhookHeaders,
+      body: JSON.stringify({
+        event: "vooglin.booking_request",
+        requestId,
+        receivedAt: new Date().toISOString(),
+        recipient: typeof env?.BOOKING_RECIPIENT_EMAIL === "string" && env.BOOKING_RECIPIENT_EMAIL
+          ? env.BOOKING_RECIPIENT_EMAIL
+          : "egor@vooglin.ee",
+        contact: {
+          name: booking.name,
+          organisation: booking.organisation,
+          email: booking.email,
+          phone: booking.phone,
+        },
+        meeting: {
+          preferredDate: booking.preferredDate,
+          preferredTime: booking.preferredTime,
+          timezone: "Europe/Tallinn",
+          durationMinutes: booking.durationMinutes,
+        },
+        request: booking.message,
+        context: {
+          locale: booking.locale,
+          sourcePage: booking.sourcePage,
+        },
+      }),
+      signal: controller.signal,
+    });
+  } catch {
+    return bookingJson({ ok: false, code: "delivery_failed" }, 502);
+  } finally {
+    clearTimeout(timeout);
+  }
+
+  if (!deliveryResponse.ok) {
+    return bookingJson({ ok: false, code: "delivery_failed" }, 502);
+  }
+
+  return bookingJson({ ok: true, requestId });
+}
+
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
 
     if (url.hostname === "www.vooglin.ee") {
       url.hostname = "vooglin.ee";
       return Response.redirect(url, 308);
+    }
+
+    if (url.pathname === "/api/booking") {
+      return handleBookingRequest(request, env);
     }
 
     const trailingSlashRoutes = new Map([
@@ -182,6 +405,13 @@ export default {
     if (partnerAsset) {
       return new Response(decodeBase64(partnerAsset.body), {
         headers: securityHeaders(partnerAsset.type),
+      });
+    }
+
+    const peopleAsset = peopleAssets.get(url.pathname);
+    if (peopleAsset) {
+      return new Response(decodeBase64(peopleAsset.body), {
+        headers: securityHeaders(peopleAsset.type),
       });
     }
 
@@ -214,6 +444,7 @@ await Promise.all([
   mkdir(publicEtPrivacyDirectory, { recursive: true }),
   mkdir(publicRuPrivacyDirectory, { recursive: true }),
   mkdir(publicPartnerDirectory, { recursive: true }),
+  mkdir(publicPeopleDirectory, { recursive: true }),
 ]);
 
 await Promise.all([
@@ -235,6 +466,7 @@ await Promise.all([
   writeFile(path.join(publicDirectory, "site.webmanifest"), manifest),
   ...binaryAssets.map((asset) => writeFile(path.join(publicDirectory, asset.outputFilename || asset.filename), asset.body)),
   ...partnerAssets.map((asset) => writeFile(path.join(publicPartnerDirectory, asset.filename), asset.body)),
+  ...peopleAssets.map((asset) => writeFile(path.join(publicPeopleDirectory, asset.filename), asset.body)),
 ]);
 
 console.log("Built Vooglin site for Sites and Vercel deployment.");
