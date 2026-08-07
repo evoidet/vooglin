@@ -32,9 +32,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260807-cosmic-v2">
+  <link rel="stylesheet" href="/styles.css?v=20260807-automation-v3">
   <script src="/site-config.js?v=20260807-cosmic" defer></script>
-  <script src="/script.js?v=20260807-cosmic-v2" defer></script>
+  <script src="/script.js?v=20260807-automation-v3" defer></script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -57,7 +57,7 @@
   <header class="site-header" data-header>
     <div class="header-inner">
       <a class="brand" href="#top" aria-label="Vooglin home">
-        <img class="brand-mark" src="/vooglin-mark.png" width="40" height="31" alt="">
+        <img class="brand-mark" src="/vooglin-v-black.png" width="32" height="32" alt="">
         <span>VOOGLIN</span>
       </a>
 
@@ -172,7 +172,7 @@
       </div>
     </section>
 
-    <section class="positioning" aria-labelledby="positioning-title">
+    <section class="positioning section-surface visual-surface--grid" aria-labelledby="positioning-title" data-reveal>
       <div class="section-label">A simpler way to work</div>
       <div class="positioning-copy">
         <h2 id="positioning-title">Built around your process.<br>Not around a platform.</h2>
@@ -197,15 +197,15 @@
       </div>
     </section>
 
-    <section class="services" id="services" aria-labelledby="services-title">
-      <div class="section-heading">
+    <section class="services section-surface visual-surface--flow" id="services" aria-labelledby="services-title">
+      <div class="section-heading" data-reveal>
         <p class="section-label">Services</p>
         <h2 id="services-title">Systems that remove repetitive work.</h2>
         <p>From one troublesome process to a connected day-to-day system.</p>
       </div>
 
       <div class="service-list">
-        <article class="service-row">
+        <article class="service-row" data-reveal>
           <span class="service-number">01</span>
           <h3>Workflow automation<br>& integrations</h3>
           <div>
@@ -214,7 +214,7 @@
           </div>
         </article>
 
-        <article class="service-row">
+        <article class="service-row" data-reveal>
           <span class="service-number">02</span>
           <h3>Forms, registrations<br>& events</h3>
           <div>
@@ -223,7 +223,7 @@
           </div>
         </article>
 
-        <article class="service-row">
+        <article class="service-row" data-reveal>
           <span class="service-number">03</span>
           <h3>Dashboards, budgets<br>& reports</h3>
           <div>
@@ -232,7 +232,7 @@
           </div>
         </article>
 
-        <article class="service-row">
+        <article class="service-row" data-reveal>
           <span class="service-number">04</span>
           <h3>Documents<br>& communication</h3>
           <div>
@@ -241,7 +241,7 @@
           </div>
         </article>
 
-        <article class="service-row">
+        <article class="service-row" data-reveal>
           <span class="service-number">05</span>
           <h3>Simple websites<br>& connected forms</h3>
           <div>
@@ -252,8 +252,12 @@
       </div>
     </section>
 
-    <section class="savings" id="savings" aria-labelledby="savings-title">
-      <div class="savings-intro">
+    <section class="savings ambient-section" id="savings" aria-labelledby="savings-title">
+      <div class="ambient-layer ambient-layer--flow" aria-hidden="true">
+        <canvas class="automation-field" data-automation-field data-automation-variant="calculator"></canvas>
+      </div>
+
+      <div class="savings-intro" data-reveal>
         <p class="section-label">Time savings calculator</p>
         <div class="savings-intro-copy">
           <h2 id="savings-title">How much time could automation save your team?</h2>
@@ -262,7 +266,7 @@
       </div>
 
       <div class="calculator-shell" data-savings-calculator>
-        <div class="calculator-controls">
+        <div class="calculator-controls" data-reveal>
           <div class="calculator-field">
             <div class="calculator-field-heading">
               <label for="weekly-manual-hours">How many hours per week does each person spend on repetitive administrative work?</label>
@@ -291,7 +295,7 @@
           </div>
         </div>
 
-        <div class="calculator-results">
+        <div class="calculator-results" data-reveal>
           <p class="calculator-result-label">Estimated time saved</p>
           <p class="calculator-result-main"><strong>≈ <span data-result="yearly">624</span></strong><span>Hours saved per year</span></p>
           <p class="calculator-result-days"><strong>≈ <span data-result="days">78</span></strong><span>Working days saved per year</span></p>
@@ -343,7 +347,7 @@
     </section>
 
     <section class="example" aria-labelledby="example-title">
-      <div class="example-copy">
+      <div class="example-copy" data-reveal>
         <p class="eyebrow eyebrow-dark"><span></span> One process, kept in sync</p>
         <h2 id="example-title">Enter the information once.<br>Use it everywhere.</h2>
         <p>One form can update a table, notify the right person, create a document and keep a dashboard current — without copying the same information four times.</p>
@@ -354,7 +358,7 @@
         </ul>
       </div>
 
-      <div class="system-map" role="group" aria-label="A connected automation example">
+      <div class="system-map" role="group" aria-label="A connected automation example" data-reveal>
         <div class="system-map-header">
           <p>Registration workflow</p>
           <span>4 connected steps</span>
@@ -385,29 +389,29 @@
       </div>
     </section>
 
-    <section class="process" id="process" aria-labelledby="process-title">
-      <div class="process-intro">
+    <section class="process section-surface visual-surface--nodes" id="process" aria-labelledby="process-title">
+      <div class="process-intro" data-reveal>
         <p class="section-label">How it works</p>
         <h2 id="process-title">From bottleneck to working system.</h2>
         <p>No oversized transformation project. We start with the part of the work that will make the clearest difference.</p>
       </div>
 
       <ol class="process-list">
-        <li>
+        <li data-reveal>
           <span>01</span>
           <div>
             <h3>Understand</h3>
             <p>We map what happens now, who is involved, and where the work gets stuck.</p>
           </div>
         </li>
-        <li>
+        <li data-reveal>
           <span>02</span>
           <div>
             <h3>Build</h3>
             <p>We create the smallest useful solution and test it with real information.</p>
           </div>
         </li>
-        <li>
+        <li data-reveal>
           <span>03</span>
           <div>
             <h3>Put it to work</h3>
@@ -417,8 +421,8 @@
       </ol>
     </section>
 
-    <section class="founder" id="about" aria-labelledby="founder-title">
-      <div class="founder-copy">
+    <section class="founder section-surface visual-surface--glow" id="about" aria-labelledby="founder-title">
+      <div class="founder-copy" data-reveal>
         <p class="section-label">Behind Vooglin</p>
         <h2 id="founder-title">Your workflow,<br>handled personally.</h2>
         <p>You work directly with the person who maps, builds and improves your system. That keeps decisions clear, communication simple and every automation grounded in how your team actually works.</p>
@@ -428,17 +432,16 @@
         </ul>
       </div>
 
-      <div class="portrait-frame">
-        <!-- Replace this placeholder with your portrait when the photo is ready. -->
-        <div class="portrait-placeholder" role="img" aria-label="Placeholder for the founder portrait">
-          <span class="portrait-index">Portrait / 4:5</span>
-          <img class="brand-mark-large" src="/egor.png" width="128" height="99" alt="">
-          <div>
+      <figure class="portrait-frame" data-reveal>
+        <div class="portrait-media">
+          <img class="portrait-image" src="/egor-portrait.webp" width="1200" height="1600" alt="Egor Stepanov" loading="lazy" decoding="async">
+          <span class="portrait-index">Founder / 01</span>
+          <figcaption>
             <strong>Egor Stepanov</strong>
             <small>Founder and Lead Automator</small>
-          </div>
+          </figcaption>
         </div>
-      </div>
+      </figure>
     </section>
 
     <section class="collaborations" id="collaborations" aria-labelledby="collaborations-title" data-collaborations-section hidden>
@@ -454,7 +457,7 @@
 
     <section class="contact" id="contact" aria-labelledby="contact-title">
       <canvas class="contact-network" data-wordmark-network data-network-variant="contact" aria-hidden="true"></canvas>
-      <div class="contact-inner">
+      <div class="contact-inner" data-reveal>
         <p class="eyebrow"><span></span> A process taking too much time?</p>
         <h2 id="contact-title">Let’s make it simpler.</h2>
         <p>Send us a short description of how it works today. We’ll help identify what can be automated and the sensible first step.</p>
@@ -467,7 +470,7 @@
   <footer>
     <div class="footer-top">
       <a class="brand" href="#top" aria-label="Vooglin home">
-        <img class="brand-mark" src="/vooglin-mark.png" width="40" height="31" alt="">
+        <img class="brand-mark" src="/vooglin-v-black.png" width="32" height="32" alt="">
         <span>VOOGLIN</span>
       </a>
       <a class="footer-email" href="mailto:egor@vooglin.ee">egor@vooglin.ee</a>

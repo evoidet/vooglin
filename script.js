@@ -6,6 +6,7 @@ const mainContent = document.querySelector("main");
 const footer = document.querySelector("footer");
 const networkCanvases = document.querySelectorAll("[data-wordmark-network]");
 const cosmicCanvases = document.querySelectorAll("[data-cosmic-field]");
+const automationCanvases = document.querySelectorAll("[data-automation-field]");
 
 if (year) {
   year.textContent = new Date().getFullYear();
@@ -273,9 +274,50 @@ function initialiseCollaborations() {
   section.hidden = false;
 }
 
+function initialiseScrollReveal() {
+  const elements = Array.from(document.querySelectorAll("[data-reveal]"));
+  if (!elements.length) return;
+
+  const revealAll = () => {
+    elements.forEach((element) => element.classList.add("is-revealed"));
+  };
+
+  if (prefersReducedMotion.matches || typeof IntersectionObserver !== "function") {
+    revealAll();
+    return;
+  }
+
+  document.documentElement.classList.add("reveal-ready");
+  elements.forEach((element) => {
+    const siblings = Array.from(element.parentElement?.children || [])
+      .filter((sibling) => sibling.hasAttribute?.("data-reveal"));
+    const siblingIndex = Math.max(0, siblings.indexOf(element));
+    element.style.setProperty("--reveal-delay", `${Math.min(siblingIndex * 45, 180)}ms`);
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-revealed");
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -8%" });
+
+  elements.forEach((element) => observer.observe(element));
+
+  const handleMotionChange = () => {
+    if (!prefersReducedMotion.matches) return;
+    observer.disconnect();
+    revealAll();
+  };
+
+  prefersReducedMotion.addEventListener?.("change", handleMotionChange, { once: true });
+}
+
 initialiseSavingsCalculator();
 initialiseStatistics();
 initialiseCollaborations();
+initialiseScrollReveal();
 
 function createWordmarkNetwork(canvas) {
   const context = canvas.getContext("2d");
@@ -883,4 +925,323 @@ function createCosmicField(canvas) {
   };
 }
 
+function createAutomationField(canvas) {
+  const context = canvas.getContext("2d");
+  if (!context) return;
+
+  const variant = canvas.dataset.automationVariant || "calculator";
+  const settingsByVariant = {
+    calculator: {
+      counts: [12, 8, 4],
+      frameRates: [24, 20, 18],
+      line: "rgba(247, 247, 242, 0.14)",
+      node: "rgba(247, 247, 242, 0.46)",
+      packet: "rgba(247, 247, 242, 0.82)",
+      accent: "rgba(221, 255, 106, 0.9)",
+      packetAlpha: 0.72,
+    },
+    pricing: {
+      counts: [8, 6, 4],
+      frameRates: [20, 18, 16],
+      line: "rgba(17, 17, 17, 0.11)",
+      node: "rgba(17, 17, 17, 0.34)",
+      packet: "rgba(17, 17, 17, 0.58)",
+      accent: "rgba(101, 119, 36, 0.82)",
+      packetAlpha: 0.5,
+    },
+    privacy: {
+      counts: [6, 4, 3],
+      frameRates: [18, 16, 14],
+      line: "rgba(247, 247, 242, 0.16)",
+      node: "rgba(247, 247, 242, 0.4)",
+      packet: "rgba(247, 247, 242, 0.68)",
+      accent: "rgba(221, 255, 106, 0.82)",
+      packetAlpha: 0.52,
+    },
+  };
+  const settings = settingsByVariant[variant] || settingsByVariant.calculator;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const connection = navigator.connection;
+  const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory < 4;
+  const supportsIntersectionObserver = typeof IntersectionObserver === "function";
+  const packets = [];
+  const packetPoint = { x: 0, y: 0 };
+
+  let width = 0;
+  let height = 0;
+  let policyIndex = 0;
+  let packetCount = 0;
+  let frameRate = 18;
+  let nodes = [];
+  let edges = [];
+  let sceneTime = 2600;
+  let lastFrame = 0;
+  let animationFrame = 0;
+  let resizeFrame = 0;
+  let isInView = !supportsIntersectionObserver;
+  let isDestroyed = false;
+
+  function randomBetween(minimum, maximum) {
+    return minimum + (Math.random() * (maximum - minimum));
+  }
+
+  function addEdge(from, to, curve = 0, stage = 0, speed = 0.000045) {
+    const start = nodes[from];
+    const end = nodes[to];
+    edges.push({
+      from,
+      to,
+      stage,
+      speed,
+      controlX: (start.x + end.x) * 0.5,
+      controlY: ((start.y + end.y) * 0.5) + (curve * height),
+    });
+  }
+
+  function buildCalculatorLayout() {
+    const startY = policyIndex === 0 ? [0.2, 0.37, 0.54, 0.71] : policyIndex === 1 ? [0.28, 0.5, 0.72] : [0.36, 0.64];
+    nodes = startY.map((value) => ({ x: width * 0.035, y: height * value, processor: false }));
+    const processorIndex = nodes.length;
+    nodes.push({ x: width * (policyIndex === 2 ? 0.54 : 0.57), y: height * 0.5, processor: true });
+    const firstExit = nodes.length;
+    nodes.push(
+      { x: width * 0.97, y: height * 0.39, processor: false },
+      { x: width * 0.97, y: height * 0.61, processor: false }
+    );
+    edges = [];
+    startY.forEach((_, index) => addEdge(index, processorIndex, (index - ((startY.length - 1) / 2)) * 0.045, 0, 0.000032));
+    addEdge(processorIndex, firstExit, -0.045, 1, 0.000062);
+    addEdge(processorIndex, firstExit + 1, 0.045, 1, 0.000062);
+  }
+
+  function buildPricingLayout() {
+    const count = policyIndex === 0 ? 6 : policyIndex === 1 ? 5 : 4;
+    nodes = Array.from({ length: count }, (_, index) => ({
+      x: width * (0.08 + ((0.84 / Math.max(1, count - 1)) * index)),
+      y: height * (index % 2 === 0 ? 0.31 : 0.62),
+      processor: index === Math.floor(count / 2),
+    }));
+    edges = [];
+    for (let index = 0; index < count - 1; index += 1) {
+      addEdge(index, index + 1, index % 2 === 0 ? -0.04 : 0.04, 0, 0.000042);
+    }
+    if (count >= 6) addEdge(0, 3, 0.11, 0, 0.000033);
+  }
+
+  function buildPrivacyLayout() {
+    const positions = policyIndex === 0
+      ? [[0.04, 0.22], [0.28, 0.22], [0.48, 0.5], [0.72, 0.72], [0.96, 0.72]]
+      : [[0.05, 0.3], [0.35, 0.3], [0.66, 0.68], [0.95, 0.68]];
+    nodes = positions.map(([x, y], index) => ({
+      x: width * x,
+      y: height * y,
+      processor: index === Math.floor(positions.length / 2),
+    }));
+    edges = [];
+    for (let index = 0; index < nodes.length - 1; index += 1) {
+      addEdge(index, index + 1, index % 2 === 0 ? 0.06 : -0.06, 0, 0.000032);
+    }
+  }
+
+  function rebuildScene() {
+    policyIndex = width >= 900 ? 0 : width > 480 ? 1 : 2;
+    packetCount = settings.counts[policyIndex];
+    frameRate = settings.frameRates[policyIndex];
+
+    if (variant === "pricing") buildPricingLayout();
+    else if (variant === "privacy") buildPrivacyLayout();
+    else buildCalculatorLayout();
+
+    while (packets.length < packetCount) packets.push({});
+    packets.length = packetCount;
+
+    const incomingEdges = edges.map((edge, index) => ({ edge, index })).filter(({ edge }) => edge.stage === 0);
+    const outgoingEdges = edges.map((edge, index) => ({ edge, index })).filter(({ edge }) => edge.stage === 1);
+    const incomingCount = variant === "calculator" ? Math.ceil(packetCount * 0.7) : packetCount;
+
+    packets.forEach((packet, index) => {
+      const pool = index < incomingCount || !outgoingEdges.length ? incomingEdges : outgoingEdges;
+      const selected = pool[index % Math.max(1, pool.length)] || { edge: edges[0], index: 0 };
+      packet.edgeIndex = selected.index;
+      packet.phase = (index / Math.max(1, packetCount)) + randomBetween(0, 0.14);
+      packet.speed = selected.edge.speed * randomBetween(0.86, 1.14);
+      packet.size = index % 5 === 0 ? 3 : 2;
+      packet.accent = index % 6 === 0;
+    });
+
+    canvas.dataset.automationPackets = String(packetCount);
+    canvas.dataset.automationNodes = String(nodes.length);
+    canvas.dataset.automationFps = String(frameRate);
+  }
+
+  function pointOnEdge(edge, progress) {
+    const start = nodes[edge.from];
+    const end = nodes[edge.to];
+    const inverse = 1 - progress;
+    packetPoint.x = (inverse * inverse * start.x) + (2 * inverse * progress * edge.controlX) + (progress * progress * end.x);
+    packetPoint.y = (inverse * inverse * start.y) + (2 * inverse * progress * edge.controlY) + (progress * progress * end.y);
+    return packetPoint;
+  }
+
+  function draw(time) {
+    if (!width || !height) return;
+    context.clearRect(0, 0, width, height);
+    context.lineWidth = 1;
+    context.strokeStyle = settings.line;
+
+    edges.forEach((edge) => {
+      const start = nodes[edge.from];
+      const end = nodes[edge.to];
+      context.beginPath();
+      context.moveTo(start.x, start.y);
+      context.quadraticCurveTo(edge.controlX, edge.controlY, end.x, end.y);
+      context.stroke();
+    });
+
+    nodes.forEach((node) => {
+      const size = node.processor ? 13 : 7;
+      context.strokeStyle = node.processor ? settings.accent : settings.node;
+      context.strokeRect(node.x - (size / 2), node.y - (size / 2), size, size);
+      if (node.processor) {
+        context.fillStyle = settings.accent;
+        context.fillRect(node.x - 2, node.y - 2, 4, 4);
+      }
+    });
+
+    packets.forEach((packet) => {
+      const edge = edges[packet.edgeIndex];
+      if (!edge) return;
+      const progress = (packet.phase + (time * packet.speed)) % 1;
+      const point = pointOnEdge(edge, progress);
+      const alpha = Math.sin(Math.PI * progress) * settings.packetAlpha;
+      context.globalAlpha = Math.max(0, alpha);
+      context.fillStyle = packet.accent ? settings.accent : settings.packet;
+      context.fillRect(point.x - (packet.size / 2), point.y - (packet.size / 2), packet.size, packet.size);
+    });
+    context.globalAlpha = 1;
+  }
+
+  function resizeCanvas() {
+    const bounds = canvas.getBoundingClientRect();
+    width = Math.max(1, bounds.width);
+    height = Math.max(1, bounds.height);
+    const dpr = width <= 480 ? 1 : Math.min(window.devicePixelRatio || 1, 1.25);
+    canvas.width = Math.max(1, Math.round(width * dpr));
+    canvas.height = Math.max(1, Math.round(height * dpr));
+    context.setTransform(dpr, 0, 0, dpr, 0, 0);
+    rebuildScene();
+    draw(sceneTime);
+  }
+
+  function stopAnimation() {
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+    lastFrame = 0;
+  }
+
+  function canAnimate() {
+    return isInView
+      && !document.hidden
+      && !reducedMotion.matches
+      && connection?.saveData !== true
+      && !lowMemory
+      && width > 340;
+  }
+
+  function animate(timestamp) {
+    if (!canAnimate()) {
+      syncAnimation();
+      return;
+    }
+
+    const frameInterval = 1000 / frameRate;
+    if (!lastFrame || timestamp - lastFrame >= frameInterval) {
+      const elapsed = lastFrame ? Math.min(timestamp - lastFrame, 96) : frameInterval;
+      sceneTime += elapsed;
+      lastFrame = timestamp;
+      draw(sceneTime);
+    }
+    animationFrame = requestAnimationFrame(animate);
+  }
+
+  function syncAnimation() {
+    if (isDestroyed) return;
+    stopAnimation();
+
+    if (canAnimate()) {
+      canvas.dataset.automationState = "running";
+      animationFrame = requestAnimationFrame(animate);
+      return;
+    }
+
+    const isStatic = reducedMotion.matches || connection?.saveData === true || lowMemory || width <= 340;
+    canvas.dataset.automationState = isStatic ? "static" : "paused";
+    draw(sceneTime);
+  }
+
+  function handleResize() {
+    if (resizeFrame) cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => {
+      resizeFrame = 0;
+      resizeCanvas();
+      syncAnimation();
+    });
+  }
+
+  const resizeObserver = typeof ResizeObserver === "function"
+    ? new ResizeObserver(handleResize)
+    : null;
+  if (resizeObserver) resizeObserver.observe(canvas);
+  else window.addEventListener("resize", handleResize, { passive: true });
+
+  const visibilityObserver = supportsIntersectionObserver
+    ? new IntersectionObserver(([entry]) => {
+        isInView = entry.isIntersecting;
+        syncAnimation();
+      }, { rootMargin: "100px" })
+    : null;
+  visibilityObserver?.observe(canvas);
+
+  const handleMotionChange = syncAnimation;
+  const handleConnectionChange = syncAnimation;
+  const handleVisibilityChange = syncAnimation;
+  const handlePageHide = stopAnimation;
+  const handlePageShow = syncAnimation;
+
+  if (typeof reducedMotion.addEventListener === "function") {
+    reducedMotion.addEventListener("change", handleMotionChange);
+  } else {
+    reducedMotion.addListener(handleMotionChange);
+  }
+  connection?.addEventListener?.("change", handleConnectionChange);
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener("pagehide", handlePageHide);
+  window.addEventListener("pageshow", handlePageShow);
+
+  resizeCanvas();
+  syncAnimation();
+
+  return {
+    destroy() {
+      if (isDestroyed) return;
+      isDestroyed = true;
+      stopAnimation();
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeObserver?.disconnect();
+      visibilityObserver?.disconnect();
+      if (!resizeObserver) window.removeEventListener("resize", handleResize);
+      if (typeof reducedMotion.removeEventListener === "function") {
+        reducedMotion.removeEventListener("change", handleMotionChange);
+      } else {
+        reducedMotion.removeListener(handleMotionChange);
+      }
+      connection?.removeEventListener?.("change", handleConnectionChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("pageshow", handlePageShow);
+    },
+  };
+}
+
 cosmicCanvases.forEach(createCosmicField);
+automationCanvases.forEach(createAutomationField);

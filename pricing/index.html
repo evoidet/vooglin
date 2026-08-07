@@ -32,8 +32,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260807-cosmic-v2">
-  <script src="/script.js?v=20260807-cosmic-v2" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20260807-automation-v3">
+  <script src="/script.js?v=20260807-automation-v3" defer></script>
 </head>
 <body class="pricing-page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -41,7 +41,7 @@
   <header class="site-header" data-header>
     <div class="header-inner">
       <a class="brand" href="/" aria-label="Vooglin home">
-        <img class="brand-mark" src="/vooglin-mark.png" width="40" height="31" alt="">
+        <img class="brand-mark" src="/vooglin-v-black.png" width="32" height="32" alt="">
         <span>VOOGLIN</span>
       </a>
 
@@ -92,7 +92,7 @@
         <img class="hero-logo-watermark" src="/vooglin-mark.png" width="200" height="155" alt="">
       </div>
 
-      <div class="pricing-hero-inner">
+      <div class="pricing-hero-inner" data-reveal>
         <p class="eyebrow"><span></span> Pricing</p>
         <h1 id="pricing-title">Clear scope.<br>Fixed price before we build.</h1>
         <div class="pricing-hero-copy">
@@ -106,14 +106,18 @@
       </div>
     </section>
 
-    <section class="pricing-section pricing-formats cosmic-surface" aria-labelledby="formats-title">
-      <div class="pricing-heading">
+    <section class="pricing-section pricing-formats ambient-section" aria-labelledby="formats-title">
+      <div class="ambient-layer ambient-layer--grid" aria-hidden="true">
+        <canvas class="automation-field" data-automation-field data-automation-variant="pricing"></canvas>
+      </div>
+
+      <div class="pricing-heading" data-reveal>
         <p class="section-label">Project types</p>
         <h2 id="formats-title">Priced around the work that needs to change.</h2>
       </div>
 
       <div class="pricing-list">
-        <article class="pricing-row">
+        <article class="pricing-row" data-reveal>
           <span class="pricing-number">01</span>
           <div>
             <h3>Focused improvement</h3>
@@ -125,7 +129,7 @@
           </div>
         </article>
 
-        <article class="pricing-row">
+        <article class="pricing-row" data-reveal>
           <span class="pricing-number">02</span>
           <div>
             <h3>Connected workflow</h3>
@@ -137,7 +141,7 @@
           </div>
         </article>
 
-        <article class="pricing-row">
+        <article class="pricing-row" data-reveal>
           <span class="pricing-number">03</span>
           <div>
             <h3>Ongoing support</h3>
@@ -152,12 +156,12 @@
     </section>
 
     <section class="pricing-section quote-process" aria-labelledby="quote-title">
-      <div class="pricing-heading">
+      <div class="pricing-heading" data-reveal>
         <p class="section-label">Before the build</p>
         <h2 id="quote-title">You know the cost before work starts.</h2>
       </div>
 
-      <ol class="quote-steps">
+      <ol class="quote-steps workflow-sequence" data-reveal>
         <li>
           <span>01</span>
           <h3>Review</h3>
@@ -177,7 +181,7 @@
     </section>
 
     <section class="pricing-section pricing-details" aria-label="Pricing details">
-      <article>
+      <article data-reveal>
         <p class="section-label">Pricing factors</p>
         <h2>The price depends on the workflow, not the size of your company.</h2>
         <ul>
@@ -190,7 +194,7 @@
         </ul>
       </article>
 
-      <article>
+      <article data-reveal>
         <p class="section-label">Included</p>
         <h2>A working system, clearly handed over.</h2>
         <ul>
@@ -205,16 +209,16 @@
     </section>
 
     <section class="pricing-note" aria-labelledby="external-costs-title">
-      <div>
+      <div data-reveal>
         <p class="section-label">Third-party costs</p>
         <h2 id="external-costs-title">Software costs stay visible.</h2>
       </div>
-      <p>Subscriptions, transaction fees, hosting and other third-party services are not hidden inside the project price. Any expected external costs are listed separately before you approve the work.</p>
+      <p data-reveal>Subscriptions, transaction fees, hosting and other third-party services are not hidden inside the project price. Any expected external costs are listed separately before you approve the work.</p>
     </section>
 
     <section class="contact pricing-contact" id="contact" aria-labelledby="contact-title">
       <canvas class="contact-network" data-wordmark-network data-network-variant="contact" aria-hidden="true"></canvas>
-      <div class="contact-inner">
+      <div class="contact-inner" data-reveal>
         <p class="eyebrow"><span></span> Have a process taking too much time?</p>
         <h2 id="contact-title">Let’s find the sensible first step.</h2>
         <p>Send a short description of how the work runs today. We’ll explain what should be simplified, what the project would include and what it would cost.</p>
@@ -227,7 +231,7 @@
   <footer>
     <div class="footer-top">
       <a class="brand" href="/" aria-label="Vooglin home">
-        <img class="brand-mark" src="/vooglin-mark.png" width="40" height="31" alt="">
+        <img class="brand-mark" src="/vooglin-v-black.png" width="32" height="32" alt="">
         <span>VOOGLIN</span>
       </a>
       <a class="footer-email" href="mailto:egor@vooglin.ee">egor@vooglin.ee</a>
