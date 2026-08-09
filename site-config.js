@@ -1,42 +1,30 @@
 /*
  * Public homepage data.
  *
- * Keep social proof factual: add a statistic or client only after it can be
- * publicly verified. Booking times are preferences, not live availability.
+ * Keep social proof factual: add a client only after it can be publicly
+ * verified. Booking times are preferences, not live availability.
  */
 window.vooglinSiteConfig = Object.freeze({
-  stats: Object.freeze([
-    Object.freeze({
-      id: "clientOrganisations",
-      value: 1,
-      suffix: "",
-      label: Object.freeze({
-        en: "Client organisation",
-        et: "Kliendiorganisatsioon",
-        ru: "Клиентская организация",
-      }),
-    }),
-  ]),
   clients: Object.freeze([
     Object.freeze({
       verified: true,
       name: "MTÜ Noortealgatuste Tugi",
       website: "https://noortetugi.ee/",
       logo: "/images/partners/noortealgatuste-tugi-logo.png",
-      description: Object.freeze({
-        en: "Verified workflow automation client",
-        et: "Kontrollitud töövoo automatiseerimise klient",
-        ru: "Подтверждённый клиент по автоматизации процессов",
-      }),
       captionLabel: Object.freeze({
-        en: "01 / Verified client",
-        et: "01 / Kontrollitud klient",
-        ru: "01 / Подтверждённый клиент",
+        en: "Client",
+        et: "Klient",
+        ru: "Клиент",
       }),
       linkLabel: Object.freeze({
         en: "Visit the MTÜ Noortealgatuste Tugi website",
         et: "Külasta MTÜ Noortealgatuste Tugi veebilehte",
         ru: "Перейти на сайт MTÜ Noortealgatuste Tugi",
+      }),
+      actionLabel: Object.freeze({
+        en: "View organisation →",
+        et: "Vaata organisatsiooni →",
+        ru: "Открыть сайт →",
       }),
     }),
   ]),

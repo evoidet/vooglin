@@ -57,7 +57,7 @@ if (header && menuToggle) {
   });
 }
 
-const siteConfig = window.vooglinSiteConfig || { stats: [], clients: [], booking: {} };
+const siteConfig = window.vooglinSiteConfig || { clients: [], booking: {} };
 const pageLocale = document.documentElement.lang || "en";
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -147,95 +147,6 @@ function initialiseSavingsCalculator() {
   calculateSavings(false);
 }
 
-function animateCounter(element, target, suffix = "") {
-  const formatter = new Intl.NumberFormat(pageLocale);
-  const writeValue = (value) => {
-    element.textContent = `${formatter.format(value)}${suffix}`;
-  };
-
-  if (prefersReducedMotion.matches || typeof requestAnimationFrame !== "function") {
-    writeValue(target);
-    return;
-  }
-
-  const duration = 720;
-  let startTime;
-
-  function draw(timestamp) {
-    if (!startTime) startTime = timestamp;
-    const progress = Math.min((timestamp - startTime) / duration, 1);
-    const easedProgress = 1 - Math.pow(1 - progress, 3);
-    const current = Math.round(target * easedProgress);
-    writeValue(current);
-
-    if (progress < 1) requestAnimationFrame(draw);
-  }
-
-  requestAnimationFrame(draw);
-}
-
-function initialiseStatistics() {
-  const section = document.querySelector("[data-statistics-section]");
-  const grid = section?.querySelector("[data-statistics-grid]");
-  if (!section || !grid) return;
-
-  const verifiedClientCount = configuredClients().length;
-  const stats = Array.isArray(siteConfig.stats) ? siteConfig.stats : [];
-  const visibleCards = stats
-    .map((item) => {
-      const configuredValue = item?.id === "clientOrganisations"
-        ? verifiedClientCount
-        : Number(item?.value);
-      const value = Math.round(configuredValue);
-      const label = localisedConfigText(item?.label);
-      const suffix = typeof item?.suffix === "string" ? item.suffix : "";
-
-      if (!Number.isFinite(value) || value <= 0 || !label) return null;
-
-      const card = document.createElement("article");
-      const number = document.createElement("strong");
-      const labelElement = document.createElement("p");
-
-      card.dataset.statCard = item.id || "stat";
-      card.setAttribute("data-reveal", "");
-      number.dataset.statValue = "";
-      number.textContent = `0${suffix}`;
-      labelElement.textContent = label;
-      card.append(number, labelElement);
-
-      return { card, number, value, suffix };
-    })
-    .filter(Boolean);
-
-  if (!visibleCards.length) {
-    section.hidden = true;
-    return;
-  }
-
-  grid.replaceChildren(...visibleCards.map(({ card }) => card));
-  section.hidden = false;
-
-  let hasAnimated = false;
-  const showCounters = () => {
-    if (hasAnimated) return;
-    hasAnimated = true;
-    visibleCards.forEach(({ number, value, suffix }) => animateCounter(number, value, suffix));
-  };
-
-  if (typeof IntersectionObserver !== "function") {
-    showCounters();
-    return;
-  }
-
-  const observer = new IntersectionObserver(([entry]) => {
-    if (!entry.isIntersecting) return;
-    observer.disconnect();
-    showCounters();
-  }, { threshold: 0.2 });
-
-  observer.observe(section);
-}
-
 function localisedConfigText(value) {
   if (typeof value === "string") return value;
   if (!value || typeof value !== "object") return "";
@@ -278,18 +189,64 @@ function configuredPeople() {
   });
 }
 
-function createBouncingClientLogo(stage, logo, toggleButton) {
+function initialiseClientCount(element, target, section) {
+  if (!element) return;
+  const finalValue = String(target).padStart(2, "0");
+  if (prefersReducedMotion.matches || typeof IntersectionObserver !== "function") {
+    element.textContent = finalValue;
+    return;
+  }
+
+  element.textContent = "00";
+  const observer = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    observer.disconnect();
+    const duration = 850;
+    let startTime = 0;
+    const update = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min(1, (timestamp - startTime) / duration);
+      const eased = 1 - ((1 - progress) ** 3);
+      element.textContent = String(Math.round(target * eased)).padStart(2, "0");
+      if (progress < 1) requestAnimationFrame(update);
+    };
+    requestAnimationFrame(update);
+  }, { threshold: 0.35 });
+  observer.observe(section);
+}
+
+function createBouncingClientLogos(stage, movers, toggleButton) {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const saveData = navigator.connection?.saveData === true;
   const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory < 4;
   const supportsIntersectionObserver = typeof IntersectionObserver === "function";
-  let bounds = { width: 0, height: 0, logoWidth: 0, logoHeight: 0 };
-  let x = 0;
-  let y = 0;
-  let velocityX = 42;
-  let velocityY = 34;
+  const directionSeeds = [
+    [0.78, 0.63],
+    [-0.72, 0.69],
+    [0.66, -0.75],
+    [-0.81, -0.58],
+    [0.58, 0.82],
+    [-0.62, 0.78],
+    [0.84, -0.54],
+    [-0.76, -0.65],
+  ];
+  const sprites = movers.map((element, index) => ({
+    element,
+    index,
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+    velocityX: 0,
+    velocityY: 0,
+    hovered: false,
+    focused: false,
+  }));
+  let bounds = { width: 0, height: 0, inset: 18 };
+  let obstacles = [];
   let lastTime = 0;
   let animationFrame = 0;
+  let measureFrame = 0;
   let isInView = !supportsIntersectionObserver;
   let isDestroyed = false;
   let userPaused = false;
@@ -301,15 +258,78 @@ function createBouncingClientLogo(stage, logo, toggleButton) {
     lastTime = 0;
   };
 
-  const placeLogo = () => {
-    logo.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`;
+  const placeSprite = (sprite) => {
+    sprite.element.style.transform = `translate3d(${Math.round(sprite.x)}px, ${Math.round(sprite.y)}px, 0)`;
   };
 
-  const useStaticPosition = () => {
-    x = Math.max(0, (bounds.width - bounds.logoWidth) / 2);
-    y = Math.max(0, (bounds.height - bounds.logoHeight) / 2);
-    logo.dataset.clientMotionState = "static";
-    placeLogo();
+  const overlaps = (x, y, width, height, obstacle, padding = 0) => (
+    x < obstacle.right + padding
+    && x + width > obstacle.left - padding
+    && y < obstacle.bottom + padding
+    && y + height > obstacle.top - padding
+  );
+
+  const findOpenPosition = (sprite, preferredX, preferredY, placed = []) => {
+    const minimumX = bounds.inset;
+    const minimumY = bounds.inset;
+    const maximumX = Math.max(minimumX, bounds.width - sprite.width - bounds.inset);
+    const maximumY = Math.max(minimumY, bounds.height - sprite.height - bounds.inset);
+    const clampX = (value) => Math.min(maximumX, Math.max(minimumX, value));
+    const clampY = (value) => Math.min(maximumY, Math.max(minimumY, value));
+    const overlapArea = (x, y, width, height, obstacle, padding) => {
+      const overlapWidth = Math.max(0, Math.min(x + width, obstacle.right + padding) - Math.max(x, obstacle.left - padding));
+      const overlapHeight = Math.max(0, Math.min(y + height, obstacle.bottom + padding) - Math.max(y, obstacle.top - padding));
+      return overlapWidth * overlapHeight;
+    };
+    const blockageScore = (x, y) => {
+      const obstacleScore = obstacles.reduce(
+        (total, obstacle) => total + overlapArea(x, y, sprite.width, sprite.height, obstacle, 12),
+        0,
+      );
+      const moverScore = placed.reduce((total, other) => total + overlapArea(x, y, sprite.width, sprite.height, {
+        left: other.x,
+        top: other.y,
+        right: other.x + other.width,
+        bottom: other.y + other.height,
+      }, 18), 0);
+      return obstacleScore + moverScore;
+    };
+    const preferred = { x: clampX(preferredX), y: clampY(preferredY) };
+    let best = preferred;
+    let bestScore = blockageScore(preferred.x, preferred.y);
+    if (bestScore === 0) return preferred;
+
+    const columns = 7;
+    const rows = 6;
+    for (let row = 0; row < rows; row += 1) {
+      for (let column = 0; column < columns; column += 1) {
+        const x = clampX(minimumX + ((maximumX - minimumX) * (column / Math.max(1, columns - 1))));
+        const y = clampY(minimumY + ((maximumY - minimumY) * (row / Math.max(1, rows - 1))));
+        const score = blockageScore(x, y);
+        if (score === 0) return { x, y };
+        if (score < bestScore) {
+          best = { x, y };
+          bestScore = score;
+        }
+      }
+    }
+
+    return best;
+  };
+
+  const useStaticPositions = () => {
+    const placed = [];
+    sprites.forEach((sprite, index) => {
+      if (sprite.element.hidden || !sprite.width) return;
+      const preferredX = ((bounds.width - sprite.width) / 2) + ((index % 3) - 1) * (sprite.width * 0.52);
+      const preferredY = ((bounds.height - sprite.height) / 2) + (Math.floor(index / 3) * (sprite.height + 18));
+      const position = findOpenPosition(sprite, preferredX, preferredY, placed);
+      sprite.x = position.x;
+      sprite.y = position.y;
+      sprite.element.dataset.clientMotionState = "static";
+      placeSprite(sprite);
+      placed.push(sprite);
+    });
   };
 
   const canAnimate = () => isInView
@@ -318,7 +338,48 @@ function createBouncingClientLogo(stage, logo, toggleButton) {
     && !saveData
     && !lowMemory
     && !userPaused
-    && bounds.logoWidth > 0;
+    && sprites.some((sprite) => !sprite.element.hidden && !sprite.hovered && !sprite.focused && sprite.width > 0);
+
+  const resolveObstacleCollision = (sprite, previousX, previousY) => {
+    obstacles.forEach((obstacle) => {
+      if (!overlaps(sprite.x, sprite.y, sprite.width, sprite.height, obstacle, 8)) return;
+      const minimum = bounds.inset;
+      const maximumX = Math.max(minimum, bounds.width - sprite.width - bounds.inset);
+      const maximumY = Math.max(minimum, bounds.height - sprite.height - bounds.inset);
+      const candidates = [
+        { axis: "x", value: obstacle.left - sprite.width - 8, velocity: -Math.abs(sprite.velocityX) },
+        { axis: "x", value: obstacle.right + 8, velocity: Math.abs(sprite.velocityX) },
+        { axis: "y", value: obstacle.top - sprite.height - 8, velocity: -Math.abs(sprite.velocityY) },
+        { axis: "y", value: obstacle.bottom + 8, velocity: Math.abs(sprite.velocityY) },
+      ].filter((candidate) => candidate.axis === "x"
+        ? candidate.value >= minimum && candidate.value <= maximumX
+        : candidate.value >= minimum && candidate.value <= maximumY);
+
+      const cameFromLeft = previousX + sprite.width <= obstacle.left;
+      const cameFromRight = previousX >= obstacle.right;
+      const cameFromTop = previousY + sprite.height <= obstacle.top;
+      const cameFromBottom = previousY >= obstacle.bottom;
+      const preferredAxis = cameFromLeft || cameFromRight ? "x" : cameFromTop || cameFromBottom ? "y" : null;
+      candidates.sort((first, second) => {
+        const firstPenalty = preferredAxis && first.axis !== preferredAxis ? 100000 : 0;
+        const secondPenalty = preferredAxis && second.axis !== preferredAxis ? 100000 : 0;
+        const firstPosition = first.axis === "x" ? sprite.x : sprite.y;
+        const secondPosition = second.axis === "x" ? sprite.x : sprite.y;
+        return (Math.abs(first.value - firstPosition) + firstPenalty)
+          - (Math.abs(second.value - secondPosition) + secondPenalty);
+      });
+
+      const correction = candidates[0];
+      if (!correction) return;
+      if (correction.axis === "x") {
+        sprite.x = correction.value;
+        sprite.velocityX = correction.velocity;
+      } else {
+        sprite.y = correction.value;
+        sprite.velocityY = correction.velocity;
+      }
+    });
+  };
 
   const animate = (timestamp) => {
     if (!canAnimate()) {
@@ -329,73 +390,141 @@ function createBouncingClientLogo(stage, logo, toggleButton) {
     if (!lastTime) lastTime = timestamp;
     const delta = Math.min((timestamp - lastTime) / 1000, 0.05);
     lastTime = timestamp;
-    x += velocityX * delta;
-    y += velocityY * delta;
+    sprites.forEach((sprite) => {
+      if (sprite.element.hidden || sprite.hovered || sprite.focused || !sprite.width) return;
+      const previousX = sprite.x;
+      const previousY = sprite.y;
+      const minimum = bounds.inset;
+      const maximumX = Math.max(minimum, bounds.width - sprite.width - bounds.inset);
+      const maximumY = Math.max(minimum, bounds.height - sprite.height - bounds.inset);
 
-    const maximumX = Math.max(0, bounds.width - bounds.logoWidth);
-    const maximumY = Math.max(0, bounds.height - bounds.logoHeight);
+      if (maximumX > minimum) {
+        sprite.x += sprite.velocityX * delta;
+      } else {
+        sprite.x = Math.max(0, (bounds.width - sprite.width) / 2);
+        sprite.velocityX = 0;
+      }
+      if (maximumY > minimum) {
+        sprite.y += sprite.velocityY * delta;
+      } else {
+        sprite.y = Math.max(0, (bounds.height - sprite.height) / 2);
+        sprite.velocityY = 0;
+      }
 
-    if (x <= 0 || x >= maximumX) {
-      x = Math.min(maximumX, Math.max(0, x));
-      velocityX *= -1;
-    }
-    if (y <= 0 || y >= maximumY) {
-      y = Math.min(maximumY, Math.max(0, y));
-      velocityY *= -1;
-    }
+      if (maximumX > minimum && (sprite.x <= minimum || sprite.x >= maximumX)) {
+        sprite.x = Math.min(maximumX, Math.max(minimum, sprite.x));
+        sprite.velocityX *= -1;
+      }
+      if (maximumY > minimum && (sprite.y <= minimum || sprite.y >= maximumY)) {
+        sprite.y = Math.min(maximumY, Math.max(minimum, sprite.y));
+        sprite.velocityY *= -1;
+      }
 
-    placeLogo();
+      resolveObstacleCollision(sprite, previousX, previousY);
+      sprite.x = Math.min(maximumX, Math.max(minimum, sprite.x));
+      sprite.y = Math.min(maximumY, Math.max(minimum, sprite.y));
+      placeSprite(sprite);
+    });
     animationFrame = requestAnimationFrame(animate);
   };
 
   const sync = () => {
     stop();
     if (canAnimate()) {
-      logo.dataset.clientMotionState = "running";
+      sprites.forEach((sprite) => {
+        sprite.element.dataset.clientMotionState = sprite.hovered || sprite.focused ? "interaction-paused" : "running";
+      });
       animationFrame = requestAnimationFrame(animate);
     } else if (reducedMotion.matches || saveData || lowMemory) {
-      useStaticPosition();
+      useStaticPositions();
     } else {
-      logo.dataset.clientMotionState = "paused";
-      placeLogo();
+      sprites.forEach((sprite) => {
+        sprite.element.dataset.clientMotionState = "paused";
+        placeSprite(sprite);
+      });
+    }
+  };
+
+  const syncInteraction = (sprite) => {
+    sprite.element.dataset.clientMotionState = sprite.hovered || sprite.focused ? "interaction-paused" : "running";
+    if (!canAnimate()) {
+      stop();
+      return;
+    }
+    if (!animationFrame) {
+      lastTime = 0;
+      animationFrame = requestAnimationFrame(animate);
     }
   };
 
   const measure = () => {
-    const logoRect = logo.getBoundingClientRect();
-    const previousMaximumX = Math.max(1, bounds.width - bounds.logoWidth);
-    const previousMaximumY = Math.max(1, bounds.height - bounds.logoHeight);
-    const relativeX = x / previousMaximumX;
-    const relativeY = y / previousMaximumY;
-
+    measureFrame = 0;
+    stop();
+    const previousBounds = bounds;
+    const stageRect = stage.getBoundingClientRect();
     bounds = {
       width: stage.clientWidth,
       height: stage.clientHeight,
-      logoWidth: logoRect.width,
-      logoHeight: logoRect.height,
+      inset: stage.clientWidth <= 480 ? 12 : 20,
     };
+    obstacles = Array.from(stage.querySelectorAll("[data-client-safe-zone]"))
+      .filter((element) => !element.hidden)
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          left: Math.max(0, rect.left - stageRect.left - 14),
+          top: Math.max(0, rect.top - stageRect.top - 14),
+          right: Math.min(bounds.width, rect.right - stageRect.left + 14),
+          bottom: Math.min(bounds.height, rect.bottom - stageRect.top + 14),
+        };
+      })
+      .filter((obstacle) => obstacle.right > obstacle.left && obstacle.bottom > obstacle.top);
 
-    const maximumX = Math.max(0, bounds.width - bounds.logoWidth);
-    const maximumY = Math.max(0, bounds.height - bounds.logoHeight);
-    x = hasMeasured ? Math.min(maximumX, Math.max(0, relativeX * maximumX)) : maximumX * 0.14;
-    y = hasMeasured ? Math.min(maximumY, Math.max(0, relativeY * maximumY)) : maximumY * 0.22;
-    const directionX = Math.sign(velocityX) || 1;
-    const directionY = Math.sign(velocityY) || 1;
-    const speedFactor = bounds.width <= 480 ? 0.62 : 1;
-    velocityX = directionX * 42 * speedFactor;
-    velocityY = directionY * 34 * speedFactor;
+    const placed = [];
+    sprites.forEach((sprite, index) => {
+      const rect = sprite.element.getBoundingClientRect();
+      const previousTravelX = Math.max(1, previousBounds.width - sprite.width - (previousBounds.inset * 2));
+      const previousTravelY = Math.max(1, previousBounds.height - sprite.height - (previousBounds.inset * 2));
+      const relativeX = (sprite.x - previousBounds.inset) / previousTravelX;
+      const relativeY = (sprite.y - previousBounds.inset) / previousTravelY;
+      sprite.width = rect.width;
+      sprite.height = rect.height;
+
+      const maximumX = Math.max(bounds.inset, bounds.width - sprite.width - bounds.inset);
+      const maximumY = Math.max(bounds.inset, bounds.height - sprite.height - bounds.inset);
+      const preferredX = hasMeasured
+        ? bounds.inset + (Math.max(0, Math.min(1, relativeX)) * (maximumX - bounds.inset))
+        : bounds.inset + ((maximumX - bounds.inset) * ((0.18 + (index * 0.29)) % 0.82));
+      const preferredY = hasMeasured
+        ? bounds.inset + (Math.max(0, Math.min(1, relativeY)) * (maximumY - bounds.inset))
+        : bounds.inset + ((maximumY - bounds.inset) * ((0.27 + (index * 0.31)) % 0.78));
+      const position = findOpenPosition(sprite, preferredX, preferredY, placed);
+      sprite.x = position.x;
+      sprite.y = position.y;
+
+      const speed = bounds.width <= 480 ? 23 : bounds.width <= 840 ? 29 : 36;
+      const [directionX, directionY] = directionSeeds[index % directionSeeds.length];
+      sprite.velocityX = directionX * speed;
+      sprite.velocityY = directionY * speed;
+      placeSprite(sprite);
+      if (!sprite.element.hidden && sprite.width) placed.push(sprite);
+    });
+
     hasMeasured = true;
-    placeLogo();
     sync();
   };
 
-  const scheduleMeasure = () => requestAnimationFrame(measure);
+  const scheduleMeasure = () => {
+    if (measureFrame) cancelAnimationFrame(measureFrame);
+    measureFrame = requestAnimationFrame(measure);
+  };
   const resizeObserver = typeof ResizeObserver === "function"
     ? new ResizeObserver(scheduleMeasure)
     : null;
   if (resizeObserver) {
     resizeObserver.observe(stage);
-    resizeObserver.observe(logo);
+    sprites.forEach((sprite) => resizeObserver.observe(sprite.element));
+    stage.querySelectorAll("[data-client-safe-zone]").forEach((element) => resizeObserver.observe(element));
   } else {
     window.addEventListener("resize", scheduleMeasure, { passive: true });
   }
@@ -410,6 +539,7 @@ function createBouncingClientLogo(stage, logo, toggleButton) {
 
   const handleVisibility = sync;
   const handlePageHide = stop;
+  const handlePageShow = scheduleMeasure;
   const updateToggle = () => {
     if (!toggleButton) return;
     const motionUnavailable = reducedMotion.matches || saveData || lowMemory;
@@ -420,7 +550,7 @@ function createBouncingClientLogo(stage, logo, toggleButton) {
       : (toggleButton.dataset.pauseLabel || "Pause logo motion");
   };
   const handleMotion = () => {
-    if (reducedMotion.matches) useStaticPosition();
+    if (reducedMotion.matches) useStaticPositions();
     updateToggle();
     sync();
   };
@@ -432,8 +562,32 @@ function createBouncingClientLogo(stage, logo, toggleButton) {
 
   document.addEventListener("visibilitychange", handleVisibility);
   window.addEventListener("pagehide", handlePageHide);
+  window.addEventListener("pageshow", handlePageShow);
   reducedMotion.addEventListener?.("change", handleMotion);
   toggleButton?.addEventListener("click", handleToggle);
+  const interactionHandlers = sprites.map((sprite) => {
+    const handlePointerEnter = () => {
+      sprite.hovered = true;
+      syncInteraction(sprite);
+    };
+    const handlePointerLeave = () => {
+      sprite.hovered = false;
+      syncInteraction(sprite);
+    };
+    const handleFocus = () => {
+      sprite.focused = true;
+      syncInteraction(sprite);
+    };
+    const handleBlur = () => {
+      sprite.focused = false;
+      syncInteraction(sprite);
+    };
+    sprite.element.addEventListener("pointerenter", handlePointerEnter);
+    sprite.element.addEventListener("pointerleave", handlePointerLeave);
+    sprite.element.addEventListener("focus", handleFocus);
+    sprite.element.addEventListener("blur", handleBlur);
+    return { sprite, handlePointerEnter, handlePointerLeave, handleFocus, handleBlur };
+  });
   updateToggle();
   requestAnimationFrame(measure);
 
@@ -442,13 +596,21 @@ function createBouncingClientLogo(stage, logo, toggleButton) {
       if (isDestroyed) return;
       isDestroyed = true;
       stop();
+      if (measureFrame) cancelAnimationFrame(measureFrame);
       resizeObserver?.disconnect();
       if (!resizeObserver) window.removeEventListener("resize", scheduleMeasure);
       visibilityObserver?.disconnect();
       document.removeEventListener("visibilitychange", handleVisibility);
       window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("pageshow", handlePageShow);
       reducedMotion.removeEventListener?.("change", handleMotion);
       toggleButton?.removeEventListener("click", handleToggle);
+      interactionHandlers.forEach(({ sprite, handlePointerEnter, handlePointerLeave, handleFocus, handleBlur }) => {
+        sprite.element.removeEventListener("pointerenter", handlePointerEnter);
+        sprite.element.removeEventListener("pointerleave", handlePointerLeave);
+        sprite.element.removeEventListener("focus", handleFocus);
+        sprite.element.removeEventListener("blur", handleBlur);
+      });
     },
   };
 }
@@ -463,39 +625,58 @@ function initialiseClients() {
   const people = configuredPeople();
   if (!section || !stage || !caption || !clients.length) return;
 
-  const featuredClient = clients[0];
-  const movingLogo = document.createElement("div");
-  const movingImage = document.createElement("img");
+  const movingClients = clients.slice(0, 8);
+  const countElement = section.querySelector("[data-client-count]");
+  section.dataset.clientCount = String(Math.min(movingClients.length, 6));
+  initialiseClientCount(countElement, clients.length, section);
 
-  movingLogo.className = "client-moving-logo";
-  movingLogo.setAttribute("aria-hidden", "true");
-  movingImage.src = featuredClient.logo;
-  movingImage.alt = "";
-  movingImage.width = 1000;
-  movingImage.height = 405;
-  movingImage.loading = "lazy";
-  movingImage.decoding = "async";
-  movingLogo.append(movingImage);
+  const movingLogos = movingClients.map((client) => {
+    const name = localisedConfigText(client.name);
+    const website = safeWebUrl(client.website || client.url);
+    const linkLabel = localisedConfigText(client.linkLabel) || name;
+    const actionLabel = localisedConfigText(client.actionLabel) || "View organisation →";
+    const movingLogo = document.createElement("a");
+    const logoSurface = document.createElement("span");
+    const movingImage = document.createElement("img");
+    const action = document.createElement("span");
+
+    movingLogo.className = "client-moving-logo";
+    movingLogo.href = website;
+    movingLogo.target = "_blank";
+    movingLogo.rel = "noopener noreferrer";
+    movingLogo.setAttribute("aria-label", linkLabel);
+    logoSurface.className = "client-logo-surface";
+    movingImage.src = client.logo;
+    movingImage.alt = "";
+    movingImage.width = 1000;
+    movingImage.height = 405;
+    movingImage.loading = "lazy";
+    movingImage.decoding = "async";
+    action.className = "client-logo-action";
+    action.textContent = actionLabel;
+    logoSurface.append(movingImage, action);
+    movingLogo.append(logoSurface);
+    movingImage.addEventListener("error", () => {
+      movingLogo.hidden = true;
+    }, { once: true });
+    return movingLogo;
+  });
 
   const captionEntries = clients.map((client, index) => {
     const name = localisedConfigText(client.name);
-    const description = localisedConfigText(client.description);
     const website = safeWebUrl(client.website || client.url);
     const linkLabel = localisedConfigText(client.linkLabel) || name;
     const entry = document.createElement("div");
     const captionCopy = document.createElement("div");
     const captionLabel = document.createElement("span");
     const captionName = document.createElement("strong");
-    const captionDescription = document.createElement("small");
     const websiteLink = document.createElement("a");
 
     entry.className = "client-caption-entry";
     captionCopy.className = "client-caption-copy";
-    captionLabel.textContent = localisedConfigText(client.captionLabel)
-      || `${String(index + 1).padStart(2, "0")} / Verified client`;
+    captionLabel.textContent = `${String(index + 1).padStart(2, "0")} / ${localisedConfigText(client.captionLabel) || "Client"}`;
     captionName.textContent = name;
-    captionDescription.textContent = description;
-    captionCopy.append(captionLabel, captionName, captionDescription);
+    captionCopy.append(captionLabel, captionName);
 
     websiteLink.className = "client-website-link";
     websiteLink.href = website;
@@ -507,7 +688,7 @@ function initialiseClients() {
     return entry;
   });
 
-  stage.append(movingLogo);
+  stage.append(...movingLogos);
   caption.replaceChildren(...captionEntries);
   if (peopleContainer && people.length) {
     const peopleCards = people.map((person) => {
@@ -537,19 +718,8 @@ function initialiseClients() {
     peopleContainer.replaceChildren(...peopleCards);
     peopleContainer.hidden = false;
   }
-  const handleLogoError = () => {
-    movingLogo.hidden = true;
-    stage.classList.add("is-logo-missing");
-  };
-  movingImage.addEventListener("error", handleLogoError, { once: true });
-  if (movingImage.complete) {
-    if (movingImage.naturalWidth > 0) createBouncingClientLogo(stage, movingLogo, motionToggle);
-    else handleLogoError();
-  } else {
-    movingImage.addEventListener("load", () => createBouncingClientLogo(stage, movingLogo, motionToggle), { once: true });
-  }
-
   section.hidden = false;
+  requestAnimationFrame(() => createBouncingClientLogos(stage, movingLogos, motionToggle));
 }
 
 function initialiseScrollReveal() {
@@ -590,6 +760,54 @@ function initialiseScrollReveal() {
   };
 
   prefersReducedMotion.addEventListener?.("change", handleMotionChange, { once: true });
+}
+
+function initialiseAmbientSurfaces() {
+  const surfaces = Array.from(document.querySelectorAll("[data-ambient-stars]"));
+  if (!surfaces.length) return;
+
+  const saveData = navigator.connection?.saveData === true;
+  const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory < 4;
+  const visibility = new WeakMap();
+  const supportsIntersectionObserver = typeof IntersectionObserver === "function";
+  const motionAllowed = () => !prefersReducedMotion.matches && !saveData && !lowMemory;
+  const sync = () => {
+    surfaces.forEach((surface) => {
+      const isVisible = visibility.get(surface) !== false;
+      surface.classList.toggle("is-ambient-active", motionAllowed() && isVisible && !document.hidden);
+      surface.classList.toggle("is-ambient-static", !motionAllowed());
+    });
+  };
+  const observer = supportsIntersectionObserver
+    ? new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          visibility.set(entry.target, entry.isIntersecting);
+        });
+        sync();
+      }, { rootMargin: "18% 0px" })
+    : null;
+
+  surfaces.forEach((surface) => {
+    surface.classList.add("ambient-stars-host");
+    const layer = document.createElement("span");
+    layer.className = "ambient-layer ambient-stars-layer";
+    layer.setAttribute("aria-hidden", "true");
+    surface.prepend(layer);
+
+    if (observer) {
+      visibility.set(surface, false);
+      observer.observe(surface);
+    } else {
+      visibility.set(surface, true);
+    }
+  });
+
+  const handlePageHide = () => surfaces.forEach((surface) => surface.classList.remove("is-ambient-active"));
+  document.addEventListener("visibilitychange", sync);
+  window.addEventListener("pagehide", handlePageHide);
+  window.addEventListener("pageshow", sync);
+  prefersReducedMotion.addEventListener?.("change", sync);
+  sync();
 }
 
 function initialiseBooking() {
@@ -873,8 +1091,8 @@ function initialiseSplitStory() {
     section.style.setProperty("--split-reveal-y", `${Math.round((1 - revealProgress) * 18)}px`);
   };
 
-  const scheduleUpdate = () => {
-    if (!isActive || updateFrame) return;
+  const scheduleUpdate = (force = false) => {
+    if ((!isActive && !force) || updateFrame) return;
     updateFrame = requestAnimationFrame(update);
   };
 
@@ -886,24 +1104,22 @@ function initialiseSplitStory() {
     : null;
   observer?.observe(section);
 
-  window.addEventListener("scroll", scheduleUpdate, { passive: true });
+  window.addEventListener("scroll", () => scheduleUpdate(), { passive: true });
   window.addEventListener("resize", () => {
-    isActive = true;
-    scheduleUpdate();
+    scheduleUpdate(true);
   }, { passive: true });
   reducedMotion.addEventListener?.("change", () => {
-    isActive = true;
-    scheduleUpdate();
+    scheduleUpdate(true);
   });
   update();
 }
 
 initialiseSavingsCalculator();
-initialiseStatistics();
 initialiseClients();
 initialiseBooking();
 initialiseSplitStory();
 initialiseScrollReveal();
+initialiseAmbientSurfaces();
 
 function createWordmarkNetwork(canvas) {
   const context = canvas.getContext("2d");
