@@ -1114,10 +1114,154 @@ function initialiseSplitStory() {
   update();
 }
 
+function initialiseWorkflowFlows() {
+  const flows = Array.from(document.querySelectorAll("[data-workflow-flow]"));
+  if (!flows.length) return;
+
+  const mobileFlow = window.matchMedia("(max-width: 720px)");
+  const saveData = navigator.connection?.saveData === true;
+  const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory < 4;
+  const supportsIntersectionObserver = typeof IntersectionObserver === "function";
+  const motionAllowed = () => !prefersReducedMotion.matches && !saveData && !lowMemory;
+
+  document.documentElement.classList.add("workflow-flow-ready");
+
+  flows.forEach((flow) => {
+    const mode = flow.dataset.flowMode === "loop" ? "loop" : "replay";
+    let animationFrame = 0;
+    let restartFrame = 0;
+    let startedAt = 0;
+    let isInView = !supportsIntersectionObserver;
+    let isArmed = true;
+    const routeLengths = new WeakMap();
+
+    const activeKind = () => mobileFlow.matches ? "mobile" : "desktop";
+    const activeRoute = () => flow.querySelector(`[data-flow-route="${activeKind()}"]`);
+    const activePacket = () => flow.querySelector(`[data-flow-packet="${activeKind()}"]`);
+
+    function stopAnimation() {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+      if (restartFrame) cancelAnimationFrame(restartFrame);
+      animationFrame = 0;
+      restartFrame = 0;
+      startedAt = 0;
+    }
+
+    function resetFlow() {
+      stopAnimation();
+      flow.classList.remove("is-flow-active", "is-flow-complete", "is-flow-static");
+      flow.querySelectorAll("[data-flow-packet]").forEach((packet) => {
+        packet.removeAttribute("transform");
+        packet.style.removeProperty("opacity");
+      });
+    }
+
+    function showStaticFlow() {
+      stopAnimation();
+      flow.classList.remove("is-flow-active", "is-flow-complete");
+      flow.classList.add("is-flow-static");
+    }
+
+    function animatePacket(timestamp) {
+      const route = activeRoute();
+      const packet = activePacket();
+      if (!route || !packet || !isInView || document.hidden || !motionAllowed()) {
+        animationFrame = 0;
+        return;
+      }
+
+      if (!startedAt) startedAt = timestamp;
+      const elapsed = timestamp - startedAt;
+      const travelDuration = mode === "loop" ? 6100 : 3400;
+      const cycleDuration = mode === "loop" ? 7600 : travelDuration;
+      const cycleTime = mode === "loop" ? elapsed % cycleDuration : Math.min(elapsed, travelDuration);
+      const progress = Math.min(1, cycleTime / travelDuration);
+      let routeLength = routeLengths.get(route);
+      if (!routeLength) {
+        routeLength = route.getTotalLength();
+        routeLengths.set(route, routeLength);
+      }
+      const point = route.getPointAtLength(routeLength * progress);
+
+      packet.setAttribute("transform", `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)})`);
+      packet.style.opacity = mode === "loop" && cycleTime > travelDuration ? "0" : "";
+
+      if (mode === "replay" && progress >= 1) {
+        flow.classList.remove("is-flow-active");
+        flow.classList.add("is-flow-complete");
+        animationFrame = 0;
+        return;
+      }
+
+      animationFrame = requestAnimationFrame(animatePacket);
+    }
+
+    function startFlow() {
+      if (!isInView || document.hidden) return;
+      if (!motionAllowed()) {
+        showStaticFlow();
+        return;
+      }
+
+      resetFlow();
+      restartFrame = requestAnimationFrame(() => {
+        restartFrame = requestAnimationFrame(() => {
+          restartFrame = 0;
+          if (!isInView || document.hidden || !motionAllowed()) return;
+          flow.classList.add("is-flow-active");
+          animationFrame = requestAnimationFrame(animatePacket);
+        });
+      });
+    }
+
+    const observer = supportsIntersectionObserver
+      ? new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            isInView = entry.isIntersecting;
+            if (entry.isIntersecting && isArmed) {
+              isArmed = false;
+              startFlow();
+            } else if (!entry.isIntersecting) {
+              isArmed = true;
+              resetFlow();
+            }
+          });
+        }, { threshold: 0, rootMargin: "-12% 0px -12%" })
+      : null;
+
+    observer?.observe(flow);
+    if (!observer) startFlow();
+
+    const handleMotionChange = () => {
+      if (!motionAllowed()) showStaticFlow();
+      else if (isInView) startFlow();
+    };
+    const handleLayoutChange = () => {
+      resetFlow();
+      if (isInView) startFlow();
+    };
+    const handleVisibilityChange = () => {
+      if (document.hidden) stopAnimation();
+      else if (isInView) startFlow();
+    };
+    const handlePageHide = stopAnimation;
+    const handlePageShow = () => {
+      if (isInView) startFlow();
+    };
+
+    prefersReducedMotion.addEventListener?.("change", handleMotionChange);
+    mobileFlow.addEventListener?.("change", handleLayoutChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handlePageHide);
+    window.addEventListener("pageshow", handlePageShow);
+  });
+}
+
 initialiseSavingsCalculator();
 initialiseClients();
 initialiseBooking();
 initialiseSplitStory();
+initialiseWorkflowFlows();
 initialiseScrollReveal();
 initialiseAmbientSurfaces();
 
