@@ -31,7 +31,7 @@ window.vooglinSiteConfig = Object.freeze({
   // Future approved portraits: { approved: true, name, role: { en, et, ru }, image: "/images/people/file.webp" }
   people: Object.freeze([]),
   booking: Object.freeze({
-    endpoint: "/api/booking",
+    endpoint: "/api/meeting",
     recipient: "egor@vooglin.ee",
     durationMinutes: 30,
     minimumLeadDays: 1,

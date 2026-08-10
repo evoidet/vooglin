@@ -5,6 +5,10 @@ const DEFAULT_BOOKING_POLICY = Object.freeze({
   preferredTimes: Object.freeze(["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"]),
 });
 
+const SMTP2GO_ENDPOINT = "https://api.smtp2go.com/v3/email/send";
+const MAX_REQUEST_BYTES = 16384;
+const ALLOWED_LOCALES = new Set(["en", "et", "ru"]);
+
 export function normaliseBookingPolicy(value = {}) {
   const configuredDuration = Math.round(Number(value.durationMinutes));
   const minimumLeadDays = Math.max(0, Math.round(Number(value.minimumLeadDays) || 0));
@@ -38,9 +42,50 @@ function bookingJson(payload, status = 200, extraHeaders = {}) {
   });
 }
 
-function normaliseBookingText(value, maximumLength) {
-  if (typeof value !== "string") return "";
-  return value.trim().replace(/\s+/g, " ").slice(0, maximumLength);
+function normaliseSingleLine(value, maximumLength, required = false) {
+  if (typeof value !== "string"
+    || value.length > maximumLength
+    || /[\0\r\n]/.test(value)) {
+    return null;
+  }
+
+  const normalised = value.trim().replace(/\s+/g, " ");
+  return required && !normalised ? null : normalised;
+}
+
+function normaliseMessage(value, maximumLength) {
+  if (typeof value !== "string" || value.length > maximumLength || value.includes("\0")) {
+    return null;
+  }
+
+  const normalised = value.replace(/\r\n?/g, "\n").trim();
+  return normalised || null;
+}
+
+function isValidEmailAddress(value) {
+  if (typeof value !== "string" || value.length > 254 || /[\0\s<>]/.test(value)) return false;
+
+  const atIndex = value.indexOf("@");
+  if (atIndex <= 0 || atIndex !== value.lastIndexOf("@")) return false;
+
+  const localPart = value.slice(0, atIndex);
+  const domain = value.slice(atIndex + 1);
+  if (localPart.length > 64
+    || !domain
+    || domain.length > 253
+    || localPart.startsWith(".")
+    || localPart.endsWith(".")
+    || localPart.includes("..")
+    || !/^[a-z0-9.!#$%&'*+/=?^_{|}~-]+$/i.test(localPart)) {
+    return false;
+  }
+
+  const labels = domain.split(".");
+  return labels.length > 1 && labels.every((label) => (
+    label.length >= 1
+    && label.length <= 63
+    && /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i.test(label)
+  ));
 }
 
 function tallinnDateKey(daysFromNow) {
@@ -71,19 +116,39 @@ function bookingDateEpoch(value) {
 }
 
 function validateBookingRequest(body, bookingPolicy) {
+  const name = normaliseSingleLine(body.name, 120, true);
+  const organisation = normaliseSingleLine(body.organisation, 120, true);
+  const email = normaliseSingleLine(body.email, 254, true);
+  const phone = normaliseSingleLine(body.phone, 40);
+  const message = normaliseMessage(body.message, 2000);
+  const preferredDate = normaliseSingleLine(body.preferredDate, 10, true);
+  const preferredTime = normaliseSingleLine(body.preferredTime, 5, true);
+  const locale = normaliseSingleLine(body.locale, 5, true);
+
+  if (name === null
+    || organisation === null
+    || email === null
+    || phone === null
+    || message === null
+    || preferredDate === null
+    || preferredTime === null
+    || locale === null) {
+    return null;
+  }
+
   const booking = {
-    name: normaliseBookingText(body.name, 120),
-    organisation: normaliseBookingText(body.organisation, 120),
-    email: normaliseBookingText(body.email, 254).toLowerCase(),
-    phone: normaliseBookingText(body.phone, 40),
-    message: normaliseBookingText(body.message, 2000),
-    preferredDate: normaliseBookingText(body.preferredDate, 10),
-    preferredTime: normaliseBookingText(body.preferredTime, 5),
-    locale: normaliseBookingText(body.locale, 5),
-    sourcePage: normaliseBookingText(body.sourcePage, 500),
+    name,
+    organisation,
+    email,
+    phone,
+    message,
+    preferredDate,
+    preferredTime,
+    locale,
     durationMinutes: bookingPolicy.durationMinutes,
   };
-  const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(booking.email);
+  const emailIsValid = isValidEmailAddress(booking.email);
+  const localeIsValid = ALLOWED_LOCALES.has(booking.locale);
   const timeIsValid = bookingPolicy.preferredTimes.includes(booking.preferredTime);
   const requestedDate = bookingDateEpoch(booking.preferredDate);
   const earliestDate = bookingDateEpoch(tallinnDateKey(bookingPolicy.minimumLeadDays));
@@ -92,11 +157,57 @@ function validateBookingRequest(body, bookingPolicy) {
     && requestedDate >= earliestDate
     && requestedDate <= latestDate;
 
-  if (!booking.name || !booking.organisation || !booking.message || !emailIsValid || !timeIsValid || !dateInRange) {
+  if (!emailIsValid || !localeIsValid || !timeIsValid || !dateInRange) {
     return null;
   }
 
   return booking;
+}
+
+function deliveryConfiguration(env) {
+  const apiKey = typeof env?.SMTP2GO_API_KEY === "string" ? env.SMTP2GO_API_KEY.trim() : "";
+  const sender = typeof env?.SMTP2GO_SENDER === "string" ? env.SMTP2GO_SENDER.trim() : "";
+  const receiver = typeof env?.CONTACT_RECEIVER === "string" ? env.CONTACT_RECEIVER.trim() : "";
+
+  if (!apiKey
+    || apiKey.length > 512
+    || /[\0\r\n]/.test(apiKey)
+    || !isValidEmailAddress(sender)
+    || !isValidEmailAddress(receiver)) {
+    return null;
+  }
+
+  return { apiKey, sender, receiver };
+}
+
+function bookingEmailBody(booking) {
+  return [
+    "VOOGLIN — UUS KOHTUMISPÄRING",
+    "",
+    "Nimi:",
+    booking.name,
+    "",
+    "Ettevõte / organisatsioon:",
+    booking.organisation || "-",
+    "",
+    "E-post:",
+    booking.email,
+    "",
+    "Telefon:",
+    booking.phone || "-",
+    "",
+    "Mida soovite automatiseerida?",
+    booking.message,
+    "",
+    "Soovitud kuupäev:",
+    booking.preferredDate,
+    "",
+    "Soovitud kellaaeg:",
+    `${booking.preferredTime} (Europe/Tallinn)`,
+    "",
+    "Saadetud veebilehelt:",
+    "vooglin.ee",
+  ].join("\n");
 }
 
 export async function handleBookingRequest(request, env, policy = DEFAULT_BOOKING_POLICY) {
@@ -110,7 +221,7 @@ export async function handleBookingRequest(request, env, policy = DEFAULT_BOOKIN
   const origin = request.headers.get("Origin");
   if (!origin) return bookingJson({ ok: false, code: "origin_not_allowed" }, 403);
   try {
-    if (new URL(origin).host !== requestUrl.host) {
+    if (new URL(origin).origin !== requestUrl.origin) {
       return bookingJson({ ok: false, code: "origin_not_allowed" }, 403);
     }
   } catch {
@@ -118,8 +229,12 @@ export async function handleBookingRequest(request, env, policy = DEFAULT_BOOKIN
   }
 
   const contentType = request.headers.get("Content-Type") || "";
-  const contentLength = Number(request.headers.get("Content-Length") || 0);
-  if (!contentType.toLowerCase().startsWith("application/json") || contentLength > 16384) {
+  const contentLengthHeader = request.headers.get("Content-Length");
+  const contentLength = contentLengthHeader === null ? 0 : Number(contentLengthHeader);
+  if (!/^application\/json(?:\s*;|$)/i.test(contentType)
+    || !Number.isFinite(contentLength)
+    || contentLength < 0
+    || contentLength > MAX_REQUEST_BYTES) {
     return bookingJson({ ok: false, code: "invalid_request" }, 400);
   }
 
@@ -129,7 +244,7 @@ export async function handleBookingRequest(request, env, policy = DEFAULT_BOOKIN
   } catch {
     return bookingJson({ ok: false, code: "invalid_json" }, 400);
   }
-  if (new TextEncoder().encode(rawBody).byteLength > 16384) {
+  if (new TextEncoder().encode(rawBody).byteLength > MAX_REQUEST_BYTES) {
     return bookingJson({ ok: false, code: "invalid_request" }, 400);
   }
 
@@ -144,7 +259,10 @@ export async function handleBookingRequest(request, env, policy = DEFAULT_BOOKIN
     return bookingJson({ ok: false, code: "invalid_request" }, 400);
   }
 
-  if (normaliseBookingText(body.website, 200)) {
+  if (typeof body.website !== "string") {
+    return bookingJson({ ok: false, code: "invalid_request" }, 400);
+  }
+  if (body.website.length > 200 || body.website.trim()) {
     return bookingJson({ ok: true });
   }
 
@@ -161,68 +279,55 @@ export async function handleBookingRequest(request, env, policy = DEFAULT_BOOKIN
   const booking = validateBookingRequest(body, bookingPolicy);
   if (!booking) return bookingJson({ ok: false, code: "validation_failed" }, 400);
 
-  const webhookValue = typeof env?.BOOKING_WEBHOOK_URL === "string" ? env.BOOKING_WEBHOOK_URL : "";
-  let webhookUrl;
-  try {
-    webhookUrl = new URL(webhookValue);
-  } catch {
-    return bookingJson({ ok: false, code: "delivery_not_configured" }, 503);
-  }
-  if (webhookUrl.protocol !== "https:") {
+  const configuration = deliveryConfiguration(env);
+  if (!configuration) {
     return bookingJson({ ok: false, code: "delivery_not_configured" }, 503);
   }
 
   const requestId = crypto.randomUUID();
-  const webhookHeaders = {
-    "Content-Type": "application/json",
-    "X-Vooglin-Request-Id": requestId,
-  };
-  if (typeof env?.BOOKING_WEBHOOK_TOKEN === "string" && env.BOOKING_WEBHOOK_TOKEN) {
-    webhookHeaders.Authorization = "Bearer " + env.BOOKING_WEBHOOK_TOKEN;
-  }
-
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
   let deliveryResponse;
+  let deliveryResult;
 
   try {
-    deliveryResponse = await fetch(webhookUrl.href, {
+    deliveryResponse = await fetch(SMTP2GO_ENDPOINT, {
       method: "POST",
-      headers: webhookHeaders,
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json; charset=utf-8",
+        "X-Smtp2go-Api-Key": configuration.apiKey,
+      },
       body: JSON.stringify({
-        event: "vooglin.booking_request",
-        requestId,
-        receivedAt: new Date().toISOString(),
-        recipient: typeof env?.BOOKING_RECIPIENT_EMAIL === "string" && env.BOOKING_RECIPIENT_EMAIL
-          ? env.BOOKING_RECIPIENT_EMAIL
-          : "egor@vooglin.ee",
-        contact: {
-          name: booking.name,
-          organisation: booking.organisation,
-          email: booking.email,
-          phone: booking.phone,
-        },
-        meeting: {
-          preferredDate: booking.preferredDate,
-          preferredTime: booking.preferredTime,
-          timezone: "Europe/Tallinn",
-          durationMinutes: booking.durationMinutes,
-        },
-        request: booking.message,
-        context: {
-          locale: booking.locale,
-          sourcePage: booking.sourcePage,
-        },
+        sender: configuration.sender,
+        to: [configuration.receiver],
+        subject: "Vooglin — uus kohtumispäring",
+        text_body: bookingEmailBody(booking),
+        custom_headers: [
+          { header: "Reply-To", value: booking.email },
+        ],
       }),
       signal: controller.signal,
     });
+    if (!deliveryResponse.ok) {
+      return bookingJson({ ok: false, code: "delivery_failed" }, 502);
+    }
+    deliveryResult = await deliveryResponse.json();
   } catch {
     return bookingJson({ ok: false, code: "delivery_failed" }, 502);
   } finally {
     clearTimeout(timeout);
   }
 
-  if (!deliveryResponse.ok) {
+  const deliveryData = deliveryResult?.data;
+  const wasAccepted = deliveryData?.succeeded === 1
+    && deliveryData?.failed === 0
+    && Array.isArray(deliveryData?.failures)
+    && deliveryData.failures.length === 0
+    && typeof deliveryData?.email_id === "string"
+    && deliveryData.email_id.trim().length > 0;
+
+  if (!wasAccepted) {
     return bookingJson({ ok: false, code: "delivery_failed" }, 502);
   }
 

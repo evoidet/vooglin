@@ -18,7 +18,7 @@ npm run build
 
 The build packages all pages, search metadata, brand assets, the social preview image and the booking-request API into a deployment-ready Sites Worker, and writes the static `public/` output used by Vercel.
 
-The plain Python preview serves static files only. It can display and validate the booking form, but successful delivery requires either the built Sites Worker or the Vercel Function in `api/booking.js`, with the booking environment values below configured in the deployment target that serves the site.
+The plain Python preview serves static files only. It can display and validate the booking form, but successful delivery requires either the built Sites Worker or the Vercel Function in `api/meeting.js`, with the SMTP2GO environment values below configured in the deployment target that serves the site.
 
 ## Edit the content
 
@@ -38,14 +38,14 @@ The plain Python preview serves static files only. It can display and validate t
 
 ## Booking request delivery
 
-The form submits to `POST /api/booking`. It creates a meeting request, not a confirmed calendar booking. The endpoint is included in the generated Sites Worker and in `api/booking.js` for Vercel. Both report success only after an owner-controlled HTTPS webhook accepts the request.
+The form submits to `POST /api/meeting`. It creates a meeting request, not a confirmed calendar booking. The endpoint is included in the generated Sites Worker and in `api/meeting.js` for Vercel. The legacy `/api/booking` route remains as a compatibility alias. Both report success only after SMTP2GO confirms that the single owner notification was accepted.
 
 Configure these runtime values in the hosting environment that actually serves the site (Sites or Vercel):
 
-- `BOOKING_WEBHOOK_URL` — required HTTPS webhook that delivers the request to the owner.
-- `BOOKING_WEBHOOK_TOKEN` — optional bearer token for that webhook.
-- `BOOKING_RECIPIENT_EMAIL` — optional recipient override; defaults to `egor@vooglin.ee`.
+- `SMTP2GO_API_KEY` — required SMTP2GO API key. Keep it server-side and never prefix it with `VITE_`, `PUBLIC_` or `NEXT_PUBLIC_`.
+- `SMTP2GO_SENDER` — required sender email address verified in SMTP2GO.
+- `CONTACT_RECEIVER` — required email address that receives website requests.
 
-The webhook receives plain JSON containing the contact details, requested Tallinn date/time, configured meeting duration, automation description, locale and source page. It can send the owner notification and, if desired, a visitor confirmation email. When delivery is not configured or fails, the website shows a prefilled email fallback instead of a false success message.
+The server sends one UTF-8 plain-text notification to `CONTACT_RECEIVER` through the official SMTP2GO API. `SMTP2GO_SENDER` always remains the verified sender, and the validated visitor email is used only as `Reply-To`. No automatic visitor email is sent. When delivery is not configured, rejected or unavailable, the website shows an error and a prefilled email fallback instead of a false success message.
 
-The endpoint validates the configured date range and preferred times, requires a same-origin form submission, limits request size, and uses a honeypot plus form-timing checks. For higher traffic, add a host-level rate limit in Sites/Vercel or in the receiving webhook; the project has no durable rate-limit store today.
+The endpoint validates required fields, email, field lengths, the configured date range and preferred times; requires a same-origin JSON submission; limits request size; and uses a honeypot plus form-timing checks. SMTP2GO HTTP and API-level results must both confirm success. For higher traffic, add a host-level rate limit in Sites or Vercel; the project has no durable rate-limit store today.

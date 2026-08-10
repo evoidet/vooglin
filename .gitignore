@@ -1,3 +1,8 @@
 dist/
 public/
 *.tgz
+node_modules/
+.vercel/
+.env
+.env.*
+!.env.example

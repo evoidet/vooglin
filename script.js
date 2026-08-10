@@ -1324,7 +1324,7 @@ function initialiseBooking() {
 
   const endpoint = typeof booking.endpoint === "string" && booking.endpoint.startsWith("/")
     ? booking.endpoint
-    : "/api/booking";
+    : "/api/meeting";
   const recipient = typeof booking.recipient === "string" && booking.recipient.includes("@")
     ? booking.recipient
     : "egor@vooglin.ee";
@@ -1346,11 +1346,13 @@ function initialiseBooking() {
   let formStartedAt = Date.now();
   let activeSubmission = 0;
   let requestController = null;
+  let isSubmitting = false;
 
   function cancelPendingSubmission() {
     activeSubmission += 1;
     requestController?.abort();
     requestController = null;
+    isSubmitting = false;
   }
 
   function tallinnDate(daysFromNow) {
@@ -1384,7 +1386,6 @@ function initialiseBooking() {
 
   function resetView() {
     cancelPendingSubmission();
-    form.reset();
     if (dateInput instanceof HTMLInputElement) {
       dateInput.min = tallinnDate(minimumLeadDays);
       dateInput.max = tallinnDate(maximumDaysAhead);
@@ -1483,6 +1484,7 @@ function initialiseBooking() {
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (isSubmitting) return;
     if (!form.checkValidity()) {
       form.reportValidity();
       focusFirstInvalidField();
@@ -1500,13 +1502,13 @@ function initialiseBooking() {
       preferredTime: String(values.preferredTime || ""),
       website: String(values.website || ""),
       locale: pageLocale,
-      sourcePage: window.location.href,
       durationMinutes,
       formStartedAt,
       submittedAt: Date.now(),
     };
     const submissionId = ++activeSubmission;
     requestController = new AbortController();
+    isSubmitting = true;
 
     form.setAttribute("aria-busy", "true");
     submitButton.disabled = true;
@@ -1523,8 +1525,18 @@ function initialiseBooking() {
         signal: requestController.signal,
       });
       if (submissionId !== activeSubmission) return;
-      if (!response.ok) throw new Error("Booking request was not accepted");
 
+      let result;
+      try {
+        result = await response.json();
+      } catch {
+        throw new Error("Booking request returned an invalid response");
+      }
+      if (submissionId !== activeSubmission) return;
+      if (!response.ok || result?.ok !== true) throw new Error("Booking request was not accepted");
+
+      form.reset();
+      formStartedAt = Date.now();
       form.hidden = true;
       formView.hidden = true;
       successView.hidden = false;
@@ -1539,6 +1551,7 @@ function initialiseBooking() {
     } finally {
       if (submissionId !== activeSubmission) return;
       requestController = null;
+      isSubmitting = false;
       form.removeAttribute("aria-busy");
       submitButton.disabled = false;
       submitButton.textContent = submitButton.dataset.defaultLabel || "Send meeting request";
