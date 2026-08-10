@@ -58,12 +58,16 @@ const favicon = createIco(entries.filter(({ size }) => [16, 32, 48, 96, 256].inc
 
 await Promise.all([
   writeFile(path.join(outputDirectory, "vooglin-v-black.png"), bySize.get(512)),
-  writeFile(path.join(outputDirectory, "vooglin-v-black-48x48.png"), bySize.get(48)),
-  writeFile(path.join(outputDirectory, "vooglin-v-black-96x96.png"), bySize.get(96)),
-  writeFile(path.join(outputDirectory, "vooglin-v-black-192x192.png"), bySize.get(192)),
-  writeFile(path.join(outputDirectory, "vooglin-v-black-apple-touch-icon.png"), bySize.get(180)),
-  writeFile(path.join(outputDirectory, "vooglin-v-black-organization-logo.png"), bySize.get(512)),
-  writeFile(path.join(outputDirectory, "vooglin-v-black.ico"), favicon),
+  writeFile(path.join(outputDirectory, "favicon.png"), bySize.get(512)),
+  writeFile(path.join(outputDirectory, "favicon-16x16.png"), bySize.get(16)),
+  writeFile(path.join(outputDirectory, "favicon-32x32.png"), bySize.get(32)),
+  writeFile(path.join(outputDirectory, "favicon-48x48.png"), bySize.get(48)),
+  writeFile(path.join(outputDirectory, "favicon-96x96.png"), bySize.get(96)),
+  writeFile(path.join(outputDirectory, "favicon-192x192.png"), bySize.get(192)),
+  writeFile(path.join(outputDirectory, "favicon-512x512.png"), bySize.get(512)),
+  writeFile(path.join(outputDirectory, "apple-touch-icon.png"), bySize.get(180)),
+  writeFile(path.join(outputDirectory, "vooglin-organization-logo.png"), bySize.get(512)),
+  writeFile(path.join(outputDirectory, "favicon.ico"), favicon),
 ]);
 
-console.log("Rendered the dedicated black-and-white Vooglin V asset suite.");
+console.log("Rendered the canonical black-and-white Vooglin V asset suite.");

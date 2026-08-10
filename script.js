@@ -810,6 +810,502 @@ function initialiseAmbientSurfaces() {
   sync();
 }
 
+function initialisePointerDataField() {
+  const hostSelector = [
+    "main > section",
+    "main > .privacy-layout",
+    ".calculator-shell",
+    ".client-motion-stage",
+    ".privacy-contact-card",
+    "footer",
+  ].join(", ");
+  const hosts = Array.from(document.querySelectorAll(hostSelector));
+  if (!hosts.length || typeof window.matchMedia !== "function") return;
+
+  const finePointer = window.matchMedia("(any-hover: hover) and (any-pointer: fine)");
+  const connection = navigator.connection;
+  const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory < 4;
+  const darkSurfaceSelector = [
+    ".hero",
+    ".example",
+    ".split-story",
+    ".pricing-hero",
+    ".quote-process",
+    ".contact",
+    ".privacy-hero",
+    ".privacy-contact-card",
+    ".calculator-shell",
+    ".client-motion-stage",
+    "footer",
+  ].join(", ");
+  const interactiveSelector = [
+    "a",
+    "button",
+    "input",
+    "select",
+    "textarea",
+    "[role='button']",
+    ".service-row",
+    ".pricing-row",
+    ".client-moving-logo",
+  ].join(", ");
+  const excludedSelector = "[data-booking-modal], .mobile-nav";
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d", { alpha: true });
+  if (!context) return;
+
+  canvas.className = "vooglin-data-field ambient-layer";
+  canvas.setAttribute("aria-hidden", "true");
+
+  const pointer = {
+    x: 0,
+    y: 0,
+    targetX: 0,
+    targetY: 0,
+    clientX: 0,
+    clientY: 0,
+    hasPosition: false,
+    inside: false,
+  };
+  const trail = [];
+  const bursts = [];
+  const tau = Math.PI * 2;
+
+  let activeHost = null;
+  let canvasRect = null;
+  let cssWidth = 0;
+  let cssHeight = 0;
+  let animationFrame = 0;
+  let layoutFrame = 0;
+  let lastFrameTime = 0;
+  let lastTrailX = 0;
+  let lastTrailY = 0;
+  let presence = 0;
+  let presenceTarget = 0;
+  let hoverStrength = 1;
+  let hoverTarget = 1;
+  let usesDarkPalette = true;
+
+  const canRun = () => (
+    finePointer.matches
+    && !prefersReducedMotion.matches
+    && connection?.saveData !== true
+    && !lowMemory
+    && !document.hidden
+  );
+
+  function stopAnimation() {
+    if (!animationFrame) return;
+    cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+  }
+
+  function clearCanvas() {
+    if (cssWidth > 0 && cssHeight > 0) context.clearRect(0, 0, cssWidth, cssHeight);
+  }
+
+  function detachCanvas() {
+    stopAnimation();
+    clearCanvas();
+    trail.length = 0;
+    bursts.length = 0;
+    presence = 0;
+    presenceTarget = 0;
+    pointer.inside = false;
+    activeHost?.classList.remove("vooglin-data-field-host");
+    activeHost = null;
+    canvasRect = null;
+    canvas.remove();
+  }
+
+  function resizeCanvas() {
+    if (!activeHost || !canvas.isConnected) return;
+
+    const hostRect = activeHost.getBoundingClientRect();
+    if (hostRect.width < 1 || hostRect.height < 1) return;
+
+    const viewportHeight = Math.max(1, window.innerHeight);
+    const layerHeight = Math.min(viewportHeight, hostRect.height);
+    const hostDocumentTop = hostRect.top + window.scrollY;
+    const maximumTop = Math.max(0, activeHost.scrollHeight - layerHeight);
+    const layerTop = Math.min(maximumTop, Math.max(0, window.scrollY - hostDocumentTop));
+
+    canvas.style.top = `${layerTop}px`;
+    canvas.style.height = `${layerHeight}px`;
+    canvasRect = canvas.getBoundingClientRect();
+    cssWidth = canvasRect.width;
+    cssHeight = canvasRect.height;
+
+    const maximumBackingPixels = 4000000;
+    const areaLimitedRatio = Math.sqrt(maximumBackingPixels / Math.max(1, cssWidth * cssHeight));
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5, areaLimitedRatio);
+    const nextWidth = Math.max(1, Math.round(cssWidth * pixelRatio));
+    const nextHeight = Math.max(1, Math.round(cssHeight * pixelRatio));
+    if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
+      canvas.width = nextWidth;
+      canvas.height = nextHeight;
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    }
+
+    if (pointer.hasPosition) {
+      pointer.targetX = pointer.clientX - canvasRect.left;
+      pointer.targetY = pointer.clientY - canvasRect.top;
+      if (!pointer.inside) {
+        pointer.x = pointer.targetX;
+        pointer.y = pointer.targetY;
+      }
+    }
+  }
+
+  function scheduleLayout() {
+    if (!activeHost || layoutFrame) return;
+    layoutFrame = requestAnimationFrame(() => {
+      layoutFrame = 0;
+      resizeCanvas();
+      if (!pointer.hasPosition || !canRun()) return;
+
+      const target = document.elementFromPoint(pointer.clientX, pointer.clientY);
+      updateTarget(target);
+    });
+  }
+
+  function setHost(nextHost) {
+    if (activeHost === nextHost) return;
+
+    activeHost?.classList.remove("vooglin-data-field-host");
+    activeHost = nextHost;
+    trail.length = 0;
+    bursts.length = 0;
+    presence = 0;
+
+    if (!activeHost) {
+      canvas.remove();
+      canvasRect = null;
+      return;
+    }
+
+    activeHost.classList.add("vooglin-data-field-host");
+    activeHost.prepend(canvas);
+    resizeCanvas();
+  }
+
+  function resolveHost(target) {
+    if (!(target instanceof Element) || target.closest(excludedSelector)) return null;
+    const host = target.closest(hostSelector);
+    return hosts.includes(host) ? host : null;
+  }
+
+  function updateTarget(target) {
+    const nextHost = resolveHost(target);
+    if (!nextHost) {
+      pointer.inside = false;
+      presenceTarget = 0;
+      hoverTarget = 1;
+      startAnimation();
+      return;
+    }
+
+    const hostChanged = nextHost !== activeHost;
+    setHost(nextHost);
+    if (!canvasRect) resizeCanvas();
+    if (!canvasRect) return;
+
+    pointer.targetX = pointer.clientX - canvasRect.left;
+    pointer.targetY = pointer.clientY - canvasRect.top;
+    if (!pointer.inside || hostChanged) {
+      pointer.x = pointer.targetX;
+      pointer.y = pointer.targetY;
+      lastTrailX = pointer.targetX;
+      lastTrailY = pointer.targetY;
+    }
+
+    pointer.inside = true;
+    presenceTarget = 1;
+    usesDarkPalette = Boolean(target.closest(darkSurfaceSelector));
+    hoverTarget = target.closest(interactiveSelector) ? 1.22 : 1;
+    startAnimation();
+  }
+
+  function hashPoint(x, y) {
+    const value = Math.sin((x * 12.9898) + (y * 78.233)) * 43758.5453;
+    return value - Math.floor(value);
+  }
+
+  function emitTrail() {
+    const deltaX = pointer.targetX - lastTrailX;
+    const deltaY = pointer.targetY - lastTrailY;
+    const distance = Math.hypot(deltaX, deltaY);
+    if (distance < 15) return;
+
+    const count = Math.min(3, Math.floor(distance / 18));
+    const now = performance.now();
+    for (let index = 1; index <= count; index += 1) {
+      const ratio = index / count;
+      const seed = hashPoint(Math.round(pointer.targetX + index), Math.round(pointer.targetY - index));
+      trail.push({
+        x: lastTrailX + (deltaX * ratio),
+        y: lastTrailY + (deltaY * ratio),
+        born: now - ((count - index) * 20),
+        life: 300 + (seed * 110),
+        size: 0.7 + (seed * 0.8),
+        accent: usesDarkPalette && seed > 0.9,
+      });
+    }
+    if (trail.length > 10) trail.splice(0, trail.length - 10);
+    lastTrailX = pointer.targetX;
+    lastTrailY = pointer.targetY;
+  }
+
+  function createBurst(x, y) {
+    const particles = Array.from({ length: 6 }, (_, index) => {
+      const angle = (index / 6) * tau;
+      return {
+        cos: Math.cos(angle),
+        sin: Math.sin(angle),
+      };
+    });
+
+    bursts.push({
+      x,
+      y,
+      born: performance.now(),
+      life: 480,
+      dark: usesDarkPalette,
+      particles,
+    });
+    if (bursts.length > 3) bursts.shift();
+  }
+
+  function drawGlow() {
+    const radius = (usesDarkPalette ? 112 : 96) / Math.max(1, hoverStrength * 0.92);
+    const gradient = context.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, radius);
+
+    if (usesDarkPalette) {
+      gradient.addColorStop(0, `rgba(241, 242, 235, ${0.05 * presence * hoverStrength})`);
+      gradient.addColorStop(0.42, `rgba(221, 255, 106, ${0.012 * presence * hoverStrength})`);
+    } else {
+      gradient.addColorStop(0, `rgba(20, 21, 18, ${0.022 * presence * hoverStrength})`);
+      gradient.addColorStop(0.42, `rgba(20, 21, 18, ${0.007 * presence * hoverStrength})`);
+    }
+    gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+    context.fillStyle = gradient;
+    context.beginPath();
+    context.arc(pointer.x, pointer.y, radius, 0, tau);
+    context.fill();
+  }
+
+  function drawDataPoints() {
+    const spacing = 42;
+    const radius = usesDarkPalette ? 126 : 108;
+    const startX = Math.floor((pointer.x - radius) / spacing) * spacing;
+    const endX = pointer.x + radius;
+    const startY = Math.floor((pointer.y - radius) / spacing) * spacing;
+    const endY = pointer.y + radius;
+
+    for (let baseX = startX; baseX <= endX; baseX += spacing) {
+      for (let baseY = startY; baseY <= endY; baseY += spacing) {
+        const gridX = Math.round(baseX / spacing);
+        const gridY = Math.round(baseY / spacing);
+        const seed = hashPoint(gridX, gridY);
+        const originX = baseX + ((seed - 0.5) * 9);
+        const originY = baseY + ((hashPoint(gridY, gridX) - 0.5) * 9);
+        const deltaX = originX - pointer.x;
+        const deltaY = originY - pointer.y;
+        const distance = Math.hypot(deltaX, deltaY);
+        if (distance > radius || distance < 0.1) continue;
+
+        const proximity = 1 - (distance / radius);
+        const force = proximity * proximity;
+        const displacement = force * (usesDarkPalette ? 5.5 : 3);
+        const x = originX + ((deltaX / distance) * displacement);
+        const y = originY + ((deltaY / distance) * displacement);
+        const size = seed > 0.82 ? 1.5 : 1;
+        const alpha = usesDarkPalette
+          ? (0.1 + (force * 0.28)) * presence * hoverStrength
+          : (0.025 + (force * 0.075)) * presence * hoverStrength;
+        const usesAccent = usesDarkPalette && seed > 0.93 && proximity > 0.32;
+
+        context.fillStyle = usesAccent
+          ? `rgba(221, 255, 106, ${Math.min(0.38, alpha)})`
+          : usesDarkPalette
+            ? `rgba(244, 244, 238, ${alpha})`
+            : `rgba(24, 25, 22, ${alpha})`;
+        context.fillRect(x - (size / 2), y - (size / 2), size, size);
+      }
+    }
+  }
+
+  function drawTrail(now) {
+    for (let index = trail.length - 1; index >= 0; index -= 1) {
+      const particle = trail[index];
+      const progress = (now - particle.born) / particle.life;
+      if (progress >= 1) {
+        trail.splice(index, 1);
+        continue;
+      }
+
+      const alpha = (1 - progress) * (usesDarkPalette ? 0.28 : 0.08);
+      context.fillStyle = particle.accent
+        ? `rgba(221, 255, 106, ${alpha})`
+        : usesDarkPalette
+          ? `rgba(244, 244, 238, ${alpha})`
+          : `rgba(28, 29, 26, ${alpha})`;
+      context.fillRect(particle.x, particle.y, particle.size, particle.size);
+    }
+  }
+
+  function drawBursts(now) {
+    for (let index = bursts.length - 1; index >= 0; index -= 1) {
+      const burst = bursts[index];
+      const progress = (now - burst.born) / burst.life;
+      if (progress >= 1) {
+        bursts.splice(index, 1);
+        continue;
+      }
+
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const alpha = (1 - progress) * (burst.dark ? 0.3 : 0.11);
+      const ringRadius = 7 + (eased * 22);
+      context.strokeStyle = burst.dark
+        ? `rgba(221, 255, 106, ${alpha})`
+        : `rgba(31, 32, 29, ${alpha})`;
+      context.lineWidth = 1;
+      context.beginPath();
+      context.arc(burst.x, burst.y, ringRadius, 0, tau);
+      context.stroke();
+
+      burst.particles.forEach((particle) => {
+        const travel = 5 + (eased * 20);
+        const x = burst.x + (particle.cos * travel);
+        const y = burst.y + (particle.sin * travel);
+        context.fillStyle = burst.dark
+          ? `rgba(242, 243, 235, ${alpha * 0.8})`
+          : `rgba(31, 32, 29, ${alpha * 0.7})`;
+        context.fillRect(x - 0.75, y - 0.75, 1.5, 1.5);
+      });
+    }
+  }
+
+  function drawFrame(now) {
+    animationFrame = 0;
+    if (!canRun() || !activeHost || !canvasRect) {
+      if (!canRun()) detachCanvas();
+      return;
+    }
+
+    if (lastFrameTime && (now - lastFrameTime) < 14) {
+      animationFrame = requestAnimationFrame(drawFrame);
+      return;
+    }
+    lastFrameTime = now;
+
+    pointer.x += (pointer.targetX - pointer.x) * 0.28;
+    pointer.y += (pointer.targetY - pointer.y) * 0.28;
+    presence += (presenceTarget - presence) * 0.2;
+    hoverStrength += (hoverTarget - hoverStrength) * 0.18;
+    emitTrail();
+
+    clearCanvas();
+    if (presence > 0.005) {
+      drawGlow();
+      drawDataPoints();
+    }
+    drawTrail(now);
+    drawBursts(now);
+
+    const pointerIsMoving = Math.abs(pointer.targetX - pointer.x) > 0.15
+      || Math.abs(pointer.targetY - pointer.y) > 0.15;
+    const presenceIsMoving = Math.abs(presenceTarget - presence) > 0.008;
+    const hoverIsMoving = Math.abs(hoverTarget - hoverStrength) > 0.008;
+    if (pointerIsMoving || presenceIsMoving || hoverIsMoving || trail.length || bursts.length) {
+      animationFrame = requestAnimationFrame(drawFrame);
+    } else if (presenceTarget === 0) {
+      clearCanvas();
+    }
+  }
+
+  function startAnimation() {
+    if (!canRun() || animationFrame) return;
+    animationFrame = requestAnimationFrame(drawFrame);
+  }
+
+  function handlePointerMove(event) {
+    if (event.pointerType && event.pointerType !== "mouse") return;
+    if (!canRun()) {
+      detachCanvas();
+      return;
+    }
+
+    pointer.clientX = event.clientX;
+    pointer.clientY = event.clientY;
+    pointer.hasPosition = true;
+    updateTarget(event.target);
+  }
+
+  function handlePointerDown(event) {
+    if (event.button !== 0 || (event.pointerType && event.pointerType !== "mouse") || !canRun()) return;
+
+    pointer.clientX = event.clientX;
+    pointer.clientY = event.clientY;
+    pointer.hasPosition = true;
+    updateTarget(event.target);
+    if (!pointer.inside || !canvasRect) return;
+
+    pointer.targetX = event.clientX - canvasRect.left;
+    pointer.targetY = event.clientY - canvasRect.top;
+    createBurst(pointer.targetX, pointer.targetY);
+    startAnimation();
+  }
+
+  function handlePointerExit(event) {
+    if (event.relatedTarget) return;
+    pointer.inside = false;
+    presenceTarget = 0;
+    hoverTarget = 1;
+    startAnimation();
+  }
+
+  function handlePolicyChange() {
+    if (!canRun()) {
+      detachCanvas();
+      return;
+    }
+
+    if (pointer.hasPosition) {
+      const target = document.elementFromPoint(pointer.clientX, pointer.clientY);
+      updateTarget(target);
+    }
+  }
+
+  function handlePageHide() {
+    pointer.hasPosition = false;
+    detachCanvas();
+  }
+
+  function handleVisibilityChange() {
+    if (document.hidden) {
+      pointer.hasPosition = false;
+      detachCanvas();
+      return;
+    }
+    handlePolicyChange();
+  }
+
+  window.addEventListener("pointermove", handlePointerMove, { passive: true });
+  window.addEventListener("pointerdown", handlePointerDown, { passive: true });
+  window.addEventListener("pointerout", handlePointerExit, { passive: true });
+  window.addEventListener("blur", handlePointerExit);
+  window.addEventListener("scroll", scheduleLayout, { passive: true });
+  window.addEventListener("resize", scheduleLayout, { passive: true });
+  window.addEventListener("pagehide", handlePageHide);
+  window.addEventListener("pageshow", handlePolicyChange);
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  prefersReducedMotion.addEventListener?.("change", handlePolicyChange);
+  finePointer.addEventListener?.("change", handlePolicyChange);
+  connection?.addEventListener?.("change", handlePolicyChange);
+}
+
 function initialiseBooking() {
   const modal = document.querySelector("[data-booking-modal]");
   const form = modal?.querySelector("[data-booking-form]");
@@ -1264,6 +1760,7 @@ initialiseSplitStory();
 initialiseWorkflowFlows();
 initialiseScrollReveal();
 initialiseAmbientSurfaces();
+initialisePointerDataField();
 
 function createWordmarkNetwork(canvas) {
   const context = canvas.getContext("2d");

@@ -61,6 +61,31 @@ body.booking-open {
   overflow: hidden;
 }
 
+.vooglin-data-field-host {
+  position: relative;
+  isolation: isolate;
+}
+
+:where(.vooglin-data-field-host > :not(.ambient-layer):not(.vooglin-data-field)) {
+  position: relative;
+  z-index: 1;
+}
+
+.vooglin-data-field.ambient-layer {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: auto;
+  left: 0;
+  width: 100%;
+  max-width: none;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+  touch-action: none;
+  contain: strict;
+}
+
 ::selection {
   color: var(--accent-dark);
   background: var(--accent);
@@ -4756,6 +4781,10 @@ html.reveal-ready [data-reveal].is-revealed {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .vooglin-data-field {
+    display: none !important;
+  }
+
   html {
     scroll-behavior: auto;
   }
