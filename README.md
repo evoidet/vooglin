@@ -48,4 +48,6 @@ Configure these runtime values in the hosting environment that actually serves t
 
 The server sends one UTF-8 plain-text notification to `CONTACT_RECEIVER` through the official SMTP2GO API. `SMTP2GO_SENDER` always remains the verified sender, and the validated visitor email is used only as `Reply-To`. No automatic visitor email is sent. When delivery is not configured, rejected or unavailable, the website shows an error and a prefilled email fallback instead of a false success message.
 
-The endpoint validates required fields, email, field lengths, the configured date range and preferred times; requires a same-origin JSON submission; limits request size; and uses a honeypot plus form-timing checks. SMTP2GO HTTP and API-level results must both confirm success. For higher traffic, add a host-level rate limit in Sites or Vercel; the project has no durable rate-limit store today.
+The endpoint validates required fields, email, field lengths, the configured date range and preferred times; requires a same-origin JSON submission; limits request size; and uses a honeypot plus form-timing checks. Each browser submission also carries a UUID in the owner email so an ambiguous retry can be identified. SMTP2GO HTTP and API-level results must both confirm success.
+
+Before relying on the endpoint in production, add a host-level rate limit for `POST /api/*` in Sites or Vercel. The project has no durable shared rate-limit or idempotency store, so those controls cannot be implemented safely inside a stateless function alone.

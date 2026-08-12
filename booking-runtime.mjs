@@ -8,6 +8,7 @@ const DEFAULT_BOOKING_POLICY = Object.freeze({
 const SMTP2GO_ENDPOINT = "https://api.smtp2go.com/v3/email/send";
 const MAX_REQUEST_BYTES = 16384;
 const ALLOWED_LOCALES = new Set(["en", "et", "ru"]);
+const SUBMISSION_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export function normaliseBookingPolicy(value = {}) {
   const configuredDuration = Math.round(Number(value.durationMinutes));
@@ -40,6 +41,39 @@ function bookingJson(payload, status = 200, extraHeaders = {}) {
       ...extraHeaders,
     },
   });
+}
+
+async function readUtf8BodyWithinLimit(request, maximumBytes) {
+  const reader = request.body?.getReader?.();
+  if (!reader) return "";
+
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  let byteLength = 0;
+  let result = "";
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        result += decoder.decode();
+        return result;
+      }
+
+      byteLength += value.byteLength;
+      if (byteLength > maximumBytes) {
+        await reader.cancel();
+        return null;
+      }
+      result += decoder.decode(value, { stream: true });
+    }
+  } catch {
+    try {
+      await reader.cancel();
+    } catch {
+      // The stream may already be closed or errored.
+    }
+    throw new Error("invalid_request_body");
+  }
 }
 
 function normaliseSingleLine(value, maximumLength, required = false) {
@@ -116,6 +150,9 @@ function bookingDateEpoch(value) {
 }
 
 function validateBookingRequest(body, bookingPolicy) {
+  const submissionId = body.submissionId === undefined
+    ? crypto.randomUUID()
+    : normaliseSingleLine(body.submissionId, 36, true);
   const name = normaliseSingleLine(body.name, 120, true);
   const organisation = normaliseSingleLine(body.organisation, 120, true);
   const email = normaliseSingleLine(body.email, 254, true);
@@ -125,7 +162,8 @@ function validateBookingRequest(body, bookingPolicy) {
   const preferredTime = normaliseSingleLine(body.preferredTime, 5, true);
   const locale = normaliseSingleLine(body.locale, 5, true);
 
-  if (name === null
+  if (submissionId === null
+    || name === null
     || organisation === null
     || email === null
     || phone === null
@@ -137,6 +175,7 @@ function validateBookingRequest(body, bookingPolicy) {
   }
 
   const booking = {
+    submissionId,
     name,
     organisation,
     email,
@@ -148,6 +187,7 @@ function validateBookingRequest(body, bookingPolicy) {
     durationMinutes: bookingPolicy.durationMinutes,
   };
   const emailIsValid = isValidEmailAddress(booking.email);
+  const submissionIdIsValid = SUBMISSION_ID_PATTERN.test(booking.submissionId);
   const localeIsValid = ALLOWED_LOCALES.has(booking.locale);
   const timeIsValid = bookingPolicy.preferredTimes.includes(booking.preferredTime);
   const requestedDate = bookingDateEpoch(booking.preferredDate);
@@ -157,7 +197,7 @@ function validateBookingRequest(body, bookingPolicy) {
     && requestedDate >= earliestDate
     && requestedDate <= latestDate;
 
-  if (!emailIsValid || !localeIsValid || !timeIsValid || !dateInRange) {
+  if (!submissionIdIsValid || !emailIsValid || !localeIsValid || !timeIsValid || !dateInRange) {
     return null;
   }
 
@@ -240,11 +280,11 @@ export async function handleBookingRequest(request, env, policy = DEFAULT_BOOKIN
 
   let rawBody;
   try {
-    rawBody = await request.text();
+    rawBody = await readUtf8BodyWithinLimit(request, MAX_REQUEST_BYTES);
   } catch {
     return bookingJson({ ok: false, code: "invalid_json" }, 400);
   }
-  if (new TextEncoder().encode(rawBody).byteLength > MAX_REQUEST_BYTES) {
+  if (rawBody === null) {
     return bookingJson({ ok: false, code: "invalid_request" }, 400);
   }
 
@@ -305,6 +345,7 @@ export async function handleBookingRequest(request, env, policy = DEFAULT_BOOKIN
         text_body: bookingEmailBody(booking),
         custom_headers: [
           { header: "Reply-To", value: booking.email },
+          { header: "X-Vooglin-Submission-Id", value: booking.submissionId },
         ],
       }),
       signal: controller.signal,

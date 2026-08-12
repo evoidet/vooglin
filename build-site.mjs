@@ -33,8 +33,8 @@ const imageAssetTypes = new Map([
 
 const binaryAssetDefinitions = [
   { url: "/og-brand.png", filename: "og-brand.png", type: "image/png" },
-  { url: "/og-savings.png", filename: "og-brand.png", outputFilename: "og-savings.png", type: "image/png" },
   { url: "/cosmic-convergence.png", filename: "cosmic-convergence.png", type: "image/png" },
+  { url: "/cosmic-convergence.webp", filename: "cosmic-convergence.webp", type: "image/webp" },
   { url: "/vooglin-mark.png", filename: "vooglin-mark.png", type: "image/png" },
   { url: "/vooglin-v-black.png", filename: "vooglin-v-black.png", type: "image/png" },
   { url: "/egor-portrait.webp", filename: "egor-portrait.webp", type: "image/webp" },
@@ -165,9 +165,12 @@ function securityHeaders(contentType) {
     "Cache-Control": contentType.startsWith("text/html")
       ? "public, max-age=0, must-revalidate"
       : "public, max-age=86400",
+    "Content-Security-Policy": "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self' https://fonts.gstatic.com; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; manifest-src 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; upgrade-insecure-requests",
+    "Permissions-Policy": "camera=(), geolocation=(), microphone=(), payment=(), usb=()",
     "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Strict-Transport-Security": "max-age=31536000",
     "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "SAMEORIGIN",
+    "X-Frame-Options": "DENY",
   };
 }
 

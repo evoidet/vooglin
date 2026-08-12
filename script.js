@@ -1,6 +1,7 @@
 const header = document.querySelector("[data-header]");
 const menuToggle = document.querySelector(".menu-toggle");
 const mobileLinks = document.querySelectorAll(".mobile-nav a");
+const headerBrand = header?.querySelector(".header-inner > .brand");
 const year = document.querySelector("[data-year]");
 const mainContent = document.querySelector("main");
 const footer = document.querySelector("footer");
@@ -47,6 +48,7 @@ if (header && menuToggle) {
   });
 
   mobileLinks.forEach((link) => link.addEventListener("click", () => closeMenu(false)));
+  headerBrand?.addEventListener("click", () => closeMenu(false));
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && header.classList.contains("is-open")) closeMenu(true);
@@ -446,7 +448,10 @@ function createBouncingClientLogos(stage, movers, toggleButton) {
   };
 
   const syncInteraction = (sprite) => {
-    sprite.element.dataset.clientMotionState = sprite.hovered || sprite.focused ? "interaction-paused" : "running";
+    const interactionPaused = sprite.hovered || sprite.focused;
+    sprite.element.dataset.clientMotionState = interactionPaused
+      ? "interaction-paused"
+      : canAnimate() ? "running" : "paused";
     if (!canAnimate()) {
       stop();
       return;
@@ -1347,9 +1352,12 @@ function initialiseBooking() {
   let activeSubmission = 0;
   let requestController = null;
   let isSubmitting = false;
+  let requestTimeout = 0;
 
   function cancelPendingSubmission() {
     activeSubmission += 1;
+    if (requestTimeout) window.clearTimeout(requestTimeout);
+    requestTimeout = 0;
     requestController?.abort();
     requestController = null;
     isSubmitting = false;
@@ -1400,6 +1408,8 @@ function initialiseBooking() {
       status.textContent = "";
       status.setAttribute("role", "status");
     }
+    modal.setAttribute("aria-labelledby", "booking-title");
+    modal.setAttribute("aria-describedby", "booking-intro");
     if (emailFallback) emailFallback.hidden = true;
     formStartedAt = Date.now();
   }
@@ -1422,7 +1432,10 @@ function initialiseBooking() {
     if (typeof modal.close === "function" && modal.open) modal.close();
     else modal.removeAttribute("open");
     document.body.classList.remove("booking-open");
-    activeOpener?.focus();
+    const focusTarget = activeOpener?.closest(".mobile-nav")
+      ? menuToggle
+      : activeOpener?.isConnected && activeOpener.offsetParent !== null ? activeOpener : null;
+    focusTarget?.focus();
     activeOpener = null;
   }
 
@@ -1449,6 +1462,20 @@ function initialiseBooking() {
     const invalidField = form.querySelector(":invalid");
     invalidField?.focus();
   }
+
+  const trimmedRequiredFields = ["name", "organisation", "message"]
+    .map((fieldName) => form.elements.namedItem(fieldName))
+    .filter((field) => field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement);
+  function validateTrimmedRequiredFields() {
+    trimmedRequiredFields.forEach((field) => {
+      field.setCustomValidity(String(field.value).trim() ? "" : "Please enter a value.");
+    });
+  }
+  trimmedRequiredFields.forEach((field) => {
+    field.addEventListener("input", () => {
+      if (String(field.value).trim()) field.setCustomValidity("");
+    });
+  });
 
   openButtons.forEach((button) => button.addEventListener("click", openModal));
   closeButtons.forEach((button) => button.addEventListener("click", closeModal));
@@ -1485,6 +1512,7 @@ function initialiseBooking() {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (isSubmitting) return;
+    validateTrimmedRequiredFields();
     if (!form.checkValidity()) {
       form.reportValidity();
       focusFirstInvalidField();
@@ -1492,7 +1520,9 @@ function initialiseBooking() {
     }
 
     const values = Object.fromEntries(new FormData(form).entries());
+    const clientSubmissionId = crypto.randomUUID();
     const payload = {
+      submissionId: clientSubmissionId,
       name: String(values.name || "").trim(),
       organisation: String(values.organisation || "").trim(),
       email: String(values.email || "").trim(),
@@ -1508,6 +1538,11 @@ function initialiseBooking() {
     };
     const submissionId = ++activeSubmission;
     requestController = new AbortController();
+    let requestTimedOut = false;
+    requestTimeout = window.setTimeout(() => {
+      requestTimedOut = true;
+      requestController?.abort();
+    }, 10000);
     isSubmitting = true;
 
     form.setAttribute("aria-busy", "true");
@@ -1540,9 +1575,13 @@ function initialiseBooking() {
       form.hidden = true;
       formView.hidden = true;
       successView.hidden = false;
+      modal.setAttribute("aria-labelledby", "booking-success-title");
+      modal.setAttribute("aria-describedby", "booking-success-message");
       requestAnimationFrame(() => successView.focus());
     } catch (error) {
-      if (submissionId !== activeSubmission || error?.name === "AbortError") return;
+      if (submissionId !== activeSubmission) return;
+      const wasTimedOut = error?.name === "AbortError" && requestTimedOut;
+      if (error?.name === "AbortError" && !wasTimedOut) return;
       if (status) {
         status.setAttribute("role", "alert");
         status.textContent = status.dataset.errorMessage || "We could not send the request.";
@@ -1550,6 +1589,8 @@ function initialiseBooking() {
       createEmailFallback(payload);
     } finally {
       if (submissionId !== activeSubmission) return;
+      if (requestTimeout) window.clearTimeout(requestTimeout);
+      requestTimeout = 0;
       requestController = null;
       isSubmitting = false;
       form.removeAttribute("aria-busy");

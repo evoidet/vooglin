@@ -44,6 +44,7 @@ function tallinnDate(daysFromNow) {
 function validPayload(overrides = {}) {
   const submittedAt = Date.now();
   return {
+    submissionId: "123e4567-e89b-42d3-a456-426614174000",
     name: "Test Visitor",
     organisation: "Test Organisation",
     email: "visitor@example.com",
@@ -127,8 +128,39 @@ test("malformed and cross-origin requests are rejected before delivery", async (
   assert.equal(calls, 0);
 });
 
+test("chunked request bodies stop reading as soon as the byte limit is exceeded", async () => {
+  let pulls = 0;
+  let wasCancelled = false;
+  const body = new ReadableStream({
+    pull(controller) {
+      pulls += 1;
+      controller.enqueue(new Uint8Array(9000));
+    },
+    cancel() {
+      wasCancelled = true;
+    },
+  });
+  const request = new Request("https://vooglin.ee/api/meeting", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Origin": "https://vooglin.ee",
+    },
+    body,
+    duplex: "half",
+  });
+
+  const response = await handleBookingRequest(request, environment, policy);
+
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), { ok: false, code: "invalid_request" });
+  assert.equal(wasCancelled, true);
+  assert.ok(pulls <= 3, `request should stop promptly, received ${pulls} chunks`);
+});
+
 test("required fields, malformed email, locale, and field limits are enforced server-side", async () => {
   const cases = [
+    validPayload({ submissionId: "not-a-uuid" }),
     validPayload({ name: "" }),
     validPayload({ email: "not-an-email" }),
     validPayload({ locale: "de" }),
@@ -142,6 +174,24 @@ test("required fields, malformed email, locale, and field limits are enforced se
     assert.equal(response.status, 400);
     assert.equal((await response.json()).ok, false);
   }
+});
+
+test("older cached clients without a submission UUID remain compatible", async () => {
+  globalThis.fetch = async (...args) => {
+    const outbound = JSON.parse(args[1].body);
+    assert.match(
+      outbound.custom_headers.find(({ header }) => header === "X-Vooglin-Submission-Id")?.value || "",
+      /^[0-9a-f-]{36}$/i,
+    );
+    return smtp2goResponse();
+  };
+  const payload = validPayload();
+  delete payload.submissionId;
+
+  const response = await handleBookingRequest(postRequest(payload), environment, policy);
+
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).ok, true);
 });
 
 test("the honeypot returns a generic success without contacting SMTP2GO", async () => {
@@ -285,6 +335,7 @@ test("confirmed success sends exactly one UTF-8 owner notification with Reply-To
   assert.equal(outbound.subject, "Vooglin — uus kohtumispäring");
   assert.deepEqual(outbound.custom_headers, [
     { header: "Reply-To", value: "Visitor+Web@Example.com" },
+    { header: "X-Vooglin-Submission-Id", value: "123e4567-e89b-42d3-a456-426614174000" },
   ]);
   assert.equal(Object.hasOwn(outbound, "api_key"), false);
   assert.equal(Object.hasOwn(outbound, "cc"), false);

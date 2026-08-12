@@ -14,10 +14,12 @@
   <meta property="og:image" content="https://vooglin.ee/og-brand.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vooglin — practical automation for everyday work">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Practical automation for businesses and organisations.">
   <meta name="twitter:description" content="Vooglin connects forms, spreadsheets, email and documents into clear workflows that handle repetitive work.">
   <meta name="twitter:image" content="https://vooglin.ee/og-brand.png">
+  <meta name="twitter:image:alt" content="Vooglin — practical automation for everyday work">
   <title>Workflow automation for businesses and organisations | Vooglin</title>
   <link rel="canonical" href="https://vooglin.ee/">
   <link rel="alternate" hreflang="en" href="https://vooglin.ee/">
@@ -34,9 +36,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260810-pointer-icons">
-  <script src="/site-config.js?v=20260810-pointer-icons" defer></script>
-  <script src="/script.js?v=20260810-pointer-icons" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20260812-final-qa">
+  <script src="/site-config.js?v=20260812-final-qa" defer></script>
+  <script src="/script.js?v=20260812-final-qa" defer></script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -93,7 +95,6 @@
           <a href="/et/" lang="et" hreflang="et">ET</a>
           <a href="/ru/" lang="ru" hreflang="ru">RU</a>
         </nav>
-        <a class="header-cta" href="mailto:egor@vooglin.ee" data-booking-open>Book a call</a>
       </div>
 
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" data-menu-label="Menu" data-close-label="Close">
@@ -537,8 +538,8 @@
 
       <div class="booking-success" data-booking-success hidden tabindex="-1">
         <p class="eyebrow eyebrow-dark"><span></span> Request received</p>
-        <h2>Your request has been sent.</h2>
-        <p>I will contact you shortly.</p>
+        <h2 id="booking-success-title">Your request has been sent.</h2>
+        <p id="booking-success-message">I will contact you shortly.</p>
         <button class="button button-dark" type="button" data-booking-close>Return to the website</button>
       </div>
     </div>
