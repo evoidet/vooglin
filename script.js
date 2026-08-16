@@ -1807,11 +1807,278 @@ function initialiseWorkflowFlows() {
   });
 }
 
+function initialiseMessengerConversation() {
+  const section = document.querySelector("[data-messenger]");
+  const transcriptWindow = section?.querySelector("[data-messenger-window]");
+  const frame = section?.querySelector(".messenger-frame");
+  const typingIndicator = section?.querySelector("[data-messenger-typing]");
+  const typingName = section?.querySelector("[data-messenger-typing-name]");
+  const control = section?.querySelector("[data-messenger-control]");
+  const messageElements = Array.from(section?.querySelectorAll("[data-messenger-message]") || []);
+  if (!section || !frame || !transcriptWindow || !typingIndicator || !typingName || !control || !messageElements.length) return;
+
+  const supportsIntersectionObserver = typeof IntersectionObserver === "function";
+  const saveData = navigator.connection?.saveData === true;
+  const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory < 4;
+  const parseDuration = (value, fallback) => {
+    const duration = Number(value);
+    return Number.isFinite(duration) ? Math.min(3000, Math.max(250, duration)) : fallback;
+  };
+  const conversation = messageElements.map((element) => ({
+    element,
+    side: element.dataset.side === "vooglin" ? "vooglin" : "organisation",
+    speaker: element.dataset.speaker || "Organisation",
+    typingDuration: parseDuration(element.dataset.typingDuration, 850),
+    holdDuration: parseDuration(element.dataset.holdDuration, 800),
+  }));
+
+  let sequenceId = 0;
+  let waitTimer = 0;
+  let waitResolve = null;
+  let waitRemaining = 0;
+  let waitStartedAt = 0;
+  let waitRunId = 0;
+  let scrollFrame = 0;
+  let scrollSettleTimer = 0;
+  let isInView = !supportsIntersectionObserver;
+  let hasStarted = false;
+  let isPaused = false;
+  let activePhase = "idle";
+
+  const canAnimate = () => (
+    supportsIntersectionObserver
+    && !prefersReducedMotion.matches
+    && !saveData
+    && !lowMemory
+  );
+
+  function setControl(mode) {
+    const labels = {
+      pause: control.dataset.pauseLabel || "Pause conversation",
+      resume: control.dataset.resumeLabel || "Resume conversation",
+      replay: control.dataset.replayLabel || "Replay conversation",
+    };
+    control.textContent = labels[mode];
+  }
+
+  function cancelScheduledWork() {
+    sequenceId += 1;
+    if (waitTimer) window.clearTimeout(waitTimer);
+    if (scrollSettleTimer) window.clearTimeout(scrollSettleTimer);
+    if (scrollFrame) cancelAnimationFrame(scrollFrame);
+    const resolve = waitResolve;
+    waitTimer = 0;
+    waitResolve = null;
+    waitRemaining = 0;
+    waitStartedAt = 0;
+    scrollFrame = 0;
+    scrollSettleTimer = 0;
+    resolve?.(false);
+  }
+
+  function scrollTranscript(behavior = "smooth", followLayout = false) {
+    if (!canAnimate()) return;
+    if (scrollFrame) cancelAnimationFrame(scrollFrame);
+    if (scrollSettleTimer) window.clearTimeout(scrollSettleTimer);
+
+    const moveToLatestMessage = () => {
+      scrollFrame = requestAnimationFrame(() => {
+        scrollFrame = 0;
+        transcriptWindow.scrollTo({
+          top: transcriptWindow.scrollHeight,
+          behavior,
+        });
+      });
+    };
+
+    moveToLatestMessage();
+    if (followLayout) {
+      scrollSettleTimer = window.setTimeout(() => {
+        scrollSettleTimer = 0;
+        moveToLatestMessage();
+      }, 480);
+    }
+  }
+
+  function prepareSequence() {
+    cancelScheduledWork();
+    isPaused = false;
+    activePhase = "idle";
+    section.classList.add("is-sequencing");
+    section.dataset.messengerState = "idle";
+    conversation.forEach(({ element }) => element.classList.remove("is-visible"));
+    typingIndicator.hidden = true;
+    control.hidden = false;
+    setControl("pause");
+    transcriptWindow.scrollTop = 0;
+    return sequenceId;
+  }
+
+  function showStaticConversation() {
+    cancelScheduledWork();
+    hasStarted = false;
+    isPaused = false;
+    activePhase = "static";
+    section.classList.remove("is-sequencing");
+    section.dataset.messengerState = "static";
+    conversation.forEach(({ element }) => element.classList.add("is-visible"));
+    typingIndicator.hidden = true;
+    control.hidden = true;
+    transcriptWindow.scrollTop = 0;
+  }
+
+  function pauseWait() {
+    if (!waitTimer) return;
+    window.clearTimeout(waitTimer);
+    waitTimer = 0;
+    waitRemaining = Math.max(0, waitRemaining - (performance.now() - waitStartedAt));
+  }
+
+  function resumeWait() {
+    if (
+      waitTimer
+      || !waitResolve
+      || waitRunId !== sequenceId
+      || isPaused
+      || !isInView
+      || document.hidden
+    ) return;
+
+    waitStartedAt = performance.now();
+    waitTimer = window.setTimeout(() => {
+      waitTimer = 0;
+      const resolve = waitResolve;
+      waitResolve = null;
+      waitRemaining = 0;
+      waitStartedAt = 0;
+      resolve?.(waitRunId === sequenceId);
+    }, waitRemaining);
+  }
+
+  function waitFor(duration, runId) {
+    return new Promise((resolve) => {
+      waitResolve = resolve;
+      waitRemaining = duration;
+      waitStartedAt = 0;
+      waitRunId = runId;
+      resumeWait();
+    });
+  }
+
+  async function startConversation() {
+    if (!canAnimate()) {
+      showStaticConversation();
+      return;
+    }
+
+    const runId = prepareSequence();
+    hasStarted = true;
+
+    if (!await waitFor(320, runId)) return;
+
+    for (const message of conversation) {
+      if (runId !== sequenceId) return;
+      activePhase = "typing";
+      section.dataset.messengerState = "typing";
+      typingIndicator.dataset.side = message.side;
+      typingName.textContent = message.speaker;
+      typingIndicator.hidden = false;
+      scrollTranscript();
+
+      if (!await waitFor(message.typingDuration, runId)) return;
+
+      typingIndicator.hidden = true;
+      message.element.classList.add("is-visible");
+      activePhase = "message";
+      section.dataset.messengerState = "message";
+      scrollTranscript("smooth", true);
+
+      if (!await waitFor(message.holdDuration, runId)) return;
+    }
+
+    activePhase = "complete";
+    section.dataset.messengerState = "complete";
+    setControl("replay");
+  }
+
+  control.addEventListener("click", () => {
+    if (!canAnimate()) return;
+    if (activePhase === "complete") {
+      startConversation();
+      return;
+    }
+
+    isPaused = !isPaused;
+    if (isPaused) {
+      section.dataset.messengerState = "paused";
+      setControl("resume");
+      pauseWait();
+      return;
+    }
+
+    section.dataset.messengerState = activePhase;
+    setControl("pause");
+    resumeWait();
+  });
+
+  const observer = supportsIntersectionObserver
+    ? new IntersectionObserver(([entry]) => {
+        isInView = entry.isIntersecting;
+        if (!isInView) {
+          if (hasStarted && !isPaused && activePhase !== "complete") {
+            section.dataset.messengerState = "paused";
+          }
+          pauseWait();
+          return;
+        }
+        if (!hasStarted && canAnimate()) startConversation();
+        else {
+          if (!isPaused && activePhase !== "complete") {
+            section.dataset.messengerState = activePhase;
+          }
+          resumeWait();
+        }
+      }, { threshold: 0.12, rootMargin: "0px 0px -12%" })
+    : null;
+  observer?.observe(frame);
+
+  const handleMotionChange = () => {
+    if (!canAnimate()) {
+      showStaticConversation();
+      return;
+    }
+
+    hasStarted = false;
+    prepareSequence();
+    if (isInView) startConversation();
+  };
+  prefersReducedMotion.addEventListener?.("change", handleMotionChange);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      if (hasStarted && !isPaused && activePhase !== "complete") {
+        section.dataset.messengerState = "paused";
+      }
+      pauseWait();
+      return;
+    }
+    if (!isPaused && isInView && activePhase !== "complete") {
+      section.dataset.messengerState = activePhase;
+    }
+    resumeWait();
+  });
+  window.addEventListener("pagehide", pauseWait);
+  window.addEventListener("pageshow", resumeWait);
+
+  if (canAnimate()) prepareSequence();
+  else showStaticConversation();
+}
+
 initialiseSavingsCalculator();
 initialiseClients();
 initialiseBooking();
 initialiseSplitStory();
 initialiseWorkflowFlows();
+initialiseMessengerConversation();
 initialiseScrollReveal();
 initialiseAmbientSurfaces();
 initialisePointerDataField();

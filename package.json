@@ -5,6 +5,6 @@
   "type": "module",
   "scripts": {
     "build": "node build-site.mjs",
-    "test": "npm run build && node --check dist/server/index.js && node --check booking-runtime.mjs && node --check api/booking.js && node --check api/meeting.js && node --test tests/meeting-runtime.test.mjs tests/favicon-metadata.test.mjs tests/site-links.test.mjs"
+    "test": "npm run build && node --check dist/server/index.js && node --check script.js && node --check booking-runtime.mjs && node --check api/booking.js && node --check api/meeting.js && node --test tests/meeting-runtime.test.mjs tests/favicon-metadata.test.mjs tests/site-links.test.mjs"
   }
 }

@@ -36,9 +36,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260812-final-qa">
-  <script src="/site-config.js?v=20260812-final-qa" defer></script>
-  <script src="/script.js?v=20260812-final-qa" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20260816-messenger">
+  <script src="/site-config.js?v=20260816-messenger" defer></script>
+  <script src="/script.js?v=20260816-messenger" defer></script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -248,6 +248,92 @@
         <div class="service-tech-notes">
           <p><strong>Simple Google flow</strong><span>Form → Sheet → Apps Script → email or document → updated status.</span></p>
           <p><strong>Meta / Instagram integrations</strong><span>Used where supported by the platform and API.</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="workflow-conversation ambient-section" id="workflow-conversation" aria-labelledby="workflow-conversation-title" data-messenger>
+      <div class="messenger-layout">
+        <div class="messenger-intro" data-reveal="left">
+          <p class="eyebrow eyebrow-dark"><span></span> A real starting point</p>
+          <h2 id="workflow-conversation-title">A workflow usually starts like this.</h2>
+          <p>Before tools or integrations, we listen for the repeated work, missing visibility and handovers that slow a team down.</p>
+          <a class="button button-dark" href="mailto:egor@vooglin.ee" data-booking-open>Let’s review your workflow</a>
+        </div>
+
+        <div class="messenger-frame" data-reveal="right">
+          <div class="messenger-frame-header">
+            <div class="messenger-identity">
+              <span class="messenger-identity-mark" aria-hidden="true">V</span>
+              <div>
+                <strong>Workflow review</strong>
+                <span><i aria-hidden="true"></i> Vooglin · online</span>
+              </div>
+            </div>
+            <button
+              class="messenger-control"
+              type="button"
+              data-messenger-control
+              data-pause-label="Pause conversation"
+              data-resume-label="Resume conversation"
+              data-replay-label="Replay conversation"
+              hidden
+            >Pause conversation</button>
+          </div>
+
+          <div class="messenger-window" data-messenger-window role="region" aria-label="Example conversation between an organisation and Vooglin" tabindex="0">
+            <p class="messenger-context">Example conversation</p>
+            <ol class="messenger-thread" data-messenger-thread role="list">
+              <li class="messenger-message messenger-message--organisation" data-messenger-message data-side="organisation" data-speaker="Organisation" data-typing-duration="900" data-hold-duration="1600">
+                <span class="messenger-message-sender">Organisation</span>
+                <div class="messenger-bubble">
+                  <p>We collect requests through forms, then copy them into Sheets and chase updates by email.</p>
+                </div>
+              </li>
+              <li class="messenger-message messenger-message--vooglin" data-messenger-message data-side="vooglin" data-speaker="Vooglin" data-typing-duration="980" data-hold-duration="2100">
+                <span class="messenger-message-sender">Vooglin</span>
+                <div class="messenger-bubble">
+                  <p>That gives us a useful place to start. I’d first map where the same information is entered again and who needs each status.</p>
+                </div>
+              </li>
+              <li class="messenger-message messenger-message--organisation" data-messenger-message data-side="organisation" data-speaker="Organisation" data-typing-duration="820" data-hold-duration="1800">
+                <span class="messenger-message-sender">Organisation</span>
+                <div class="messenger-bubble">
+                  <p>Duplicates are common, nobody is quite sure what is current, and finance tracking happens in another file.</p>
+                </div>
+              </li>
+              <li class="messenger-message messenger-message--vooglin" data-messenger-message data-side="vooglin" data-speaker="Vooglin" data-typing-duration="900" data-hold-duration="1800">
+                <span class="messenger-message-sender">Vooglin</span>
+                <div class="messenger-bubble">
+                  <p>We can connect the intake, check duplicates automatically, and keep one clear status visible to the team.</p>
+                </div>
+              </li>
+              <li class="messenger-message messenger-message--organisation" data-messenger-message data-side="organisation" data-speaker="Organisation" data-typing-duration="850" data-hold-duration="1700">
+                <span class="messenger-message-sender">Organisation</span>
+                <div class="messenger-bubble">
+                  <p>Approvals and reporting are the other pain points. We want them clearer without adding more admin.</p>
+                </div>
+              </li>
+              <li class="messenger-message messenger-message--vooglin" data-messenger-message data-side="vooglin" data-speaker="Vooglin" data-typing-duration="1050" data-hold-duration="2300">
+                <span class="messenger-message-sender">Vooglin</span>
+                <div class="messenger-bubble">
+                  <p>Then one record can route approvals, notify the right person, and keep finance and reporting current — with less repetitive admin and a clearer view of what needs attention.</p>
+                </div>
+              </li>
+            </ol>
+
+            <div class="messenger-typing" data-messenger-typing data-side="organisation" aria-hidden="true" hidden>
+              <span class="messenger-message-sender" data-messenger-typing-name>Organisation</span>
+              <span class="messenger-typing-bubble">
+                <i></i><i></i><i></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="messenger-frame-footer" aria-hidden="true">
+            <span>Discovery example</span>
+            <span>Illustrative transcript</span>
+          </div>
         </div>
       </div>
     </section>
