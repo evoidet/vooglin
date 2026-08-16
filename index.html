@@ -36,9 +36,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=20260816-messenger">
-  <script src="/site-config.js?v=20260816-messenger" defer></script>
-  <script src="/script.js?v=20260816-messenger" defer></script>
+  <link rel="stylesheet" href="/styles.css?v=20260816-messenger-refined">
+  <script src="/site-config.js?v=20260816-messenger-refined" defer></script>
+  <script src="/script.js?v=20260816-messenger-refined" defer></script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -254,85 +254,154 @@
 
     <section class="workflow-conversation ambient-section" id="workflow-conversation" aria-labelledby="workflow-conversation-title" data-messenger>
       <div class="messenger-layout">
-        <div class="messenger-intro" data-reveal="left">
-          <p class="eyebrow eyebrow-dark"><span></span> A real starting point</p>
-          <h2 id="workflow-conversation-title">A workflow usually starts like this.</h2>
-          <p>Before tools or integrations, we listen for the repeated work, missing visibility and handovers that slow a team down.</p>
-          <a class="button button-dark" href="mailto:egor@vooglin.ee" data-booking-open>Let’s review your workflow</a>
-        </div>
+        <h2 class="messenger-kicker" id="workflow-conversation-title">A typical workflow starts with a conversation.</h2>
 
-        <div class="messenger-frame" data-reveal="right">
+        <div class="messenger-frame" data-reveal="scale">
           <div class="messenger-frame-header">
             <div class="messenger-identity">
-              <span class="messenger-identity-mark" aria-hidden="true">V</span>
+              <span class="messenger-participants" aria-hidden="true">
+                <span class="messenger-avatar messenger-avatar--organisation">
+                  <img src="/images/partners/noortealgatuste-tugi-logo.png" width="1000" height="405" alt="" loading="lazy" decoding="async">
+                </span>
+                <span class="messenger-avatar messenger-avatar--vooglin">
+                  <img src="/vooglin-v-black.png" width="512" height="512" alt="" loading="lazy" decoding="async">
+                </span>
+              </span>
               <div>
-                <strong>Workflow review</strong>
-                <span><i aria-hidden="true"></i> Vooglin · online</span>
+                <strong>Example workflow conversation</strong>
+                <span><i aria-hidden="true"></i> MTÜ Noortealgatuste Tugi ↔ Vooglin</span>
               </div>
             </div>
             <button
               class="messenger-control"
               type="button"
               data-messenger-control
+              data-control-mode="pause"
               data-pause-label="Pause conversation"
               data-resume-label="Resume conversation"
               data-replay-label="Replay conversation"
+              aria-label="Pause conversation"
+              title="Pause conversation"
               hidden
-            >Pause conversation</button>
+            >
+              <span class="messenger-control-icon" aria-hidden="true"></span>
+              <span class="visually-hidden" data-messenger-control-label>Pause conversation</span>
+            </button>
           </div>
 
-          <div class="messenger-window" data-messenger-window role="region" aria-label="Example conversation between an organisation and Vooglin" tabindex="0">
-            <p class="messenger-context">Example conversation</p>
+          <div class="messenger-window" data-messenger-window role="region" aria-label="Example workflow conversation between MTÜ Noortealgatuste Tugi and Vooglin" tabindex="0">
+            <p class="messenger-context">Today</p>
             <ol class="messenger-thread" data-messenger-thread role="list">
-              <li class="messenger-message messenger-message--organisation" data-messenger-message data-side="organisation" data-speaker="Organisation" data-typing-duration="900" data-hold-duration="1600">
-                <span class="messenger-message-sender">Organisation</span>
-                <div class="messenger-bubble">
-                  <p>We collect requests through forms, then copy them into Sheets and chase updates by email.</p>
+              <li class="messenger-message messenger-message--organisation" data-messenger-message data-side="organisation" data-speaker="MTÜ Noortealgatuste Tugi" data-typing-duration="800" data-hold-duration="900">
+                <span class="messenger-avatar messenger-avatar--organisation" aria-hidden="true">
+                  <img src="/images/partners/noortealgatuste-tugi-logo.png" width="1000" height="405" alt="" loading="lazy" decoding="async">
+                </span>
+                <div class="messenger-message-content">
+                  <span class="messenger-message-sender">MTÜ Noortealgatuste Tugi</span>
+                  <div class="messenger-bubble">
+                    <p>Hi! We currently manage applications and some of our finances in several Google Forms and Sheets.</p>
+                    <span class="messenger-meta"><time datetime="17:31">17:31</time></span>
+                  </div>
                 </div>
               </li>
-              <li class="messenger-message messenger-message--vooglin" data-messenger-message data-side="vooglin" data-speaker="Vooglin" data-typing-duration="980" data-hold-duration="2100">
-                <span class="messenger-message-sender">Vooglin</span>
-                <div class="messenger-bubble">
-                  <p>That gives us a useful place to start. I’d first map where the same information is entered again and who needs each status.</p>
+              <li class="messenger-message messenger-message--vooglin" data-messenger-message data-side="vooglin" data-speaker="Vooglin" data-typing-duration="600" data-hold-duration="850">
+                <span class="messenger-avatar messenger-avatar--vooglin" aria-hidden="true">
+                  <img src="/vooglin-v-black.png" width="512" height="512" alt="" loading="lazy" decoding="async">
+                </span>
+                <div class="messenger-message-content">
+                  <span class="messenger-message-sender">Vooglin</span>
+                  <div class="messenger-bubble">
+                    <p>Got it. What takes the most manual work?</p>
+                    <span class="messenger-meta"><time datetime="17:32">17:32</time></span>
+                  </div>
                 </div>
               </li>
-              <li class="messenger-message messenger-message--organisation" data-messenger-message data-side="organisation" data-speaker="Organisation" data-typing-duration="820" data-hold-duration="1800">
-                <span class="messenger-message-sender">Organisation</span>
-                <div class="messenger-bubble">
-                  <p>Duplicates are common, nobody is quite sure what is current, and finance tracking happens in another file.</p>
+              <li class="messenger-message messenger-message--organisation" data-messenger-message data-side="organisation" data-speaker="MTÜ Noortealgatuste Tugi" data-typing-duration="1000" data-hold-duration="1100">
+                <span class="messenger-avatar messenger-avatar--organisation" aria-hidden="true">
+                  <img src="/images/partners/noortealgatuste-tugi-logo.png" width="1000" height="405" alt="" loading="lazy" decoding="async">
+                </span>
+                <div class="messenger-message-content">
+                  <span class="messenger-message-sender">MTÜ Noortealgatuste Tugi</span>
+                  <div class="messenger-bubble">
+                    <p>Checking duplicates, updating statuses, moving data between sheets and sending confirmations.</p>
+                    <span class="messenger-meta"><time datetime="17:33">17:33</time></span>
+                  </div>
                 </div>
               </li>
-              <li class="messenger-message messenger-message--vooglin" data-messenger-message data-side="vooglin" data-speaker="Vooglin" data-typing-duration="900" data-hold-duration="1800">
-                <span class="messenger-message-sender">Vooglin</span>
-                <div class="messenger-bubble">
-                  <p>We can connect the intake, check duplicates automatically, and keep one clear status visible to the team.</p>
+              <li class="messenger-message messenger-message--vooglin" data-messenger-message data-side="vooglin" data-speaker="Vooglin" data-typing-duration="1150" data-hold-duration="1200">
+                <span class="messenger-avatar messenger-avatar--vooglin" aria-hidden="true">
+                  <img src="/vooglin-v-black.png" width="512" height="512" alt="" loading="lazy" decoding="async">
+                </span>
+                <div class="messenger-message-content">
+                  <span class="messenger-message-sender">Vooglin</span>
+                  <div class="messenger-bubble">
+                    <p>We can connect the forms and sheets, then automate those checks, updates and messages.</p>
+                    <span class="messenger-meta"><time datetime="17:34">17:34</time></span>
+                  </div>
                 </div>
               </li>
-              <li class="messenger-message messenger-message--organisation" data-messenger-message data-side="organisation" data-speaker="Organisation" data-typing-duration="850" data-hold-duration="1700">
-                <span class="messenger-message-sender">Organisation</span>
-                <div class="messenger-bubble">
-                  <p>Approvals and reporting are the other pain points. We want them clearer without adding more admin.</p>
+              <li class="messenger-message messenger-message--organisation" data-messenger-message data-side="organisation" data-speaker="MTÜ Noortealgatuste Tugi" data-typing-duration="750" data-hold-duration="950">
+                <span class="messenger-avatar messenger-avatar--organisation" aria-hidden="true">
+                  <img src="/images/partners/noortealgatuste-tugi-logo.png" width="1000" height="405" alt="" loading="lazy" decoding="async">
+                </span>
+                <div class="messenger-message-content">
+                  <span class="messenger-message-sender">MTÜ Noortealgatuste Tugi</span>
+                  <div class="messenger-bubble">
+                    <p>We’d also like the financial overview to be easier to follow.</p>
+                    <span class="messenger-meta"><time datetime="17:35">17:35</time></span>
+                  </div>
                 </div>
               </li>
-              <li class="messenger-message messenger-message--vooglin" data-messenger-message data-side="vooglin" data-speaker="Vooglin" data-typing-duration="1050" data-hold-duration="2300">
-                <span class="messenger-message-sender">Vooglin</span>
-                <div class="messenger-bubble">
-                  <p>Then one record can route approvals, notify the right person, and keep finance and reporting current — with less repetitive admin and a clearer view of what needs attention.</p>
+              <li class="messenger-message messenger-message--vooglin" data-messenger-message data-side="vooglin" data-speaker="Vooglin" data-typing-duration="1050" data-hold-duration="1100">
+                <span class="messenger-avatar messenger-avatar--vooglin" aria-hidden="true">
+                  <img src="/vooglin-v-black.png" width="512" height="512" alt="" loading="lazy" decoding="async">
+                </span>
+                <div class="messenger-message-content">
+                  <span class="messenger-message-sender">Vooglin</span>
+                  <div class="messenger-bubble">
+                    <p>We can bring incoming data, approvals and reporting into the same workflow.</p>
+                    <span class="messenger-meta"><time datetime="17:36">17:36</time></span>
+                  </div>
+                </div>
+              </li>
+              <li class="messenger-message messenger-message--organisation" data-messenger-message data-side="organisation" data-speaker="MTÜ Noortealgatuste Tugi" data-typing-duration="550" data-hold-duration="800">
+                <span class="messenger-avatar messenger-avatar--organisation" aria-hidden="true">
+                  <img src="/images/partners/noortealgatuste-tugi-logo.png" width="1000" height="405" alt="" loading="lazy" decoding="async">
+                </span>
+                <div class="messenger-message-content">
+                  <span class="messenger-message-sender">MTÜ Noortealgatuste Tugi</span>
+                  <div class="messenger-bubble">
+                    <p>That sounds exactly like what we need.</p>
+                    <span class="messenger-meta"><time datetime="17:37">17:37</time></span>
+                  </div>
+                </div>
+              </li>
+              <li class="messenger-message messenger-message--vooglin" data-messenger-message data-side="vooglin" data-speaker="Vooglin" data-typing-duration="1250" data-hold-duration="2000">
+                <span class="messenger-avatar messenger-avatar--vooglin" aria-hidden="true">
+                  <img src="/vooglin-v-black.png" width="512" height="512" alt="" loading="lazy" decoding="async">
+                </span>
+                <div class="messenger-message-content">
+                  <span class="messenger-message-sender">Vooglin</span>
+                  <div class="messenger-bubble">
+                    <p>Perfect. First we’ll map the current process, then automate the parts that genuinely save your team time.</p>
+                    <span class="messenger-meta"><time datetime="17:38">17:38</time></span>
+                  </div>
                 </div>
               </li>
             </ol>
 
             <div class="messenger-typing" data-messenger-typing data-side="organisation" aria-hidden="true" hidden>
-              <span class="messenger-message-sender" data-messenger-typing-name>Organisation</span>
-              <span class="messenger-typing-bubble">
-                <i></i><i></i><i></i>
+              <span class="messenger-avatar messenger-avatar--typing">
+                <img class="messenger-typing-avatar messenger-typing-avatar--organisation" src="/images/partners/noortealgatuste-tugi-logo.png" width="1000" height="405" alt="" loading="lazy" decoding="async">
+                <img class="messenger-typing-avatar messenger-typing-avatar--vooglin" src="/vooglin-v-black.png" width="512" height="512" alt="" loading="lazy" decoding="async">
+              </span>
+              <span class="messenger-typing-content">
+                <span class="messenger-message-sender" data-messenger-typing-name>MTÜ Noortealgatuste Tugi</span>
+                <span class="messenger-typing-bubble">
+                  <i></i><i></i><i></i>
+                </span>
               </span>
             </div>
-          </div>
-
-          <div class="messenger-frame-footer" aria-hidden="true">
-            <span>Discovery example</span>
-            <span>Illustrative transcript</span>
           </div>
         </div>
       </div>
@@ -406,18 +475,52 @@
       </div>
     </section>
 
-    <section class="collaborations client-showcase ambient-section" id="collaborations" aria-labelledby="collaborations-title" data-clients-section data-ambient-stars hidden>
-      <h2 class="visually-hidden" id="collaborations-title">Client work</h2>
-      <div class="client-motion-stage" data-client-motion-stage data-reveal="scale">
-        <div class="client-stage-grid" aria-hidden="true"></div>
-        <div class="client-stage-meta" data-client-safe-zone aria-hidden="true">
-          <span><b data-client-count>01</b> / CLIENT</span>
-          <span>WORKFLOW AUTOMATION</span>
+    <section class="brand-sculpture ambient-section" id="brand-sculpture" aria-labelledby="brand-sculpture-title" data-brand-sculpture>
+      <h2 class="visually-hidden" id="brand-sculpture-title">Vooglin digital environment</h2>
+      <div class="brand-sculpture-stage" data-brand-sculpture-stage data-brand-motion="paused" data-reveal="scale">
+        <div class="brand-sculpture-grid" aria-hidden="true"></div>
+        <div class="brand-sculpture-orbits" aria-hidden="true">
+          <span></span><span></span><span></span>
         </div>
-        <div class="client-stage-copy" data-client-caption data-client-safe-zone></div>
-        <button class="client-motion-toggle" type="button" data-client-motion-toggle data-client-safe-zone data-pause-label="Pause logo motion" data-resume-label="Resume logo motion" aria-pressed="false">Pause logo motion</button>
+        <div class="brand-sculpture-cube" aria-hidden="true">
+          <span class="brand-cube-face brand-cube-face--front"></span>
+          <span class="brand-cube-face brand-cube-face--back"></span>
+          <span class="brand-cube-face brand-cube-face--left"></span>
+          <span class="brand-cube-face brand-cube-face--right"></span>
+          <span class="brand-cube-face brand-cube-face--top"></span>
+          <span class="brand-cube-face brand-cube-face--bottom"></span>
+        </div>
+        <div class="brand-sculpture-nodes" aria-hidden="true">
+          <i style="--node-x: 12%; --node-y: 24%; --node-delay: -2s;"></i>
+          <i style="--node-x: 24%; --node-y: 72%; --node-delay: -5s;"></i>
+          <i style="--node-x: 42%; --node-y: 18%; --node-delay: -7s;"></i>
+          <i style="--node-x: 62%; --node-y: 79%; --node-delay: -3s;"></i>
+          <i style="--node-x: 78%; --node-y: 31%; --node-delay: -6s;"></i>
+          <i style="--node-x: 89%; --node-y: 64%; --node-delay: -9s;"></i>
+        </div>
+        <button
+          class="brand-sculpture-control"
+          type="button"
+          data-brand-sculpture-control
+          data-control-mode="pause"
+          data-pause-label="Pause ambient motion"
+          data-resume-label="Resume ambient motion"
+          aria-label="Pause ambient motion"
+          title="Pause ambient motion"
+          hidden
+        >
+          <span class="brand-sculpture-control-icon" aria-hidden="true"></span>
+          <span class="visually-hidden" data-brand-sculpture-control-label>Pause ambient motion</span>
+        </button>
+        <a class="brand-sculpture-logo" href="#top" aria-label="Vooglin home">
+          <span class="brand-sculpture-logo-face brand-sculpture-logo-face--front">
+            <img src="/vooglin-v-black.png" width="512" height="512" alt="" loading="lazy" decoding="async">
+          </span>
+          <span class="brand-sculpture-logo-face brand-sculpture-logo-face--back">
+            <img src="/vooglin-v-black.png" width="512" height="512" alt="" loading="lazy" decoding="async">
+          </span>
+        </a>
       </div>
-      <div class="client-people" data-client-people hidden></div>
     </section>
 
     <section class="example" aria-labelledby="example-title" data-ambient-stars>

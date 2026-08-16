@@ -141,71 +141,89 @@ test("the messenger story is semantic, localized, and motion-safe", async () => 
   const homepages = [
     {
       relativePath: "index.html",
-      heading: "A workflow usually starts like this.",
+      heading: "A typical workflow starts with a conversation.",
+      exampleLabel: "Example workflow conversation",
+      ariaLabel: "Example workflow conversation between MTÜ Noortealgatuste Tugi and Vooglin",
       messages: [
-        "We collect requests through forms, then copy them into Sheets and chase updates by email.",
-        "That gives us a useful place to start. I’d first map where the same information is entered again and who needs each status.",
-        "Duplicates are common, nobody is quite sure what is current, and finance tracking happens in another file.",
-        "We can connect the intake, check duplicates automatically, and keep one clear status visible to the team.",
-        "Approvals and reporting are the other pain points. We want them clearer without adding more admin.",
-        "Then one record can route approvals, notify the right person, and keep finance and reporting current — with less repetitive admin and a clearer view of what needs attention.",
+        "Hi! We currently manage applications and some of our finances in several Google Forms and Sheets.",
+        "Got it. What takes the most manual work?",
+        "Checking duplicates, updating statuses, moving data between sheets and sending confirmations.",
+        "We can connect the forms and sheets, then automate those checks, updates and messages.",
+        "We’d also like the financial overview to be easier to follow.",
+        "We can bring incoming data, approvals and reporting into the same workflow.",
+        "That sounds exactly like what we need.",
+        "Perfect. First we’ll map the current process, then automate the parts that genuinely save your team time.",
       ],
       pauseLabel: "Pause conversation",
       resumeLabel: "Resume conversation",
       replayLabel: "Replay conversation",
-      cta: "Let’s review your workflow",
     },
     {
       relativePath: "et/index.html",
-      heading: "Töövoog algab tavaliselt nii.",
+      heading: "Tüüpiline töövoog algab vestlusest.",
+      exampleLabel: "Töövoo näidisvestlus",
+      ariaLabel: "Töövoo näidisvestlus MTÜ Noortealgatuste Tugi ja Vooglini vahel",
       messages: [
-        "Kogume päringud vormide kaudu, kopeerime need seejärel Google Sheetsi ja küsime olekuuuendusi e-posti teel.",
-        "Siit on hea alustada. Kõigepealt kaardistaksin, kus sama infot uuesti sisestatakse ja kellel on iga olekut vaja.",
-        "Duplikaate tekib sageli, keegi pole päris kindel, milline info on ajakohane, ning rahaasjade jälgimine toimub eraldi failis.",
-        "Saame sisendi ühendada, duplikaate automaatselt kontrollida ja hoida ühe selge oleku kogu tiimile nähtavana.",
-        "Teised valukohad on kinnitused ja aruandlus. Soovime need selgemaks teha ilma haldustööd juurde tekitamata.",
-        "Siis saab üks kirje suunata kinnitused, teavitada õiget inimest ning hoida rahaasjad ja aruandluse ajakohasena — vähem korduvat haldustööd ja selgem ülevaade sellest, mis tähelepanu vajab.",
+        "Tere! Praegu haldame taotlusi ja osa rahaasju mitmes Google Formsi vormis ja Google Sheetsi tabelis.",
+        "Selge. Mis võtab praegu kõige rohkem käsitööd?",
+        "Duplikaatide kontrollimine, olekute uuendamine, andmete tabelite vahel liigutamine ja kinnituste saatmine.",
+        "Saame vormid ja tabelid ühendada ning need kontrollid, uuendused ja sõnumid automatiseerida.",
+        "Soovime ka, et rahaasjadest oleks lihtsam ülevaadet saada.",
+        "Saame saabuvad andmed, kinnitused ja aruandluse tuua samasse töövoogu.",
+        "Just seda meil vaja ongi.",
+        "Suurepärane. Kõigepealt kaardistame praeguse protsessi ja seejärel automatiseerime osad, mis sinu tiimil päriselt aega säästavad.",
       ],
       pauseLabel: "Peata vestlus",
       resumeLabel: "Jätka vestlust",
       replayLabel: "Esita vestlus uuesti",
-      cta: "Vaatame sinu töövoo üle",
     },
     {
       relativePath: "ru/index.html",
-      heading: "Обычно работа над процессом начинается так.",
+      heading: "Обычный рабочий процесс начинается с разговора.",
+      exampleLabel: "Пример диалога о рабочем процессе",
+      ariaLabel: "Пример диалога о рабочем процессе между MTÜ Noortealgatuste Tugi и Vooglin",
       messages: [
-        "Мы собираем запросы через формы, затем копируем их в Google Таблицы и по почте запрашиваем обновления статусов.",
-        "Это хорошая отправная точка. Сначала я бы выяснил, где одни и те же данные вводятся повторно и кому нужен каждый статус.",
-        "Дубликаты появляются часто, никто точно не знает, какие данные актуальны, а финансы отслеживаются в отдельном файле.",
-        "Мы можем связать приём данных, автоматически проверять дубликаты и показывать команде один понятный актуальный статус.",
-        "Другие проблемные места — согласования и отчётность. Мы хотим сделать их понятнее, не добавляя административной работы.",
-        "Тогда одна запись сможет направлять согласования, уведомлять нужного человека и поддерживать финансы и отчётность в актуальном состоянии — меньше повторяющейся административной работы и понятнее, что требует внимания.",
+        "Здравствуйте! Сейчас мы ведём заявки и часть финансов в нескольких формах и таблицах Google.",
+        "Понятно. Что сейчас требует больше всего ручной работы?",
+        "Проверка дубликатов, обновление статусов, перенос данных между таблицами и отправка подтверждений.",
+        "Мы можем связать формы и таблицы, а затем автоматизировать проверки, обновления и сообщения.",
+        "Мы также хотим, чтобы финансовую картину было проще отслеживать.",
+        "Мы можем объединить входящие данные, согласования и отчётность в одном рабочем процессе.",
+        "Именно это нам и нужно.",
+        "Отлично. Сначала разберём текущий процесс, а затем автоматизируем те части, которые действительно экономят время вашей команды.",
       ],
       pauseLabel: "Приостановить диалог",
       resumeLabel: "Продолжить диалог",
       replayLabel: "Повторить диалог",
-      cta: "Давайте разберём ваш процесс",
     },
   ];
 
   for (const homepage of homepages) {
     const html = await readFile(path.join(publicRoot, homepage.relativePath), "utf8");
     assert.equal((html.match(/\sdata-messenger(?:\s|>)/g) || []).length, 1);
-    assert.equal((html.match(/\sdata-messenger-message(?:\s|>)/g) || []).length, 6);
+    assert.equal((html.match(/\sdata-messenger-message(?:\s|>)/g) || []).length, 8);
+    assert.equal((html.match(/<time datetime="17:3[1-8]">17:3[1-8]<\/time>/g) || []).length, 8);
     assert.match(html, /<ol class="messenger-thread" data-messenger-thread role="list">/);
     assert.match(html, /data-messenger-typing[^>]+aria-hidden="true" hidden/);
     const controlMarkup = html.match(/<button\s+class="messenger-control"[\s\S]*?<\/button>/)?.[0];
     assert.ok(controlMarkup, "the messenger control must be present");
     assert.match(controlMarkup, /\shidden\s*>/);
+    assert.match(controlMarkup, /data-control-mode="pause"/);
+    assert.match(controlMarkup, new RegExp(`aria-label="${homepage.pauseLabel}"`));
+    assert.match(controlMarkup, /class="messenger-control-icon" aria-hidden="true"/);
+    assert.match(controlMarkup, /data-messenger-control-label/);
     assert.doesNotMatch(controlMarkup, /aria-pressed/);
-    assert.match(html, /data-messenger-window role="region" aria-label="[^"]+" tabindex="0"/);
+    assert.ok(html.includes(`data-messenger-window role="region" aria-label="${homepage.ariaLabel}" tabindex="0"`));
     assert.ok(html.includes(homepage.heading));
+    assert.ok(html.includes(homepage.exampleLabel));
     homepage.messages.forEach((message) => assert.ok(html.includes(message), `${homepage.relativePath} must contain every localized message`));
     assert.ok(html.includes(`data-pause-label="${homepage.pauseLabel}"`));
     assert.ok(html.includes(`data-resume-label="${homepage.resumeLabel}"`));
     assert.ok(html.includes(`data-replay-label="${homepage.replayLabel}"`));
-    assert.ok(html.includes(`class="button button-dark" href="mailto:egor@vooglin.ee" data-booking-open>${homepage.cta}</a>`));
+    assert.ok(html.includes("/images/partners/noortealgatuste-tugi-logo.png"));
+    assert.ok(html.includes("/vooglin-v-black.png"));
+    assert.doesNotMatch(html, /class="messenger-intro"/);
+    assert.doesNotMatch(html, /class="messenger-frame-footer"/);
     assert.doesNotMatch(html, /data-messenger-thread[^>]+(?:aria-live|role="log")/);
 
     if (homepage.relativePath !== "index.html") {
@@ -222,4 +240,51 @@ test("the messenger story is semantic, localized, and motion-safe", async () => 
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.workflow-conversation\.is-sequencing \.messenger-message/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.messenger-control,[\s\S]*\.messenger-typing/);
   assert.match(javascript, /observer\?\.observe\(frame\)/, "the sequence must wait until the messenger frame is visible");
+  assert.match(javascript, /control\.dataset\.controlMode = mode/);
+});
+
+test("the Estonian hero heading preserves complete words at every breakpoint", async () => {
+  const [html, css] = await Promise.all([
+    readFile(path.join(publicRoot, "et/index.html"), "utf8"),
+    readFile(path.join(publicRoot, "styles.css"), "utf8"),
+  ]);
+  const heading = html.match(/<h1 id="hero-title">([\s\S]*?)<\/h1>/)?.[1];
+  assert.equal(heading, "Praktiline automatiseerimine ettevõtetele ja organisatsioonidele.");
+  assert.doesNotMatch(heading, /(?:&shy;|\u00ad|<wbr\b)/i);
+  assert.match(css, /html\[lang="et"\] \.hero h1 \{[\s\S]*?overflow-wrap: normal;[\s\S]*?word-break: normal;[\s\S]*?hyphens: none;/);
+  assert.match(css, /@media \(max-width: 720px\)[\s\S]*?html\[lang="et"\] \.hero h1 \{[\s\S]*?font-size: clamp\(31px, 9\.8vw, 49px\);/);
+});
+
+test("the Vooglin brand sculpture is minimal, clickable, and motion-safe", async () => {
+  const labels = new Map([
+    ["index.html", "Vooglin digital environment"],
+    ["et/index.html", "Vooglini digitaalne keskkond"],
+    ["ru/index.html", "Цифровая среда Vooglin"],
+  ]);
+
+  for (const [relativePath, label] of labels) {
+    const html = await readFile(path.join(publicRoot, relativePath), "utf8");
+    const sculpture = html.match(/<section class="brand-sculpture[\s\S]*?<\/section>/)?.[0];
+    assert.ok(sculpture, `${relativePath} must include the brand sculpture`);
+    assert.ok(sculpture.includes(label));
+    assert.match(sculpture, /class="brand-sculpture-logo" href="#top" aria-label="[^"]+"/);
+    assert.match(sculpture, /data-brand-sculpture-control/);
+    assert.match(sculpture, /data-pause-label="[^"]+"/);
+    assert.match(sculpture, /data-resume-label="[^"]+"/);
+    assert.equal((sculpture.match(/src="\/vooglin-v-black\.png"/g) || []).length, 2);
+    assert.doesNotMatch(sculpture, /client-stage-(?:meta|copy)|client-motion-toggle|client-logo-action/);
+    assert.doesNotMatch(sculpture, /(?:vooglin|noortetugi)\.ee|\+/i);
+  }
+
+  const [css, javascript] = await Promise.all([
+    readFile(path.join(publicRoot, "styles.css"), "utf8"),
+    readFile(path.join(publicRoot, "script.js"), "utf8"),
+  ]);
+  assert.match(css, /\.brand-sculpture-stage\[data-brand-motion="running"\]/);
+  assert.match(css, /\.brand-sculpture-control\[hidden\]/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.brand-sculpture-stage/);
+  assert.match(javascript, /function initialiseBrandSculpture\(\)/);
+  assert.match(javascript, /isUserPaused/);
+  assert.match(javascript, /pauseForInteraction/);
+  assert.match(javascript, /stage\.dataset\.brandMotion = staticMode/);
 });

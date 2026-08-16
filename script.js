@@ -1814,6 +1814,7 @@ function initialiseMessengerConversation() {
   const typingIndicator = section?.querySelector("[data-messenger-typing]");
   const typingName = section?.querySelector("[data-messenger-typing-name]");
   const control = section?.querySelector("[data-messenger-control]");
+  const controlLabel = section?.querySelector("[data-messenger-control-label]");
   const messageElements = Array.from(section?.querySelectorAll("[data-messenger-message]") || []);
   if (!section || !frame || !transcriptWindow || !typingIndicator || !typingName || !control || !messageElements.length) return;
 
@@ -1858,7 +1859,11 @@ function initialiseMessengerConversation() {
       resume: control.dataset.resumeLabel || "Resume conversation",
       replay: control.dataset.replayLabel || "Replay conversation",
     };
-    control.textContent = labels[mode];
+    const label = labels[mode];
+    control.dataset.controlMode = mode;
+    control.setAttribute("aria-label", label);
+    control.title = label;
+    if (controlLabel) controlLabel.textContent = label;
   }
 
   function cancelScheduledWork() {
@@ -2073,12 +2078,88 @@ function initialiseMessengerConversation() {
   else showStaticConversation();
 }
 
+function initialiseBrandSculpture() {
+  const section = document.querySelector("[data-brand-sculpture]");
+  const stage = section?.querySelector("[data-brand-sculpture-stage]");
+  const control = section?.querySelector("[data-brand-sculpture-control]");
+  const controlLabel = control?.querySelector("[data-brand-sculpture-control-label]");
+  const logo = section?.querySelector(".brand-sculpture-logo");
+  if (!section || !stage) return;
+
+  const supportsIntersectionObserver = typeof IntersectionObserver === "function";
+  const saveData = navigator.connection?.saveData === true;
+  const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory < 4;
+  let isInView = !supportsIntersectionObserver;
+  let isUserPaused = false;
+  let isInteractionPaused = false;
+
+  const setControl = () => {
+    if (!control) return;
+    const mode = isUserPaused ? "resume" : "pause";
+    const label = isUserPaused
+      ? control.dataset.resumeLabel || "Resume ambient motion"
+      : control.dataset.pauseLabel || "Pause ambient motion";
+    control.dataset.controlMode = mode;
+    control.setAttribute("aria-label", label);
+    control.title = label;
+    if (controlLabel) controlLabel.textContent = label;
+  };
+
+  const syncMotion = () => {
+    const staticMode = prefersReducedMotion.matches || saveData || lowMemory || !supportsIntersectionObserver;
+    if (control) control.hidden = staticMode;
+    stage.dataset.brandMotion = staticMode
+      ? "static"
+      : isInView && !document.hidden && !isUserPaused && !isInteractionPaused
+        ? "running"
+        : "paused";
+    setControl();
+  };
+
+  control?.addEventListener("click", () => {
+    isUserPaused = !isUserPaused;
+    syncMotion();
+  });
+
+  const pauseForInteraction = () => {
+    isInteractionPaused = true;
+    syncMotion();
+  };
+
+  const resumeAfterInteraction = () => {
+    isInteractionPaused = false;
+    syncMotion();
+  };
+
+  logo?.addEventListener("pointerenter", pauseForInteraction);
+  logo?.addEventListener("pointerleave", resumeAfterInteraction);
+  logo?.addEventListener("focus", pauseForInteraction);
+  logo?.addEventListener("blur", resumeAfterInteraction);
+
+  const observer = supportsIntersectionObserver
+    ? new IntersectionObserver(([entry]) => {
+        isInView = entry.isIntersecting;
+        syncMotion();
+      }, { rootMargin: "80px" })
+    : null;
+
+  observer?.observe(stage);
+  prefersReducedMotion.addEventListener?.("change", syncMotion);
+  document.addEventListener("visibilitychange", syncMotion);
+  window.addEventListener("pagehide", () => {
+    stage.dataset.brandMotion = "paused";
+  });
+  window.addEventListener("pageshow", syncMotion);
+  syncMotion();
+}
+
 initialiseSavingsCalculator();
 initialiseClients();
 initialiseBooking();
 initialiseSplitStory();
 initialiseWorkflowFlows();
 initialiseMessengerConversation();
+initialiseBrandSculpture();
 initialiseScrollReveal();
 initialiseAmbientSurfaces();
 initialisePointerDataField();

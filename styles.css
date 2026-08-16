@@ -678,6 +678,14 @@ footer {
   line-height: 0.99;
 }
 
+html[lang="et"] .hero h1 {
+  font-size: clamp(48px, 5.45vw, 77px);
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+  -webkit-hyphens: none;
+}
+
 .hero-description {
   max-width: 640px;
   margin: 0;
@@ -1247,15 +1255,15 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 .workflow-conversation {
   position: relative;
   min-height: 100svh;
-  padding: clamp(84px, 7vw, 116px) max(var(--page-pad), calc((100vw - var(--content-width)) / 2));
+  padding: clamp(46px, 5vw, 74px) max(var(--page-pad), calc((100vw - var(--content-width)) / 2));
   display: grid;
   align-items: center;
   overflow: hidden;
   isolation: isolate;
   border-top: 1px solid var(--line);
   background:
-    radial-gradient(circle at 78% 32%, rgba(221, 255, 106, 0.2), transparent 24%),
-    linear-gradient(135deg, var(--paper-bright), var(--paper) 62%);
+    radial-gradient(circle at 50% 38%, rgba(221, 255, 106, 0.17), transparent 30%),
+    linear-gradient(135deg, var(--paper-bright), var(--paper) 68%);
 }
 
 .workflow-conversation::before {
@@ -1263,70 +1271,53 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   z-index: 0;
   inset: -8%;
   content: "";
-  opacity: 0.34;
+  opacity: 0.3;
   pointer-events: none;
   background-image:
     linear-gradient(rgba(17, 17, 17, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(17, 17, 17, 0.06) 1px, transparent 1px);
-  background-size: 54px 54px;
-  mask-image: linear-gradient(90deg, transparent 4%, #000 46%, #000 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 4%, #000 46%, #000 100%);
+  background-size: 62px 62px;
+  mask-image: radial-gradient(circle at 50% 48%, #000 0%, rgba(0, 0, 0, 0.72) 58%, transparent 92%);
+  -webkit-mask-image: radial-gradient(circle at 50% 48%, #000 0%, rgba(0, 0, 0, 0.72) 58%, transparent 92%);
 }
 
 .messenger-layout {
   position: relative;
   z-index: 2;
   width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 0.76fr) minmax(560px, 1.24fr);
-  gap: clamp(64px, 9vw, 142px);
-  align-items: center;
+  gap: clamp(16px, 2vw, 24px);
 }
 
-.messenger-intro {
-  max-width: 520px;
-}
-
-.messenger-intro .eyebrow-dark {
+.messenger-kicker {
+  margin: 0;
   color: #555852;
-}
-
-.messenger-intro h2 {
-  margin: 28px 0 0;
-  font-size: clamp(42px, 5.4vw, 76px);
+  font-family: var(--mono);
+  font-size: clamp(12px, 1vw, 14px);
   font-weight: 500;
-  letter-spacing: -0.055em;
-  line-height: 1.02;
-}
-
-.messenger-intro > p:not(.eyebrow) {
-  max-width: 500px;
-  margin: 30px 0 0;
-  color: #555852;
-  font-size: var(--text-body);
-  line-height: var(--leading-body);
-}
-
-.messenger-intro .button {
-  margin-top: 38px;
+  letter-spacing: 0.07em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  text-wrap: pretty;
 }
 
 .messenger-frame {
   width: 100%;
-  height: clamp(620px, 70svh, 720px);
+  height: clamp(600px, calc(100svh - 170px), 820px);
   min-width: 0;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
   color: var(--white);
   border: 1px solid #11110f;
   background:
-    radial-gradient(circle at 84% 18%, rgba(221, 255, 106, 0.07), transparent 24%),
+    radial-gradient(circle at 82% 14%, rgba(221, 255, 106, 0.08), transparent 25%),
     #0a0a09;
-  box-shadow: 18px 18px 0 rgba(17, 17, 15, 0.1);
+  box-shadow: 16px 16px 0 rgba(17, 17, 15, 0.1);
 }
 
-.messenger-frame-header,
-.messenger-frame-footer {
+.messenger-frame-header {
   min-width: 0;
   display: flex;
   align-items: center;
@@ -1335,8 +1326,8 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-frame-header {
-  min-height: 78px;
-  padding: 14px clamp(16px, 2.2vw, 26px);
+  min-height: 76px;
+  padding: 12px clamp(15px, 2.2vw, 26px);
   border-bottom: 1px solid var(--line-dark);
 }
 
@@ -1344,26 +1335,55 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 14px;
 }
 
-.messenger-identity-mark {
+.messenger-participants {
+  min-width: 70px;
+  display: flex;
+  align-items: center;
+}
+
+.messenger-participants .messenger-avatar + .messenger-avatar {
+  margin-left: -10px;
+}
+
+.messenger-avatar {
   width: 40px;
   height: 40px;
   flex: 0 0 40px;
   display: grid;
   place-items: center;
-  color: #090909;
-  border: 1px solid var(--accent);
-  background: var(--accent);
-  font-size: 21px;
-  font-weight: 700;
-  letter-spacing: -0.08em;
-  line-height: 1;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: #111;
+}
+
+.messenger-avatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.messenger-avatar--organisation {
+  padding: 5px;
+  background: #f4f4ef;
+}
+
+.messenger-avatar--organisation img {
+  object-fit: contain;
+}
+
+.messenger-avatar--vooglin img {
+  object-fit: cover;
+}
+
+.messenger-identity > div {
+  min-width: 0;
 }
 
 .messenger-identity strong,
-.messenger-identity span {
+.messenger-identity > div > span {
   display: block;
   overflow-wrap: anywhere;
 }
@@ -1375,7 +1395,7 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   line-height: 1.35;
 }
 
-.messenger-identity span {
+.messenger-identity > div > span {
   margin-top: 3px;
   color: #a7a7a1;
   font-family: var(--mono);
@@ -1385,7 +1405,7 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   text-transform: uppercase;
 }
 
-.messenger-identity i {
+.messenger-identity > div > span i {
   width: 6px;
   height: 6px;
   margin-right: 5px;
@@ -1396,20 +1416,20 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-control {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
   min-height: 44px;
-  padding: 9px 12px;
-  flex: 0 1 auto;
+  padding: 0;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
   color: #c9c9c3;
   border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 0;
   background: transparent;
   cursor: pointer;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  line-height: 1.35;
-  text-transform: uppercase;
-  transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease, transform 180ms ease;
 }
 
 .messenger-control:hover,
@@ -1417,11 +1437,69 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   color: var(--white);
   border-color: var(--accent);
   background: rgba(221, 255, 106, 0.06);
+  transform: translateY(-1px);
+}
+
+.messenger-control-icon {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.messenger-control-icon::before,
+.messenger-control-icon::after {
+  position: absolute;
+  content: "";
+}
+
+.messenger-control[data-control-mode="pause"] .messenger-control-icon::before,
+.messenger-control[data-control-mode="pause"] .messenger-control-icon::after {
+  top: 2px;
+  bottom: 2px;
+  width: 3px;
+  background: currentColor;
+}
+
+.messenger-control[data-control-mode="pause"] .messenger-control-icon::before {
+  left: 3px;
+}
+
+.messenger-control[data-control-mode="pause"] .messenger-control-icon::after {
+  right: 3px;
+}
+
+.messenger-control[data-control-mode="resume"] .messenger-control-icon::before {
+  top: 1px;
+  left: 4px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid currentColor;
+}
+
+.messenger-control[data-control-mode="replay"] .messenger-control-icon::before {
+  inset: 1px;
+  border: 2px solid currentColor;
+  border-left-color: transparent;
+  border-radius: 50%;
+}
+
+.messenger-control[data-control-mode="replay"] .messenger-control-icon::after {
+  top: -1px;
+  left: -1px;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-right: 6px solid currentColor;
+  transform: rotate(18deg);
 }
 
 .messenger-window {
   min-height: 0;
-  padding: clamp(22px, 3vw, 34px);
+  padding: clamp(20px, 3vw, 36px);
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -1433,8 +1511,8 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 .messenger-context {
   width: max-content;
   max-width: 100%;
-  margin: 0 auto 26px;
-  padding: 6px 9px;
+  margin: 0 auto 24px;
+  padding: 5px 9px;
   color: #8d8d87;
   border: 1px solid rgba(255, 255, 255, 0.1);
   font-family: var(--mono);
@@ -1454,9 +1532,12 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-message {
-  width: min(76%, 520px);
-  max-height: 520px;
-  margin-top: 22px;
+  width: min(76%, 700px);
+  max-height: 560px;
+  margin-top: 18px;
+  display: flex;
+  align-items: flex-end;
+  gap: 11px;
   opacity: 1;
   overflow: hidden;
   transform: translate3d(0, 0, 0);
@@ -1477,6 +1558,27 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 
 .messenger-message--vooglin {
   align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.messenger-message > .messenger-avatar,
+.messenger-typing > .messenger-avatar {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
+}
+
+.messenger-message-content,
+.messenger-typing-content {
+  min-width: 0;
+  max-width: calc(100% - 49px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.messenger-message--vooglin .messenger-message-content {
+  align-items: flex-end;
 }
 
 .messenger-message-sender {
@@ -1497,46 +1599,42 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 
 .messenger-bubble {
   position: relative;
-  padding: 16px 18px 17px;
+  min-width: 112px;
+  padding: 14px 16px 10px;
   border: 1px solid rgba(255, 255, 255, 0.22);
-}
-
-.messenger-bubble::before {
-  position: absolute;
-  top: 11px;
-  bottom: 11px;
-  width: 2px;
-  content: "";
+  border-radius: 16px 16px 16px 4px;
 }
 
 .messenger-message--organisation .messenger-bubble {
   color: #262622;
   border-color: #deded7;
   background: #eeeeea;
-  box-shadow: 6px 6px 0 rgba(255, 255, 255, 0.035);
-}
-
-.messenger-message--organisation .messenger-bubble::before {
-  left: -1px;
-  background: #8f9188;
+  box-shadow: 5px 5px 0 rgba(255, 255, 255, 0.035);
 }
 
 .messenger-message--vooglin .messenger-bubble {
   color: var(--accent-dark);
   border-color: var(--accent);
+  border-radius: 16px 16px 4px;
   background: var(--accent);
-  box-shadow: -6px 6px 0 rgba(221, 255, 106, 0.06);
-}
-
-.messenger-message--vooglin .messenger-bubble::before {
-  right: -1px;
-  background: #0e0f0b;
+  box-shadow: -5px 5px 0 rgba(221, 255, 106, 0.06);
 }
 
 .messenger-bubble p {
   margin: 0;
-  font-size: clamp(14px, 1.15vw, 16px);
-  line-height: 1.6;
+  font-size: clamp(14px, 1.08vw, 16px);
+  line-height: 1.55;
+}
+
+.messenger-meta {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+  color: rgba(38, 38, 34, 0.58);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.035em;
+  line-height: 1.3;
 }
 
 .workflow-conversation.is-sequencing .messenger-message:not(.is-visible) {
@@ -1547,11 +1645,13 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .workflow-conversation.is-sequencing .messenger-message--organisation:not(.is-visible) {
-  transform: translate3d(-18px, 8px, 0);
+  transform: translate3d(0, 12px, 0) scale(0.985);
+  transform-origin: bottom left;
 }
 
 .workflow-conversation.is-sequencing .messenger-message--vooglin:not(.is-visible) {
-  transform: translate3d(18px, 8px, 0);
+  transform: translate3d(0, 12px, 0) scale(0.985);
+  transform-origin: bottom right;
 }
 
 .workflow-conversation.is-sequencing .messenger-message.is-visible:first-child {
@@ -1559,15 +1659,20 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-typing {
-  width: min(76%, 520px);
-  margin-top: 20px;
+  width: min(76%, 700px);
+  margin-top: 18px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  gap: 11px;
+  align-items: flex-end;
 }
 
 .messenger-typing[data-side="vooglin"] {
   margin-left: auto;
+  flex-direction: row-reverse;
+  align-items: flex-end;
+}
+
+.messenger-typing[data-side="vooglin"] .messenger-typing-content {
   align-items: flex-end;
 }
 
@@ -1585,12 +1690,40 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   justify-content: center;
   gap: 5px;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px 14px 14px 4px;
   background: #191917;
 }
 
 .messenger-typing[data-side="vooglin"] .messenger-typing-bubble {
   border-color: rgba(221, 255, 106, 0.52);
+  border-radius: 14px 14px 4px;
   background: rgba(221, 255, 106, 0.08);
+}
+
+.messenger-avatar--typing {
+  padding: 0;
+}
+
+.messenger-typing-avatar {
+  display: none !important;
+}
+
+.messenger-typing[data-side="organisation"] .messenger-avatar--typing {
+  padding: 5px;
+  background: #f4f4ef;
+}
+
+.messenger-typing[data-side="organisation"] .messenger-typing-avatar--organisation,
+.messenger-typing[data-side="vooglin"] .messenger-typing-avatar--vooglin {
+  display: block !important;
+}
+
+.messenger-typing[data-side="organisation"] .messenger-typing-avatar--organisation {
+  object-fit: contain;
+}
+
+.messenger-typing[data-side="vooglin"] .messenger-typing-avatar--vooglin {
+  object-fit: cover;
 }
 
 .messenger-typing-bubble i {
@@ -1615,18 +1748,6 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 
 .messenger-typing[data-side="vooglin"] .messenger-typing-bubble i {
   background: var(--accent);
-}
-
-.messenger-frame-footer {
-  min-height: 44px;
-  padding: 11px clamp(16px, 2.2vw, 26px);
-  color: #85857f;
-  border-top: 1px solid var(--line-dark);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.055em;
-  line-height: 1.45;
-  text-transform: uppercase;
 }
 
 @keyframes messenger-dot {
@@ -2819,6 +2940,362 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   margin: 0 auto;
   padding: 28px var(--page-pad);
   border-top: 1px solid var(--line-dark);
+}
+
+.brand-sculpture {
+  width: 100%;
+  max-width: none;
+  color: var(--white);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  background: #050505;
+}
+
+.brand-sculpture-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(620px, 92svh, 980px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  perspective: 1200px;
+  contain: layout paint;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(221, 255, 106, 0.075), transparent 24%),
+    radial-gradient(circle at 22% 76%, rgba(255, 255, 255, 0.035), transparent 22%),
+    linear-gradient(135deg, #050505, #0b0b0a 58%, #070707);
+}
+
+.brand-sculpture-grid,
+.brand-sculpture-orbits,
+.brand-sculpture-cube,
+.brand-sculpture-nodes {
+  position: absolute;
+  pointer-events: none;
+}
+
+.brand-sculpture-grid {
+  z-index: 0;
+  right: -12%;
+  bottom: -42%;
+  left: -12%;
+  height: 92%;
+  opacity: 0.4;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.048) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.048) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at center, #000 0%, rgba(0, 0, 0, 0.82) 48%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 0%, rgba(0, 0, 0, 0.82) 48%, transparent 78%);
+  transform: rotateX(64deg) translate3d(0, 0, 0);
+  transform-origin: center top;
+  animation: brand-grid-drift 24s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.brand-sculpture-orbits {
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: clamp(330px, 52vw, 760px);
+  aspect-ratio: 1;
+  opacity: 0.33;
+  transform: translate(-50%, -50%);
+  transform-style: preserve-3d;
+}
+
+.brand-sculpture-orbits span {
+  position: absolute;
+  inset: 12%;
+  border: 1px solid rgba(247, 247, 242, 0.18);
+  border-radius: 50%;
+  animation: brand-orbit-turn 30s linear infinite;
+  animation-play-state: paused;
+}
+
+.brand-sculpture-orbits span:nth-child(1) {
+  transform: rotateX(68deg) rotateZ(12deg);
+}
+
+.brand-sculpture-orbits span:nth-child(2) {
+  inset: 20%;
+  border-color: rgba(221, 255, 106, 0.24);
+  animation-direction: reverse;
+  animation-duration: 36s;
+  transform: rotateY(70deg) rotateZ(-18deg);
+}
+
+.brand-sculpture-orbits span:nth-child(3) {
+  inset: 30%;
+  border-style: dashed;
+  animation-duration: 24s;
+  transform: rotateX(74deg) rotateZ(52deg);
+}
+
+.brand-sculpture-cube {
+  --brand-cube-size: clamp(250px, 31vw, 440px);
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: var(--brand-cube-size);
+  height: var(--brand-cube-size);
+  opacity: 0.24;
+  transform-style: preserve-3d;
+  animation: brand-cube-turn 32s linear infinite;
+  animation-play-state: paused;
+}
+
+.brand-cube-face {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(247, 247, 242, 0.2);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.brand-cube-face--front {
+  transform: translateZ(calc(var(--brand-cube-size) / 2));
+}
+
+.brand-cube-face--back {
+  transform: rotateY(180deg) translateZ(calc(var(--brand-cube-size) / 2));
+}
+
+.brand-cube-face--left {
+  transform: rotateY(-90deg) translateZ(calc(var(--brand-cube-size) / 2));
+}
+
+.brand-cube-face--right {
+  transform: rotateY(90deg) translateZ(calc(var(--brand-cube-size) / 2));
+}
+
+.brand-cube-face--top {
+  transform: rotateX(90deg) translateZ(calc(var(--brand-cube-size) / 2));
+}
+
+.brand-cube-face--bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--brand-cube-size) / 2));
+}
+
+.brand-sculpture-nodes {
+  z-index: 2;
+  inset: 0;
+}
+
+.brand-sculpture-nodes i {
+  position: absolute;
+  top: var(--node-y);
+  left: var(--node-x);
+  width: 4px;
+  height: 4px;
+  display: block;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px rgba(221, 255, 106, 0.05);
+  animation: brand-node-signal 6s ease-in-out infinite;
+  animation-delay: var(--node-delay);
+  animation-play-state: paused;
+}
+
+.brand-sculpture-logo {
+  position: relative;
+  z-index: 4;
+  width: clamp(150px, 17vw, 230px);
+  aspect-ratio: 1;
+  display: block;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  animation: brand-logo-turn 20s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-play-state: paused;
+}
+
+.brand-sculpture-logo-face {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(221, 255, 106, 0.45);
+  background: #000;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
+  backface-visibility: hidden;
+  transition: border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.brand-sculpture-logo-face--front {
+  transform: translateZ(7px);
+}
+
+.brand-sculpture-logo-face--back {
+  transform: rotateY(180deg) translateZ(7px);
+}
+
+.brand-sculpture-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.brand-sculpture-logo:hover .brand-sculpture-logo-face,
+.brand-sculpture-logo:focus-visible .brand-sculpture-logo-face {
+  border-color: var(--accent);
+  box-shadow: 0 28px 82px rgba(0, 0, 0, 0.46), 0 0 0 1px rgba(221, 255, 106, 0.28);
+}
+
+.brand-sculpture-logo:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 9px;
+}
+
+.brand-sculpture-control {
+  position: absolute;
+  z-index: 6;
+  top: clamp(18px, 3vw, 34px);
+  right: max(var(--page-pad), calc((100vw - var(--content-width)) / 2));
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: rgba(247, 247, 242, 0.72);
+  border: 1px solid rgba(247, 247, 242, 0.2);
+  border-radius: 0;
+  background: rgba(5, 5, 5, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.brand-sculpture-control[hidden] {
+  display: none;
+}
+
+.brand-sculpture-control:hover,
+.brand-sculpture-control:focus-visible {
+  color: var(--accent);
+  border-color: rgba(221, 255, 106, 0.58);
+  background: rgba(11, 11, 10, 0.9);
+}
+
+.brand-sculpture-control:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.brand-sculpture-control-icon {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.brand-sculpture-control[data-control-mode="pause"] .brand-sculpture-control-icon::before,
+.brand-sculpture-control[data-control-mode="pause"] .brand-sculpture-control-icon::after {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: 3px;
+  content: "";
+  background: currentColor;
+}
+
+.brand-sculpture-control[data-control-mode="pause"] .brand-sculpture-control-icon::before {
+  left: 2px;
+}
+
+.brand-sculpture-control[data-control-mode="pause"] .brand-sculpture-control-icon::after {
+  right: 2px;
+}
+
+.brand-sculpture-control[data-control-mode="resume"] .brand-sculpture-control-icon::before {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  content: "";
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid currentColor;
+}
+
+.brand-sculpture-stage[data-brand-motion="running"] :where(
+  .brand-sculpture-grid,
+  .brand-sculpture-orbits span,
+  .brand-sculpture-cube,
+  .brand-sculpture-nodes i,
+  .brand-sculpture-logo
+) {
+  animation-play-state: running;
+}
+
+.brand-sculpture-stage[data-brand-motion="static"] :where(
+  .brand-sculpture-grid,
+  .brand-sculpture-orbits span,
+  .brand-sculpture-cube,
+  .brand-sculpture-nodes i,
+  .brand-sculpture-logo
+) {
+  animation: none;
+}
+
+.brand-sculpture-stage[data-brand-motion="static"] .brand-sculpture-cube {
+  transform: translate(-50%, -50%) rotateX(58deg) rotateY(28deg) rotateZ(38deg);
+}
+
+@keyframes brand-grid-drift {
+  from {
+    transform: rotateX(64deg) translate3d(-1.5%, 0, 0);
+  }
+
+  to {
+    transform: rotateX(64deg) translate3d(1.5%, -1%, 0);
+  }
+}
+
+@keyframes brand-orbit-turn {
+  from {
+    rotate: 0deg;
+  }
+
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes brand-cube-turn {
+  from {
+    transform: translate(-50%, -50%) rotateX(58deg) rotateY(0deg) rotateZ(38deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotateX(58deg) rotateY(360deg) rotateZ(38deg);
+  }
+}
+
+@keyframes brand-logo-turn {
+  0%,
+  100% {
+    transform: rotateY(0deg) translateY(0);
+  }
+
+  50% {
+    transform: rotateY(180deg) translateY(-7px);
+  }
+}
+
+@keyframes brand-node-signal {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+
+  48% {
+    opacity: 0.9;
+    transform: scale(1.18);
+  }
 }
 
 .split-story {
@@ -4313,16 +4790,11 @@ html.reveal-ready [data-reveal].is-revealed {
   }
 
   .messenger-layout {
-    grid-template-columns: 1fr;
-    gap: 58px;
-  }
-
-  .messenger-intro {
-    max-width: 760px;
+    gap: 20px;
   }
 
   .messenger-frame {
-    width: min(100%, 780px);
+    width: 100%;
   }
 
   .example {
@@ -4397,6 +4869,10 @@ html.reveal-ready [data-reveal].is-revealed {
 @media (max-width: 840px) {
   .client-motion-stage {
     height: clamp(560px, 82svh, 820px);
+  }
+
+  .brand-sculpture-stage {
+    height: clamp(580px, 84svh, 780px);
   }
 
   .client-stage-copy {
@@ -4808,31 +5284,30 @@ html.reveal-ready [data-reveal].is-revealed {
 
   .workflow-conversation {
     min-height: 0;
-    padding-top: 96px;
-    padding-bottom: 96px;
+    padding-top: 76px;
+    padding-bottom: 76px;
+  }
+
+  .brand-sculpture-stage {
+    height: clamp(560px, 82svh, 720px);
   }
 
   .messenger-window {
     overscroll-behavior-y: auto;
   }
 
-  .messenger-intro h2 {
-    margin-top: 28px;
-    font-size: clamp(38px, 11.5vw, 58px);
-  }
-
-  .messenger-intro > p:not(.eyebrow) {
-    font-size: var(--text-body);
-  }
-
   .messenger-frame {
-    height: clamp(580px, 76svh, 680px);
+    height: clamp(580px, 80svh, 700px);
     box-shadow: 10px 10px 0 rgba(17, 17, 15, 0.1);
   }
 
   .messenger-message,
   .messenger-typing {
-    width: min(90%, 520px);
+    width: min(94%, 700px);
+  }
+
+  html[lang="et"] .hero h1 {
+    font-size: clamp(31px, 9.8vw, 49px);
   }
 
   .workflow-flow__layout--desktop {
@@ -5154,28 +5629,68 @@ html.reveal-ready [data-reveal].is-revealed {
   }
 
   .workflow-conversation {
-    padding-top: 82px;
-    padding-bottom: 82px;
+    padding-top: 68px;
+    padding-bottom: 68px;
+  }
+
+  .brand-sculpture-stage {
+    height: clamp(520px, 82svh, 660px);
+  }
+
+  .brand-sculpture-grid {
+    background-size: 48px 48px;
+  }
+
+  .brand-sculpture-orbits {
+    width: min(118vw, 470px);
+  }
+
+  .brand-sculpture-cube {
+    --brand-cube-size: clamp(210px, 70vw, 300px);
+  }
+
+  .brand-sculpture-logo {
+    width: clamp(132px, 43vw, 178px);
+  }
+
+  .brand-sculpture-nodes i:nth-child(even) {
+    display: none;
   }
 
   .messenger-layout {
-    gap: 46px;
+    gap: 14px;
   }
 
   .messenger-frame {
-    height: clamp(540px, 78svh, 630px);
+    height: clamp(560px, 82svh, 680px);
   }
 
   .messenger-frame-header {
     min-height: 0;
     padding: 13px 14px;
-    align-items: stretch;
-    flex-direction: column;
-    gap: 11px;
+    gap: 10px;
+  }
+
+  .messenger-participants {
+    min-width: 58px;
+  }
+
+  .messenger-participants .messenger-avatar {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+
+  .messenger-identity > div > span {
+    display: none;
+  }
+
+  .messenger-identity strong {
+    font-size: 14px;
   }
 
   .messenger-control {
-    width: 100%;
+    width: 44px;
     min-height: 44px;
   }
 
@@ -5185,13 +5700,19 @@ html.reveal-ready [data-reveal].is-revealed {
 
   .messenger-message,
   .messenger-typing {
-    width: 94%;
+    width: 100%;
   }
 
-  .messenger-frame-footer {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 2px;
+  .messenger-message > .messenger-avatar,
+  .messenger-typing > .messenger-avatar {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+
+  .messenger-message-content,
+  .messenger-typing-content {
+    max-width: calc(100% - 45px);
   }
 
   .hero h1 {
@@ -5320,10 +5841,24 @@ html.reveal-ready [data-reveal].is-revealed {
     will-change: auto !important;
   }
 
+  .brand-sculpture-stage :where(
+    .brand-sculpture-grid,
+    .brand-sculpture-orbits span,
+    .brand-sculpture-cube,
+    .brand-sculpture-nodes i,
+    .brand-sculpture-logo
+  ) {
+    animation: none !important;
+  }
+
+  .brand-sculpture-cube {
+    transform: translate(-50%, -50%) rotateX(58deg) rotateY(28deg) rotateZ(38deg) !important;
+  }
+
   .workflow-conversation.is-sequencing .messenger-message,
   .workflow-conversation.is-sequencing .messenger-message:not(.is-visible) {
     max-height: none;
-    margin-top: 22px;
+    margin-top: 18px;
     opacity: 1;
     pointer-events: auto;
     transform: none;
