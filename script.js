@@ -2083,7 +2083,7 @@ function initialiseBrandSculpture() {
   const stage = section?.querySelector("[data-brand-sculpture-stage]");
   const control = section?.querySelector("[data-brand-sculpture-control]");
   const controlLabel = control?.querySelector("[data-brand-sculpture-control-label]");
-  const logo = section?.querySelector(".brand-sculpture-logo");
+  const interactiveLogos = section?.querySelectorAll(".brand-sculpture-logo, .brand-sculpture-client") || [];
   if (!section || !stage) return;
 
   const supportsIntersectionObserver = typeof IntersectionObserver === "function";
@@ -2131,10 +2131,12 @@ function initialiseBrandSculpture() {
     syncMotion();
   };
 
-  logo?.addEventListener("pointerenter", pauseForInteraction);
-  logo?.addEventListener("pointerleave", resumeAfterInteraction);
-  logo?.addEventListener("focus", pauseForInteraction);
-  logo?.addEventListener("blur", resumeAfterInteraction);
+  interactiveLogos.forEach((logo) => {
+    logo.addEventListener("pointerenter", pauseForInteraction);
+    logo.addEventListener("pointerleave", resumeAfterInteraction);
+    logo.addEventListener("focus", pauseForInteraction);
+    logo.addEventListener("blur", resumeAfterInteraction);
+  });
 
   const observer = supportsIntersectionObserver
     ? new IntersectionObserver(([entry]) => {

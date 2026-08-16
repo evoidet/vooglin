@@ -3129,6 +3129,51 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   animation-play-state: paused;
 }
 
+.brand-sculpture-client {
+  position: absolute;
+  z-index: 4;
+  top: 65%;
+  left: calc(50% + clamp(190px, 23vw, 340px));
+  width: clamp(150px, 14vw, 220px);
+  aspect-ratio: 1.56;
+  display: block;
+  transform: translate3d(-50%, -50%, 0) rotateZ(-2.5deg);
+  animation: brand-client-drift 18s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.brand-sculpture-client-surface {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: clamp(10px, 1.25vw, 18px);
+  border: 1px solid rgba(221, 255, 106, 0.34);
+  background: #f7f7f2;
+  box-shadow: 0 22px 64px rgba(0, 0, 0, 0.4);
+  transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+
+.brand-sculpture-client img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.brand-sculpture-client:hover .brand-sculpture-client-surface,
+.brand-sculpture-client:focus-visible .brand-sculpture-client-surface {
+  border-color: var(--accent);
+  box-shadow: 0 26px 74px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(221, 255, 106, 0.24);
+  transform: translateY(-2px);
+}
+
+.brand-sculpture-client:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 8px;
+}
+
 .brand-sculpture-logo {
   position: relative;
   z-index: 4;
@@ -3255,6 +3300,7 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   .brand-sculpture-orbits span,
   .brand-sculpture-cube,
   .brand-sculpture-nodes i,
+  .brand-sculpture-client,
   .brand-sculpture-logo
 ) {
   animation-play-state: running;
@@ -3265,6 +3311,7 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   .brand-sculpture-orbits span,
   .brand-sculpture-cube,
   .brand-sculpture-nodes i,
+  .brand-sculpture-client,
   .brand-sculpture-logo
 ) {
   animation: none;
@@ -3312,6 +3359,16 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 
   50% {
     transform: rotateY(180deg) translateY(-7px);
+  }
+}
+
+@keyframes brand-client-drift {
+  from {
+    transform: translate3d(-50%, -50%, 0) rotateZ(-2.5deg);
+  }
+
+  to {
+    transform: translate3d(-50%, calc(-50% - 12px), 0) rotateZ(2deg);
   }
 }
 
@@ -4905,6 +4962,12 @@ html.reveal-ready [data-reveal].is-revealed {
     height: clamp(580px, 84svh, 780px);
   }
 
+  .brand-sculpture-client {
+    top: 68%;
+    left: 75%;
+    width: clamp(136px, 23vw, 174px);
+  }
+
   .client-stage-copy {
     max-width: calc(100% - (var(--page-pad) * 2) - 150px);
   }
@@ -5687,6 +5750,16 @@ html.reveal-ready [data-reveal].is-revealed {
     width: clamp(132px, 43vw, 178px);
   }
 
+  .brand-sculpture-client {
+    top: 75%;
+    left: 72%;
+    width: clamp(112px, 31vw, 148px);
+  }
+
+  .brand-sculpture-client-surface {
+    padding: 8px;
+  }
+
   .brand-sculpture-nodes i:nth-child(even) {
     display: none;
   }
@@ -5897,6 +5970,7 @@ html.reveal-ready [data-reveal].is-revealed {
     .brand-sculpture-orbits span,
     .brand-sculpture-cube,
     .brand-sculpture-nodes i,
+    .brand-sculpture-client,
     .brand-sculpture-logo
   ) {
     animation: none !important;

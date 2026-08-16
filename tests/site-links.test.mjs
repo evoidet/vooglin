@@ -200,6 +200,7 @@ test("the messenger story is semantic, localized, and motion-safe", async () => 
 
   for (const homepage of homepages) {
     const html = await readFile(path.join(publicRoot, homepage.relativePath), "utf8");
+    const messenger = html.match(/<section class="workflow-conversation[\s\S]*?<\/section>/)?.[0] || "";
     assert.equal((html.match(/\sdata-messenger(?:\s|>)/g) || []).length, 1);
     assert.equal((html.match(/\sdata-messenger-message(?:\s|>)/g) || []).length, 8);
     assert.equal((html.match(/<time datetime="17:3[1-8]">17:3[1-8]<\/time>/g) || []).length, 8);
@@ -220,7 +221,7 @@ test("the messenger story is semantic, localized, and motion-safe", async () => 
     assert.ok(html.includes(`data-pause-label="${homepage.pauseLabel}"`));
     assert.ok(html.includes(`data-resume-label="${homepage.resumeLabel}"`));
     assert.ok(html.includes(`data-replay-label="${homepage.replayLabel}"`));
-    assert.equal((html.match(/\/images\/partners\/noortealgatuste-tugi-logo\.png/g) || []).length, 6);
+    assert.equal((messenger.match(/\/images\/partners\/noortealgatuste-tugi-logo\.png/g) || []).length, 6);
     assert.ok(html.includes("/vooglin-v-black.png"));
     assert.doesNotMatch(html, /class="messenger-intro"/);
     assert.doesNotMatch(html, /class="messenger-frame-footer"/);
@@ -283,12 +284,15 @@ test("the Vooglin brand sculpture is minimal, clickable, and motion-safe", async
     assert.ok(sculpture, `${relativePath} must include the brand sculpture`);
     assert.ok(sculpture.includes(label));
     assert.match(sculpture, /class="brand-sculpture-logo" href="#top" aria-label="[^"]+"/);
+    assert.equal((sculpture.match(/class="brand-sculpture-client brand-sculpture-client--noorte"/g) || []).length, 1);
+    assert.match(sculpture, /class="brand-sculpture-client brand-sculpture-client--noorte"[\s\S]*?href="https:\/\/noortetugi\.ee\/"[\s\S]*?aria-label="MTÜ Noortealgatuste Tugi"/);
+    assert.equal((sculpture.match(/src="\/images\/partners\/noortealgatuste-tugi-logo\.png"/g) || []).length, 1);
     assert.match(sculpture, /data-brand-sculpture-control/);
     assert.match(sculpture, /data-pause-label="[^"]+"/);
     assert.match(sculpture, /data-resume-label="[^"]+"/);
     assert.equal((sculpture.match(/src="\/vooglin-v-black\.png"/g) || []).length, 2);
     assert.doesNotMatch(sculpture, /client-stage-(?:meta|copy)|client-motion-toggle|client-logo-action/);
-    assert.doesNotMatch(sculpture, /(?:vooglin|noortetugi)\.ee|\+/i);
+    assert.doesNotMatch(sculpture, />\s*(?:noortetugi\.ee|MTÜ Noortealgatuste Tugi)\s*</i);
   }
 
   const [css, javascript] = await Promise.all([
@@ -296,9 +300,12 @@ test("the Vooglin brand sculpture is minimal, clickable, and motion-safe", async
     readFile(path.join(publicRoot, "script.js"), "utf8"),
   ]);
   assert.match(css, /\.brand-sculpture-stage\[data-brand-motion="running"\]/);
+  assert.match(css, /\.brand-sculpture-client \{[\s\S]*?animation: brand-client-drift/);
+  assert.match(css, /@keyframes brand-client-drift/);
   assert.match(css, /\.brand-sculpture-control\[hidden\]/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.brand-sculpture-stage/);
   assert.match(javascript, /function initialiseBrandSculpture\(\)/);
+  assert.match(javascript, /querySelectorAll\("\.brand-sculpture-logo, \.brand-sculpture-client"\)/);
   assert.match(javascript, /isUserPaused/);
   assert.match(javascript, /pauseForInteraction/);
   assert.match(javascript, /stage\.dataset\.brandMotion = staticMode/);
