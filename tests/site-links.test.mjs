@@ -220,10 +220,11 @@ test("the messenger story is semantic, localized, and motion-safe", async () => 
     assert.ok(html.includes(`data-pause-label="${homepage.pauseLabel}"`));
     assert.ok(html.includes(`data-resume-label="${homepage.resumeLabel}"`));
     assert.ok(html.includes(`data-replay-label="${homepage.replayLabel}"`));
-    assert.ok(html.includes("/images/partners/noortealgatuste-tugi-logo.png"));
+    assert.equal((html.match(/\/images\/partners\/noortealgatuste-tugi-logo\.png/g) || []).length, 6);
     assert.ok(html.includes("/vooglin-v-black.png"));
     assert.doesNotMatch(html, /class="messenger-intro"/);
     assert.doesNotMatch(html, /class="messenger-frame-footer"/);
+    assert.doesNotMatch(html, /class="messenger-frame"[^>]*data-reveal/);
     assert.doesNotMatch(html, /data-messenger-thread[^>]+(?:aria-live|role="log")/);
 
     if (homepage.relativePath !== "index.html") {
@@ -239,8 +240,22 @@ test("the messenger story is semantic, localized, and motion-safe", async () => 
   ]);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.workflow-conversation\.is-sequencing \.messenger-message/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.messenger-control,[\s\S]*\.messenger-typing/);
+  assert.match(css, /\.workflow-conversation \{[\s\S]*?min-height: 100svh;[\s\S]*?padding: 0;/);
+  assert.match(css, /\.messenger-layout \{[\s\S]*?min-height: 100svh;[\s\S]*?max-width: none;/);
+  assert.match(css, /\.messenger-frame \{[\s\S]*?border: 0;[\s\S]*?box-shadow: none;/);
+  assert.match(css, /\.messenger-message \{[\s\S]*?width: min\(58%, 1050px\);/);
+  assert.match(css, /\.messenger-participants \.messenger-avatar--organisation \{[\s\S]*?width: clamp\(62px, 5vw, 82px\);/);
+  assert.match(css, /\.messenger-avatar--organisation img \{[\s\S]*?object-fit: contain;/);
+  assert.match(css, /\.messenger-window \{[\s\S]*?overscroll-behavior-y: auto;/);
+  assert.match(css, /\.messenger-window:focus-visible \{/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.messenger-window \{[\s\S]*?overflow-y: auto;/);
+  const narrowViewportCss = css.match(/@media \(max-width: 480px\) \{([\s\S]*?)@media \(prefers-reduced-motion: reduce\)/)?.[1] || "";
+  assert.doesNotMatch(narrowViewportCss, /\.messenger-(?:control|typing)[\s\S]*?display:\s*none/);
+  assert.doesNotMatch(narrowViewportCss, /\.messenger-window[\s\S]*?overflow:\s*visible/);
   assert.match(javascript, /observer\?\.observe\(frame\)/, "the sequence must wait until the messenger frame is visible");
   assert.match(javascript, /control\.dataset\.controlMode = mode/);
+  assert.match(javascript, /transcriptWindow\.scrollTo\(\{[\s\S]*?top: transcriptWindow\.scrollHeight,[\s\S]*?behavior,/);
+  assert.match(javascript, /scrollTranscript\("smooth", true\)/);
 });
 
 test("the Estonian hero heading preserves complete words at every breakpoint", async () => {

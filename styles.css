@@ -1254,16 +1254,18 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 
 .workflow-conversation {
   position: relative;
+  height: 100svh;
   min-height: 100svh;
-  padding: clamp(46px, 5vw, 74px) max(var(--page-pad), calc((100vw - var(--content-width)) / 2));
+  padding: 0;
   display: grid;
-  align-items: center;
+  align-items: stretch;
   overflow: hidden;
   isolation: isolate;
   border-top: 1px solid var(--line);
   background:
-    radial-gradient(circle at 50% 38%, rgba(221, 255, 106, 0.17), transparent 30%),
-    linear-gradient(135deg, var(--paper-bright), var(--paper) 68%);
+    radial-gradient(circle at 76% 16%, rgba(221, 255, 106, 0.09), transparent 28%),
+    radial-gradient(circle at 18% 76%, rgba(255, 255, 255, 0.035), transparent 24%),
+    #0a0a09;
 }
 
 .workflow-conversation::before {
@@ -1271,11 +1273,11 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   z-index: 0;
   inset: -8%;
   content: "";
-  opacity: 0.3;
+  opacity: 0.2;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(17, 17, 17, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(17, 17, 17, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 62px 62px;
   mask-image: radial-gradient(circle at 50% 48%, #000 0%, rgba(0, 0, 0, 0.72) 58%, transparent 92%);
   -webkit-mask-image: radial-gradient(circle at 50% 48%, #000 0%, rgba(0, 0, 0, 0.72) 58%, transparent 92%);
@@ -1285,17 +1287,22 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
+  height: 100svh;
+  min-height: 100svh;
+  max-width: none;
+  margin: 0;
   display: grid;
-  gap: clamp(16px, 2vw, 24px);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0;
 }
 
 .messenger-kicker {
   margin: 0;
-  color: #555852;
+  padding: clamp(14px, 2vh, 22px) max(var(--page-pad), clamp(22px, 5vw, 96px));
+  color: #8f8f89;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   font-family: var(--mono);
-  font-size: clamp(12px, 1vw, 14px);
+  font-size: clamp(11px, 0.72vw, 13px);
   font-weight: 500;
   letter-spacing: 0.07em;
   line-height: 1.5;
@@ -1305,16 +1312,17 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 
 .messenger-frame {
   width: 100%;
-  height: clamp(600px, calc(100svh - 170px), 820px);
+  height: auto;
   min-width: 0;
+  min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   color: var(--white);
-  border: 1px solid #11110f;
+  border: 0;
   background:
     radial-gradient(circle at 82% 14%, rgba(221, 255, 106, 0.08), transparent 25%),
-    #0a0a09;
-  box-shadow: 16px 16px 0 rgba(17, 17, 15, 0.1);
+    transparent;
+  box-shadow: none;
 }
 
 .messenger-frame-header {
@@ -1326,8 +1334,8 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-frame-header {
-  min-height: 76px;
-  padding: 12px clamp(15px, 2.2vw, 26px);
+  min-height: clamp(76px, 9vh, 96px);
+  padding: 12px max(var(--page-pad), clamp(22px, 5vw, 96px));
   border-bottom: 1px solid var(--line-dark);
 }
 
@@ -1339,7 +1347,7 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-participants {
-  min-width: 70px;
+  min-width: clamp(102px, 8vw, 122px);
   display: flex;
   align-items: center;
 }
@@ -1349,9 +1357,9 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-avatar {
-  width: 40px;
-  height: 40px;
-  flex: 0 0 40px;
+  width: clamp(44px, 3.2vw, 52px);
+  height: clamp(44px, 3.2vw, 52px);
+  flex: 0 0 clamp(44px, 3.2vw, 52px);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -1366,8 +1374,14 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-avatar--organisation {
-  padding: 5px;
+  padding: 3px;
   background: #f4f4ef;
+}
+
+.messenger-participants .messenger-avatar--organisation {
+  width: clamp(62px, 5vw, 82px);
+  height: clamp(42px, 3.2vw, 50px);
+  flex-basis: clamp(62px, 5vw, 82px);
 }
 
 .messenger-avatar--organisation img {
@@ -1390,7 +1404,7 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 
 .messenger-identity strong {
   color: var(--white);
-  font-size: var(--text-secondary);
+  font-size: clamp(15px, 1.05vw, 18px);
   font-weight: 600;
   line-height: 1.35;
 }
@@ -1399,7 +1413,7 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   margin-top: 3px;
   color: #a7a7a1;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: clamp(10px, 0.72vw, 12px);
   letter-spacing: 0.035em;
   line-height: 1.45;
   text-transform: uppercase;
@@ -1499,19 +1513,25 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 
 .messenger-window {
   min-height: 0;
-  padding: clamp(20px, 3vw, 36px);
+  padding: clamp(20px, 3vh, 38px) max(var(--page-pad), clamp(22px, 6vw, 112px)) clamp(28px, 5vh, 64px);
   overflow-x: hidden;
   overflow-y: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
   touch-action: pan-y;
   scrollbar-color: rgba(221, 255, 106, 0.45) transparent;
   scrollbar-width: thin;
 }
 
+.messenger-window:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
 .messenger-context {
   width: max-content;
   max-width: 100%;
-  margin: 0 auto 24px;
+  margin: 0 auto clamp(22px, 3vh, 34px);
   padding: 5px 9px;
   color: #8d8d87;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1532,12 +1552,15 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-message {
-  width: min(76%, 700px);
+  --messenger-avatar-width: clamp(44px, 3.2vw, 52px);
+  --messenger-avatar-height: clamp(44px, 3.2vw, 52px);
+  --messenger-avatar-gap: clamp(11px, 1vw, 16px);
+  width: min(58%, 1050px);
   max-height: 560px;
-  margin-top: 18px;
+  margin-top: clamp(18px, 2.4vh, 28px);
   display: flex;
   align-items: flex-end;
-  gap: 11px;
+  gap: var(--messenger-avatar-gap);
   opacity: 1;
   overflow: hidden;
   transform: translate3d(0, 0, 0);
@@ -1553,6 +1576,8 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-message--organisation {
+  --messenger-avatar-width: clamp(58px, 4.4vw, 78px);
+  --messenger-avatar-height: clamp(42px, 3.2vw, 50px);
   align-self: flex-start;
 }
 
@@ -1563,15 +1588,15 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 
 .messenger-message > .messenger-avatar,
 .messenger-typing > .messenger-avatar {
-  width: 38px;
-  height: 38px;
-  flex-basis: 38px;
+  width: var(--messenger-avatar-width);
+  height: var(--messenger-avatar-height);
+  flex-basis: var(--messenger-avatar-width);
 }
 
 .messenger-message-content,
 .messenger-typing-content {
   min-width: 0;
-  max-width: calc(100% - 49px);
+  max-width: calc(100% - var(--messenger-avatar-width) - var(--messenger-avatar-gap));
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -1586,7 +1611,7 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
   display: block;
   color: #8f8f89;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: clamp(10px, 0.72vw, 12px);
   letter-spacing: 0.055em;
   line-height: 1.4;
   text-transform: uppercase;
@@ -1600,7 +1625,7 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 .messenger-bubble {
   position: relative;
   min-width: 112px;
-  padding: 14px 16px 10px;
+  padding: clamp(15px, 1.35vw, 22px) clamp(17px, 1.7vw, 28px) clamp(11px, 1vw, 16px);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 16px 16px 16px 4px;
 }
@@ -1622,8 +1647,8 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 
 .messenger-bubble p {
   margin: 0;
-  font-size: clamp(14px, 1.08vw, 16px);
-  line-height: 1.55;
+  font-size: clamp(16px, 1.05vw, 20px);
+  line-height: 1.5;
 }
 
 .messenger-meta {
@@ -1659,14 +1684,19 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-typing {
-  width: min(76%, 700px);
-  margin-top: 18px;
+  --messenger-avatar-width: clamp(58px, 4.4vw, 78px);
+  --messenger-avatar-height: clamp(42px, 3.2vw, 50px);
+  --messenger-avatar-gap: clamp(11px, 1vw, 16px);
+  width: min(58%, 1050px);
+  margin-top: clamp(18px, 2.4vh, 28px);
   display: flex;
-  gap: 11px;
+  gap: var(--messenger-avatar-gap);
   align-items: flex-end;
 }
 
 .messenger-typing[data-side="vooglin"] {
+  --messenger-avatar-width: clamp(44px, 3.2vw, 52px);
+  --messenger-avatar-height: clamp(44px, 3.2vw, 52px);
   margin-left: auto;
   flex-direction: row-reverse;
   align-items: flex-end;
@@ -1682,9 +1712,9 @@ html.workflow-flow-ready .workflow-flow.is-flow-complete .workflow-flow__packet 
 }
 
 .messenger-typing-bubble {
-  min-width: 64px;
-  min-height: 42px;
-  padding: 13px 16px;
+  min-width: 72px;
+  min-height: 48px;
+  padding: 15px 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -5283,9 +5313,8 @@ html.reveal-ready [data-reveal].is-revealed {
   }
 
   .workflow-conversation {
-    min-height: 0;
-    padding-top: 76px;
-    padding-bottom: 76px;
+    min-height: 100svh;
+    padding: 0;
   }
 
   .brand-sculpture-stage {
@@ -5296,14 +5325,19 @@ html.reveal-ready [data-reveal].is-revealed {
     overscroll-behavior-y: auto;
   }
 
+  .messenger-layout {
+    min-height: 100svh;
+  }
+
   .messenger-frame {
-    height: clamp(580px, 80svh, 700px);
-    box-shadow: 10px 10px 0 rgba(17, 17, 15, 0.1);
+    height: auto;
+    min-height: 0;
+    box-shadow: none;
   }
 
   .messenger-message,
   .messenger-typing {
-    width: min(94%, 700px);
+    width: min(94%, 760px);
   }
 
   html[lang="et"] .hero h1 {
@@ -5629,8 +5663,8 @@ html.reveal-ready [data-reveal].is-revealed {
   }
 
   .workflow-conversation {
-    padding-top: 68px;
-    padding-bottom: 68px;
+    min-height: 100svh;
+    padding: 0;
   }
 
   .brand-sculpture-stage {
@@ -5658,27 +5692,35 @@ html.reveal-ready [data-reveal].is-revealed {
   }
 
   .messenger-layout {
-    gap: 14px;
+    min-height: 100svh;
+    gap: 0;
   }
 
   .messenger-frame {
-    height: clamp(560px, 82svh, 680px);
+    height: auto;
+    min-height: 0;
   }
 
   .messenger-frame-header {
     min-height: 0;
-    padding: 13px 14px;
+    padding: 13px var(--page-pad);
     gap: 10px;
   }
 
   .messenger-participants {
-    min-width: 58px;
+    min-width: 82px;
   }
 
-  .messenger-participants .messenger-avatar {
-    width: 34px;
-    height: 34px;
-    flex-basis: 34px;
+  .messenger-participants .messenger-avatar--organisation {
+    width: 54px;
+    height: 38px;
+    flex-basis: 54px;
+  }
+
+  .messenger-participants .messenger-avatar--vooglin {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
   }
 
   .messenger-identity > div > span {
@@ -5695,24 +5737,33 @@ html.reveal-ready [data-reveal].is-revealed {
   }
 
   .messenger-window {
-    padding: 20px 14px 24px;
+    padding: 18px var(--page-pad) max(24px, env(safe-area-inset-bottom));
   }
 
   .messenger-message,
   .messenger-typing {
-    width: 100%;
+    width: 96%;
+    --messenger-avatar-gap: 10px;
   }
 
-  .messenger-message > .messenger-avatar,
-  .messenger-typing > .messenger-avatar {
-    width: 34px;
-    height: 34px;
-    flex-basis: 34px;
+  .messenger-message--organisation,
+  .messenger-typing[data-side="organisation"] {
+    --messenger-avatar-width: 54px;
+    --messenger-avatar-height: 38px;
   }
 
-  .messenger-message-content,
-  .messenger-typing-content {
-    max-width: calc(100% - 45px);
+  .messenger-message--vooglin,
+  .messenger-typing[data-side="vooglin"] {
+    --messenger-avatar-width: 38px;
+    --messenger-avatar-height: 38px;
+  }
+
+  .messenger-bubble {
+    padding: 14px 15px 10px;
+  }
+
+  .messenger-bubble p {
+    font-size: 16px;
   }
 
   .hero h1 {
@@ -5873,7 +5924,8 @@ html.reveal-ready [data-reveal].is-revealed {
   }
 
   .messenger-window {
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .messenger-control,
