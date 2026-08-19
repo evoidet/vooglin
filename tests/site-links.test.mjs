@@ -119,6 +119,30 @@ test("social previews expose accessible image descriptions on every production p
   }
 });
 
+test("every footer includes one accessible Vooglin LinkedIn link", async () => {
+  const labels = new Map([
+    ["en", "Vooglin on LinkedIn"],
+    ["et", "Vooglin LinkedInis"],
+    ["ru", "Vooglin в LinkedIn"],
+  ]);
+
+  for (const relativePath of pages) {
+    const html = await readFile(path.join(publicRoot, relativePath), "utf8");
+    const language = relativePath.startsWith("et/") ? "et" : relativePath.startsWith("ru/") ? "ru" : "en";
+    const footer = html.match(/<footer>[\s\S]*?<\/footer>/)?.[0] || "";
+    const links = footer.match(/<a class="footer-social-link"[\s\S]*?<\/a>/g) || [];
+
+    assert.equal(links.length, 1, `${relativePath} must include one LinkedIn footer icon`);
+    assert.match(links[0], /href="https:\/\/www\.linkedin\.com\/company\/vooglin\/about\/\?viewAsMember=true"/);
+    assert.ok(links[0].includes(`aria-label="${labels.get(language)}"`));
+    assert.match(links[0], /<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">/);
+  }
+
+  const css = await readFile(path.join(publicRoot, "styles.css"), "utf8");
+  assert.match(css, /\.footer-bottom \.footer-social-link \{[\s\S]*?width: 44px;[\s\S]*?height: 44px;/);
+  assert.match(css, /\.footer-social-link svg \{[\s\S]*?fill: currentColor;/);
+});
+
 test("the hero serves an optimized WebP with a PNG compatibility fallback", async () => {
   const [webp, png, css] = await Promise.all([
     readFile(path.join(publicRoot, "cosmic-convergence.webp")),

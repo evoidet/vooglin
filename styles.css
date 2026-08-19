@@ -4524,6 +4524,7 @@ footer {
 
 .footer-links {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   gap: 24px;
   flex-wrap: wrap;
@@ -4531,6 +4532,41 @@ footer {
 
 .footer-links a[aria-current="page"] {
   color: var(--accent);
+}
+
+.footer-bottom .footer-social-link {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  flex: 0 0 44px;
+  place-items: center;
+  padding: 10px;
+  color: #0a66c2;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #f7f7f2;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.footer-social-link svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  fill: currentColor;
+}
+
+.footer-bottom .footer-social-link:hover,
+.footer-bottom .footer-social-link:focus-visible {
+  color: #fff;
+  border-color: #0a66c2;
+  background: #0a66c2;
+  box-shadow: 0 14px 30px rgba(10, 102, 194, 0.28);
+  transform: translateY(-2px);
 }
 
 :focus-visible {
