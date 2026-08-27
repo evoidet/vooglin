@@ -296,42 +296,31 @@ test("the Estonian hero heading preserves complete words at every breakpoint", a
   assert.match(css, /@media \(max-width: 720px\)[\s\S]*?html\[lang="et"\] \.hero h1 \{[\s\S]*?font-size: clamp\(31px, 9\.8vw, 49px\);/);
 });
 
-test("the Vooglin brand sculpture is minimal, clickable, and motion-safe", async () => {
-  const labels = new Map([
-    ["index.html", "Vooglin digital environment"],
-    ["et/index.html", "Vooglini digitaalne keskkond"],
-    ["ru/index.html", "Цифровая среда Vooglin"],
-  ]);
-
-  for (const [relativePath, label] of labels) {
+test("the brand sculpture and its exclusive implementation are fully removed", async () => {
+  for (const relativePath of ["index.html", "et/index.html", "ru/index.html"]) {
     const html = await readFile(path.join(publicRoot, relativePath), "utf8");
-    const sculpture = html.match(/<section class="brand-sculpture[\s\S]*?<\/section>/)?.[0];
-    assert.ok(sculpture, `${relativePath} must include the brand sculpture`);
-    assert.ok(sculpture.includes(label));
-    assert.match(sculpture, /class="brand-sculpture-logo" href="#top" aria-label="[^"]+"/);
-    assert.equal((sculpture.match(/class="brand-sculpture-client brand-sculpture-client--noorte"/g) || []).length, 1);
-    assert.match(sculpture, /class="brand-sculpture-client brand-sculpture-client--noorte"[\s\S]*?href="https:\/\/noortetugi\.ee\/"[\s\S]*?aria-label="MTÜ Noortealgatuste Tugi"/);
-    assert.equal((sculpture.match(/src="\/images\/partners\/noortealgatuste-tugi-logo\.png"/g) || []).length, 1);
-    assert.match(sculpture, /data-brand-sculpture-control/);
-    assert.match(sculpture, /data-pause-label="[^"]+"/);
-    assert.match(sculpture, /data-resume-label="[^"]+"/);
-    assert.equal((sculpture.match(/src="\/vooglin-v-black\.png"/g) || []).length, 2);
-    assert.doesNotMatch(sculpture, /client-stage-(?:meta|copy)|client-motion-toggle|client-logo-action/);
-    assert.doesNotMatch(sculpture, />\s*(?:noortetugi\.ee|MTÜ Noortealgatuste Tugi)\s*</i);
+    assert.doesNotMatch(html, /brand-sculpture|data-brand-sculpture|Vooglin digital environment/);
   }
 
-  const [css, javascript] = await Promise.all([
+  const [css, javascript, localization] = await Promise.all([
     readFile(path.join(publicRoot, "styles.css"), "utf8"),
     readFile(path.join(publicRoot, "script.js"), "utf8"),
+    readFile(path.join(projectRoot, "localize.mjs"), "utf8"),
   ]);
-  assert.match(css, /\.brand-sculpture-stage\[data-brand-motion="running"\]/);
-  assert.match(css, /\.brand-sculpture-client \{[\s\S]*?animation: brand-client-drift/);
-  assert.match(css, /@keyframes brand-client-drift/);
-  assert.match(css, /\.brand-sculpture-control\[hidden\]/);
-  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.brand-sculpture-stage/);
-  assert.match(javascript, /function initialiseBrandSculpture\(\)/);
-  assert.match(javascript, /querySelectorAll\("\.brand-sculpture-logo, \.brand-sculpture-client"\)/);
-  assert.match(javascript, /isUserPaused/);
-  assert.match(javascript, /pauseForInteraction/);
-  assert.match(javascript, /stage\.dataset\.brandMotion = staticMode/);
+  assert.doesNotMatch(css, /brand-sculpture|brand-cube-face|@keyframes brand-(?:grid|orbit|cube|logo|client|node)/);
+  assert.doesNotMatch(javascript, /initialiseBrandSculpture|data-brand-sculpture|brandMotion/);
+  assert.doesNotMatch(localization, /Vooglin digital environment|Pause ambient motion|Resume ambient motion/);
+});
+
+test("the process heading stays in English and is omitted accessibly in localized pages", async () => {
+  const english = await readFile(path.join(publicRoot, "index.html"), "utf8");
+  assert.match(english, /<h2 id="process-title">From bottleneck to working system\.<\/h2>/);
+  assert.match(english, /<section class="process[^>]*aria-labelledby="process-title">/);
+
+  for (const relativePath of ["et/index.html", "ru/index.html"]) {
+    const html = await readFile(path.join(publicRoot, relativePath), "utf8");
+    assert.doesNotMatch(html, /From bottleneck to working system|Kitsaskohast toimiva süsteemini|От узкого места к работающей системе/);
+    assert.match(html, /<section class="process[^>]*aria-labelledby="process-label" data-process-heading="omitted">/);
+    assert.match(html, /<p class="section-label" id="process-label">[^<]+<\/p>/);
+  }
 });

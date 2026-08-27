@@ -42,9 +42,6 @@ const translations = {
       ["We can bring incoming data, approvals and reporting into the same workflow.", "Saame saabuvad andmed, kinnitused ja aruandluse tuua samasse töövoogu."],
       ["That sounds exactly like what we need.", "Just seda meil vaja ongi."],
       ["Perfect. First we’ll map the current process, then automate the parts that genuinely save your team time.", "Suurepärane. Kõigepealt kaardistame praeguse protsessi ja seejärel automatiseerime osad, mis sinu tiimil päriselt aega säästavad."],
-      ["Vooglin digital environment", "Vooglini digitaalne keskkond"],
-      ["Pause ambient motion", "Peata taustaliikumine"],
-      ["Resume ambient motion", "Jätka taustaliikumist"],
       ["We connect your existing tools and automate only the steps that need it.", "Ühendame sinu olemasolevad tööriistad ja automatiseerime ainult vajalikud sammud."],
       ["Only what the work needs.", "Ainult see, mida töö vajab."],
       ["Clear enough for your team to use confidently.", "Piisavalt selge, et sinu tiim saaks seda kindlalt kasutada."],
@@ -189,7 +186,6 @@ const translations = {
       ["Overview", "Ülevaade"],
       ["Live dashboard", "Reaalajas töölaud"],
       ["Current and visible", "Ajakohane ja nähtav"],
-      ["From bottleneck to working system.", "Kitsaskohast toimiva süsteemini."],
       ["No oversized transformation project. We start with the part of the work that will make the clearest difference.", "Ei mingit hiiglaslikku ümberkujundamisprojekti. Alustame töö osast, mis annab kõige selgema tulemuse."],
       ["Understand", "Mõistame"],
       ["We map what happens now, who is involved, and where the work gets stuck.", "Kaardistame praeguse töö, osalejad ja kohad, kus protsess takerdub."],
@@ -484,9 +480,6 @@ const translations = {
       ["We can bring incoming data, approvals and reporting into the same workflow.", "Мы можем объединить входящие данные, согласования и отчётность в одном рабочем процессе."],
       ["That sounds exactly like what we need.", "Именно это нам и нужно."],
       ["Perfect. First we’ll map the current process, then automate the parts that genuinely save your team time.", "Отлично. Сначала разберём текущий процесс, а затем автоматизируем те части, которые действительно экономят время вашей команды."],
-      ["Vooglin digital environment", "Цифровая среда Vooglin"],
-      ["Pause ambient motion", "Приостановить фоновую анимацию"],
-      ["Resume ambient motion", "Продолжить фоновую анимацию"],
       ["We connect your existing tools and automate only the steps that need it.", "Мы соединяем ваши существующие инструменты и автоматизируем только необходимые шаги."],
       ["Only what the work needs.", "Только то, что нужно для работы."],
       ["Clear enough for your team to use confidently.", "Достаточно понятно, чтобы ваша команда уверенно этим пользовалась."],
@@ -631,7 +624,6 @@ const translations = {
       ["Overview", "Обзор"],
       ["Live dashboard", "Актуальная панель"],
       ["Current and visible", "Актуально и наглядно"],
-      ["From bottleneck to working system.", "От узкого места к работающей системе."],
       ["No oversized transformation project. We start with the part of the work that will make the clearest difference.", "Без огромного проекта по перестройке всего. Начинаем с той части работы, где результат будет самым заметным."],
       ["Understand", "Разбираемся"],
       ["We map what happens now, who is involved, and where the work gets stuck.", "Разбираем текущий процесс, участников и места, где работа застревает."],
@@ -924,6 +916,14 @@ export function localizePage(source, locale, page) {
   const pagePath = `${basePath}${suffix}`;
 
   html = html.replace('<html lang="en">', `<html lang="${locale}">`);
+  if (page === "home") {
+    html = html.replace(
+      '<section class="process section-surface visual-surface--nodes" id="process" aria-labelledby="process-title">',
+      '<section class="process section-surface visual-surface--nodes" id="process" aria-labelledby="process-label" data-process-heading="omitted">'
+    );
+    html = html.replace('<p class="section-label">How it works</p>', '<p class="section-label" id="process-label">How it works</p>');
+    html = html.replace('        <h2 id="process-title">From bottleneck to working system.</h2>\n', '');
+  }
   html = html.replace(/href="\/pricing\/"/g, `href="${basePath}pricing/"`);
   html = html.replace(/href="\/privacy\/"/g, `href="${basePath}privacy/"`);
   if (page !== "home") {
