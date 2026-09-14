@@ -71,7 +71,7 @@ test("every source and production page exposes the canonical favicon stack", asy
     }
 
     assert.doesNotMatch(html, /sizes="any"/i);
-    assert.doesNotMatch(html, /(?:localhost|noortetugi\.ee)[^>]*favicon|favicon[^>]*(?:localhost|noortetugi\.ee)/i);
+    assert.doesNotMatch(html, /localhost[^>]*favicon|favicon[^>]*localhost/i);
   }
 });
 
@@ -99,7 +99,7 @@ test("favicon, Apple, and manifest files expose their declared square sizes", as
   assert.deepEqual(await readFile(path.join(projectRoot, "public/favicon.ico")), ico);
 });
 
-test("manifest and crawl metadata reference only the canonical V assets", async () => {
+test("manifest and crawl metadata reference only the canonical typographic assets", async () => {
   const manifest = JSON.parse(await readFile(path.join(projectRoot, "site.webmanifest"), "utf8"));
   assert.equal(manifest.name, "Vooglin");
   assert.equal(manifest.short_name, "Vooglin");

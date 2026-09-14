@@ -5,29 +5,7 @@
  * verified. Booking times are preferences, not live availability.
  */
 window.vooglinSiteConfig = Object.freeze({
-  clients: Object.freeze([
-    Object.freeze({
-      verified: true,
-      name: "MTÜ Noortealgatuste Tugi",
-      website: "https://noortetugi.ee/",
-      logo: "/images/partners/noortealgatuste-tugi-logo.png",
-      captionLabel: Object.freeze({
-        en: "Client",
-        et: "Klient",
-        ru: "Клиент",
-      }),
-      linkLabel: Object.freeze({
-        en: "Visit the MTÜ Noortealgatuste Tugi website",
-        et: "Külasta MTÜ Noortealgatuste Tugi veebilehte",
-        ru: "Перейти на сайт MTÜ Noortealgatuste Tugi",
-      }),
-      actionLabel: Object.freeze({
-        en: "View organisation →",
-        et: "Vaata organisatsiooni →",
-        ru: "Открыть сайт →",
-      }),
-    }),
-  ]),
+  clients: Object.freeze([]),
   // Future approved portraits: { approved: true, name, role: { en, et, ru }, image: "/images/people/file.webp" }
   people: Object.freeze([]),
   booking: Object.freeze({

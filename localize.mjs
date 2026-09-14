@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+const simplifiedCopy = JSON.parse(readFileSync(new URL("./redesign-copy.json", import.meta.url), "utf8"));
 const translations = {
   et: {
     common: [
@@ -23,25 +25,20 @@ const translations = {
     ],
     home: [
       ["Workflow automation for businesses and organisations | Vooglin", "Töövoogude automatiseerimine ettevõtetele ja organisatsioonidele | Vooglin"],
-      ["Practical automation for businesses and organisations.", "Praktiline automatiseerimine ettevõtetele ja organisatsioonidele."],
-      ["Vooglin connects forms, spreadsheets, email and documents into clear workflows that handle repetitive work.", "Vooglin ühendab vormid, tabelid, e-posti ja dokumendid selgeteks töövoogudeks, kus korduvad sammud toimuvad automaatselt."],
-      ["Workflow automation / Estonia", "Töövoogude automatiseerimine / Eesti"],
-      ["A typical workflow starts with a conversation.", "Tüüpiline töövoog algab vestlusest."],
-      ["Example workflow conversation between MTÜ Noortealgatuste Tugi and Vooglin", "Töövoo näidisvestlus MTÜ Noortealgatuste Tugi ja Vooglini vahel"],
-      ["Example workflow conversation", "Töövoo näidisvestlus"],
+
       ["Pause conversation", "Peata vestlus"],
       ["Resume conversation", "Jätka vestlust"],
       ["Replay conversation", "Esita vestlus uuesti"],
       ["Today", "Täna"],
       ["Organisation", "Organisatsioon"],
-      ["Hi! We currently manage applications and some of our finances in several Google Forms and Sheets.", "Tere! Praegu haldame taotlusi ja osa rahaasju mitmes Google Formsi vormis ja Google Sheetsi tabelis."],
-      ["Got it. What takes the most manual work?", "Selge. Mis võtab praegu kõige rohkem käsitööd?"],
-      ["Checking duplicates, updating statuses, moving data between sheets and sending confirmations.", "Duplikaatide kontrollimine, olekute uuendamine, andmete tabelite vahel liigutamine ja kinnituste saatmine."],
-      ["We can connect the forms and sheets, then automate those checks, updates and messages.", "Saame vormid ja tabelid ühendada ning need kontrollid, uuendused ja sõnumid automatiseerida."],
-      ["We’d also like the financial overview to be easier to follow.", "Soovime ka, et rahaasjadest oleks lihtsam ülevaadet saada."],
-      ["We can bring incoming data, approvals and reporting into the same workflow.", "Saame saabuvad andmed, kinnitused ja aruandluse tuua samasse töövoogu."],
-      ["That sounds exactly like what we need.", "Just seda meil vaja ongi."],
-      ["Perfect. First we’ll map the current process, then automate the parts that genuinely save your team time.", "Suurepärane. Kõigepealt kaardistame praeguse protsessi ja seejärel automatiseerime osad, mis sinu tiimil päriselt aega säästavad."],
+
+
+
+
+
+
+
+
       ["We connect your existing tools and automate only the steps that need it.", "Ühendame sinu olemasolevad tööriistad ja automatiseerime ainult vajalikud sammud."],
       ["Only what the work needs.", "Ainult see, mida töö vajab."],
       ["Clear enough for your team to use confidently.", "Piisavalt selge, et sinu tiim saaks seda kindlalt kasutada."],
@@ -52,9 +49,9 @@ const translations = {
       ["Create emails, PDFs and certificates from the same data.", "Loome samadest andmetest e-kirju, PDF-faile ja sertifikaate."],
       ["Build focused pages and forms connected to the workflow behind them.", "Loome selged lehed ja vormid, mis on otse töövooga ühendatud."],
       ["Use the sliders for a quick estimate.", "Kiire hinnangu saamiseks kohanda liugureid."],
-      ["Weekly hours each person spends on repetitive admin work", "Mitu tundi nädalas kulub igal inimesel korduvale haldustööle?"],
-      ["People who regularly do this work", "Mitu inimest teeb seda tööd regulaarselt?"],
-      ["Share of this work that could be automated", "Kui suure osa sellest tööst saaks automatiseerida?"],
+
+
+
       ["Client work", "Klienditöö"],
       ["CLIENT", "KLIENT"],
       ["WORKFLOW AUTOMATION", "TÖÖVOOGUDE AUTOMATISEERIMINE"],
@@ -66,7 +63,7 @@ const translations = {
       ["More room for work that needs people.", "Rohkem aega tööle, mis vajab inimesi."],
       ["Start here", "Alusta siit"],
       ["Tell me what is slowing the work down. I’ll suggest a sensible first step.", "Räägi mulle, mis tööd aeglustab. Pakun välja mõistliku esimese sammu."],
-      ["You work directly with Egor, from mapping to launch.", "Töötad otse Egoriga — kaardistamisest käivitamiseni."],
+
       ["Vooglin — Practical automation for everyday work", "Vooglin — Praktiline automatiseerimine igapäevatööks"],
       ["Vooglin builds practical automation and digital workflows for small organisations, project teams, and growing businesses.", "Vooglin loob praktilisi automatiseerimislahendusi ja digitaalseid töövooge väikestele organisatsioonidele, projektitiimidele ja kasvavatele ettevõtetele."],
       ["Automate the work that slows you down.", "Automatiseeri töö, mis sind aeglustab."],
@@ -89,19 +86,19 @@ const translations = {
       ["Built for small organisations, project teams, events and growing businesses.", "Loodud väikestele organisatsioonidele, projektitiimidele, sündmustele ja kasvavatele ettevõtetele."],
       ["Based in Estonia · Working digitally", "Asume Eestis · Töötame digitaalselt"],
       ["A simpler way to work", "Lihtsam viis töötada"],
-      ["Built around your process.<br>Not around a platform.", "Loodud sinu protsessi,<br>mitte platvormi ümber."],
-      ["Workflow automation &amp; integrations", "Töövoogude automatiseerimine ja integratsioonid"],
-      ["Connect the tools you already use into one reliable workflow.", "Ühendame olemasolevad tööriistad üheks usaldusväärseks töövooks."],
-      ["Forms &amp; data collection", "Vormid ja andmekogumine"],
-      ["Gather form submissions, requests and feedback, then process them automatically.", "Kogume vormivastused, päringud ja tagasiside ning töötleme neid automaatselt."],
-      ["Documents &amp; email automation", "Dokumentide ja e-posti automatiseerimine"],
-      ["Create documents, confirmations, reminders and personalised emails from the same data.", "Loome samadest andmetest dokumendid, kinnitused, meeldetuletused ja isikupärastatud e-kirjad."],
-      ["Reporting &amp; dashboards", "Aruandlus ja töölauad"],
-      ["Keep statuses, results and reports automatically up to date.", "Hoiame olekud, tulemused ja aruanded automaatselt ajakohasena."],
-      ["AI-assisted workflows", "AI-toega töövood"],
-      ["Use AI only where it reduces repetitive work or helps organise information.", "Kasutame AI-d ainult seal, kus see vähendab korduvat tööd või korrastab infot."],
-      ["Custom internal workflows", "Kohandatud töövood"],
-      ["Create a solution around the real process instead of forcing it into one platform.", "Loome lahenduse päris protsessi järgi, mitte ei suru protsessi ühte platvormi."],
+
+
+
+
+
+
+
+
+
+
+
+
+
       ["Tools chosen to fit the process", "Tööriistad valitakse protsessi järgi"],
       ["n8n · Make · Zapier · Google Apps Script · Google Forms · Google Sheets · Google Drive · Gmail / Google Workspace · APIs · Webhooks · Meta / Instagram integrations", "n8n · Make · Zapier · Google Apps Script · Google Forms · Google Sheets · Google Drive · Gmail / Google Workspace · API-d · Webhooks · Meta / Instagrami integratsioonid"],
       ["Simple Google flow", "Lihtne Google’i töövoog"],
@@ -146,7 +143,7 @@ const translations = {
       ["Create focused pages and forms that feed directly into the workflow behind them.", "Loome selged lehed ja vormid, mis suunavad andmed otse nende taga olevasse töövoogu."],
       ["Responsive pages · Useful forms · Reliable publishing", "Kohanduvad lehed · Kasulikud vormid · Usaldusväärne avaldamine"],
       ["Time savings calculator", "Ajavõidu kalkulaator"],
-      ["How much time could automation save your team?", "Kui palju aega võiks sinu tiim automatiseerimisega säästa?"],
+
       ["Adjust the sliders to estimate the time your team could save by automating recurring manual work.", "Kohanda liugureid, et hinnata, kui palju aega võiks sinu tiim korduvate käsitoimingute automatiseerimisega säästa."],
       ["How many hours per week does each person spend on repetitive administrative work?", "Mitu tundi kulutab iga inimene nädalas korduvatele haldusülesannetele?"],
       ["How many people regularly do this work?", "Mitu inimest teeb seda tööd regulaarselt?"],
@@ -194,7 +191,7 @@ const translations = {
       ["Put it to work", "Võtame kasutusele"],
       ["We document the system, help the team use it, and improve what matters in everyday work.", "Dokumenteerime süsteemi, aitame tiimil seda kasutada ja täiustame igapäevatöös olulist."],
       ["Behind Vooglin", "Vooglini taga"],
-      ["Your workflow,<br>handled personally.", "Sinu töövoog,<br>isiklikult juhitud."],
+
       ["You work directly with the person who maps, builds and improves your system. That keeps decisions clear, communication simple and every automation grounded in how your team actually works.", "Töötad otse inimesega, kes sinu süsteemi kaardistab, ehitab ja täiustab. Nii püsivad otsused selged, suhtlus lihtne ja iga automatiseerimine seotud sinu tiimi tegeliku tööga."],
       ["One point of contact, start to finish.", "Üks kontakt algusest lõpuni."],
       ["Practical systems, built around real work.", "Praktilised süsteemid, mis lähtuvad päris tööst."],
@@ -202,8 +199,8 @@ const translations = {
       ["Portrait / 4:5", "Portree / 4:5"],
       ["Your photo", "Sinu foto"],
       ["Add a vertical portrait here", "Lisa siia vertikaalne portree"],
-      ["Founder / 01", "Asutaja / 01"],
-      ["Founder and Lead Automator", "Asutaja ja juhtiv automatiseerija"],
+
+
       ["Collaborations", "Koostöö"],
       ["Organisations we have worked with.", "Organisatsioonid, kellega oleme koostööd teinud."],
       ["Selected organisations and teams Vooglin has supported or collaborated with.", "Valik organisatsioone ja tiime, keda Vooglin on aidanud või kellega koostööd teinud."],
@@ -257,15 +254,15 @@ const translations = {
       ["Maintenance and small workflow improvements after launch.", "Hooldus ja väikesed töövooparendused pärast käivitamist."],
       ["Three steps before work begins.", "Kolm sammu enne töö algust."],
       ["Identify the process, people and desired result.", "Selgitame välja protsessi, osalejad ja soovitud tulemuse."],
-      ["Define the build, required access and project boundaries.", "Määratleme loodava lahenduse, vajalikud ligipääsud ja projekti piirid."],
+
       ["Approve the written plan and fixed price before work begins.", "Kinnitad kirjaliku plaani ja fikseeritud hinna enne töö algust."],
-      ["Steps, tools and integrations", "Sammud, tööriistad ja integratsioonid"],
+
       ["Existing data and access requirements", "Olemasolevad andmed ja ligipääsunõuded"],
-      ["Roles, approvals and generated outputs", "Rollid, kinnitused ja loodavad väljundid"],
+
       ["Testing, documentation, urgency and support", "Testimine, dokumentatsioon, kiireloomulisus ja tugi"],
       ["Agreed scope", "Kokkulepitud töömaht"],
-      ["Build and integrations", "Lahenduse loomine ja integratsioonid"],
-      ["Essential documentation and handover", "Vajalik dokumentatsioon ja üleandmine"],
+
+
       ["Launch support and agreed-scope fixes", "Käivitustugi ja kokkulepitud töömahu parandused"],
       ["Expected subscriptions, transaction fees, hosting and other third-party costs are listed separately before approval.", "Eeldatavad tellimused, tehingutasud, majutus ja muud kolmandate osapoolte kulud tuuakse enne kinnitamist eraldi välja."],
       ["Ready for a clear quote?", "Kas oled valmis selgeks pakkumiseks?"],
@@ -275,19 +272,19 @@ const translations = {
       ["Clear scope. Fixed price before we build.", "Selge töömaht. Fikseeritud hind enne alustamist."],
       ["A transparent way to price practical automation and workflow projects.", "Läbipaistev viis praktiliste automatiseerimis- ja töövooprojektide hinnastamiseks."],
       ["Request a quote", "Küsi pakkumist"],
-      ["Clear scope.<br>Fixed price before we build.", "Selge töömaht.<br>Fikseeritud hind enne alustamist."],
+
       ["Every project starts with a short review of the work, tools and desired result. You receive a written scope, delivery plan and fixed quote before any build begins.", "Iga projekt algab töö, tööriistade ja soovitud tulemuse lühikese ülevaatusega. Enne alustamist saad kirjaliku töömahu, teostusplaani ja fikseeritud pakkumise."],
       ["Discuss your workflow", "Räägime sinu töövoost"],
       ["No open-ended build. No surprise invoice.", "Ei mingit lahtise mahuga arendust. Ei mingeid üllatusarveid."],
       ["Project types", "Projektitüübid"],
-      ["Priced around the work that needs to change.", "Hind lähtub tööst, mida on vaja muuta."],
+
       ["Focused improvement", "Konkreetne parendus"],
       ["One form, report, document process or repetitive task made simpler.", "Üks vorm, aruanne, dokumendiprotsess või korduv ülesanne tehakse lihtsamaks."],
       ["Fixed project quote", "Fikseeritud projektipakkumine"],
       ["Best for a clear, contained problem", "Sobib selge ja piiritletud probleemi jaoks"],
       ["Connected workflow", "Ühendatud töövoog"],
       ["Several tools and steps connected into one reliable day-to-day process.", "Mitu tööriista ja sammu ühendatakse üheks usaldusväärseks igapäevaprotsessiks."],
-      ["Fixed scope + implementation", "Fikseeritud töömaht + teostus"],
+
       ["Best for work moving between people and systems", "Sobib tööle, mis liigub inimeste ja süsteemide vahel"],
       ["Ongoing support", "Jooksev tugi"],
       ["Small improvements, maintenance and new workflow needs after launch.", "Väikesed parendused, hooldus ja uued töövoovajadused pärast käivitamist."],
@@ -303,7 +300,7 @@ const translations = {
       ["You receive the scope, delivery plan and fixed price in writing. Work begins only after you approve it.", "Saad töömahu, teostusplaani ja fikseeritud hinna kirjalikult. Töö algab alles pärast sinu kinnitust."],
       ["Pricing details", "Hinnastamise üksikasjad"],
       ["Pricing factors", "Hinda mõjutab"],
-      ["The price depends on the workflow, not the size of your company.", "Hind sõltub töövoost, mitte ettevõtte suurusest."],
+
       ["Number of steps, tools and integrations", "Sammude, tööriistade ja integratsioonide arv"],
       ["Quality and structure of existing data", "Olemasolevate andmete kvaliteet ja struktuur"],
       ["User roles, permissions and approvals", "Kasutajarollid, õigused ja kinnitused"],
@@ -311,7 +308,7 @@ const translations = {
       ["Testing, documentation and handover", "Testimine, dokumentatsioon ja üleandmine"],
       ["Delivery urgency and support needs", "Teostuse kiirus ja toe vajadus"],
       ["Included", "Hinna sees"],
-      ["A working system, clearly handed over.", "Toimiv süsteem ja selge üleandmine."],
+
       ["Agreed project scope", "Kokkulepitud projekti töömaht"],
       ["Build and integration work", "Arendus- ja integratsioonitöö"],
       ["Testing with realistic information", "Testimine realistlike andmetega"],
@@ -322,7 +319,7 @@ const translations = {
       ["Software costs stay visible.", "Tarkvarakulud jäävad nähtavaks."],
       ["Subscriptions, transaction fees, hosting and other third-party services are not hidden inside the project price. Any expected external costs are listed separately before you approve the work.", "Tellimused, tehingutasud, majutus ja muud kolmandate osapoolte teenused ei ole projektihinda peidetud. Kõik eeldatavad väliskulud tuuakse enne töö kinnitamist eraldi välja."],
       ["Have a process taking too much time?", "Kas mõni protsess võtab liiga palju aega?"],
-      ["Let’s find the sensible first step.", "Leiame mõistliku esimese sammu."],
+
       ["Send a short description of how the work runs today. We’ll explain what should be simplified, what the project would include and what it would cost.", "Saada lühike kirjeldus sellest, kuidas töö täna käib. Selgitame, mida tasub lihtsustada, mida projekt sisaldaks ja kui palju see maksaks."],
       ["Request a project quote", "Küsi projektipakkumist"],
     ],
@@ -461,25 +458,20 @@ const translations = {
     ],
     home: [
       ["Workflow automation for businesses and organisations | Vooglin", "Автоматизация процессов для бизнеса и организаций | Vooglin"],
-      ["Practical automation for businesses and organisations.", "Практичная автоматизация для бизнеса и организаций."],
-      ["Vooglin connects forms, spreadsheets, email and documents into clear workflows that handle repetitive work.", "Vooglin объединяет формы, таблицы, почту и документы в понятные процессы, где повторяющиеся шаги выполняются автоматически."],
-      ["Workflow automation / Estonia", "Автоматизация процессов / Эстония"],
-      ["A typical workflow starts with a conversation.", "Обычный рабочий процесс начинается с разговора."],
-      ["Example workflow conversation between MTÜ Noortealgatuste Tugi and Vooglin", "Пример диалога о рабочем процессе между MTÜ Noortealgatuste Tugi и Vooglin"],
-      ["Example workflow conversation", "Пример диалога о рабочем процессе"],
+
       ["Pause conversation", "Приостановить диалог"],
       ["Resume conversation", "Продолжить диалог"],
       ["Replay conversation", "Повторить диалог"],
       ["Today", "Сегодня"],
       ["Organisation", "Организация"],
-      ["Hi! We currently manage applications and some of our finances in several Google Forms and Sheets.", "Здравствуйте! Сейчас мы ведём заявки и часть финансов в нескольких формах и таблицах Google."],
-      ["Got it. What takes the most manual work?", "Понятно. Что сейчас требует больше всего ручной работы?"],
-      ["Checking duplicates, updating statuses, moving data between sheets and sending confirmations.", "Проверка дубликатов, обновление статусов, перенос данных между таблицами и отправка подтверждений."],
-      ["We can connect the forms and sheets, then automate those checks, updates and messages.", "Мы можем связать формы и таблицы, а затем автоматизировать проверки, обновления и сообщения."],
-      ["We’d also like the financial overview to be easier to follow.", "Мы также хотим, чтобы финансовую картину было проще отслеживать."],
-      ["We can bring incoming data, approvals and reporting into the same workflow.", "Мы можем объединить входящие данные, согласования и отчётность в одном рабочем процессе."],
-      ["That sounds exactly like what we need.", "Именно это нам и нужно."],
-      ["Perfect. First we’ll map the current process, then automate the parts that genuinely save your team time.", "Отлично. Сначала разберём текущий процесс, а затем автоматизируем те части, которые действительно экономят время вашей команды."],
+
+
+
+
+
+
+
+
       ["We connect your existing tools and automate only the steps that need it.", "Мы соединяем ваши существующие инструменты и автоматизируем только необходимые шаги."],
       ["Only what the work needs.", "Только то, что нужно для работы."],
       ["Clear enough for your team to use confidently.", "Достаточно понятно, чтобы ваша команда уверенно этим пользовалась."],
@@ -490,9 +482,9 @@ const translations = {
       ["Create emails, PDFs and certificates from the same data.", "Создаём письма, PDF-файлы и сертификаты из одних и тех же данных."],
       ["Build focused pages and forms connected to the workflow behind them.", "Создаём понятные страницы и формы, напрямую связанные с рабочим процессом."],
       ["Use the sliders for a quick estimate.", "Настройте ползунки, чтобы быстро получить оценку."],
-      ["Weekly hours each person spends on repetitive admin work", "Сколько часов в неделю каждый человек тратит на повторяющуюся административную работу?"],
-      ["People who regularly do this work", "Сколько человек регулярно выполняют эту работу?"],
-      ["Share of this work that could be automated", "Какую часть этой работы можно автоматизировать?"],
+
+
+
       ["Client work", "Клиентские проекты"],
       ["CLIENT", "КЛИЕНТ"],
       ["WORKFLOW AUTOMATION", "АВТОМАТИЗАЦИЯ ПРОЦЕССОВ"],
@@ -504,7 +496,7 @@ const translations = {
       ["More room for work that needs people.", "Больше времени для работы, где нужны люди."],
       ["Start here", "Начните здесь"],
       ["Tell me what is slowing the work down. I’ll suggest a sensible first step.", "Расскажите, что замедляет работу. Я предложу разумный первый шаг."],
-      ["You work directly with Egor, from mapping to launch.", "Вы работаете напрямую с Егором — от разбора процесса до запуска."],
+
       ["Vooglin — Practical automation for everyday work", "Vooglin — Практичная автоматизация повседневной работы"],
       ["Vooglin builds practical automation and digital workflows for small organisations, project teams, and growing businesses.", "Vooglin создаёт практичные решения для автоматизации и цифровые процессы для небольших организаций, проектных команд и растущего бизнеса."],
       ["Automate the work that slows you down.", "Автоматизируйте работу, которая вас замедляет."],
@@ -527,19 +519,19 @@ const translations = {
       ["Built for small organisations, project teams, events and growing businesses.", "Для небольших организаций, проектных команд, мероприятий и растущего бизнеса."],
       ["Based in Estonia · Working digitally", "Работаем из Эстонии · Полностью онлайн"],
       ["A simpler way to work", "Более простой способ работать"],
-      ["Built around your process.<br>Not around a platform.", "Создано вокруг вашего процесса,<br>а не вокруг платформы."],
-      ["Workflow automation &amp; integrations", "Автоматизация процессов и интеграции"],
-      ["Connect the tools you already use into one reliable workflow.", "Объединяем используемые вами инструменты в один надёжный процесс."],
-      ["Forms &amp; data collection", "Формы и сбор данных"],
-      ["Gather form submissions, requests and feedback, then process them automatically.", "Собираем данные из форм, запросы и обратную связь, затем обрабатываем их автоматически."],
-      ["Documents &amp; email automation", "Автоматизация документов и почты"],
-      ["Create documents, confirmations, reminders and personalised emails from the same data.", "Создаём документы, подтверждения, напоминания и персональные письма из единого набора данных."],
-      ["Reporting &amp; dashboards", "Отчёты и панели"],
-      ["Keep statuses, results and reports automatically up to date.", "Автоматически обновляем статусы, результаты и отчёты."],
-      ["AI-assisted workflows", "Процессы с поддержкой ИИ"],
-      ["Use AI only where it reduces repetitive work or helps organise information.", "Используем ИИ только там, где он сокращает рутину или упорядочивает информацию."],
-      ["Custom internal workflows", "Процессы под ваши задачи"],
-      ["Create a solution around the real process instead of forcing it into one platform.", "Создаём решение вокруг реального процесса, а не подгоняем процесс под одну платформу."],
+
+
+
+
+
+
+
+
+
+
+
+
+
       ["Tools chosen to fit the process", "Инструменты подбираются под процесс"],
       ["n8n · Make · Zapier · Google Apps Script · Google Forms · Google Sheets · Google Drive · Gmail / Google Workspace · APIs · Webhooks · Meta / Instagram integrations", "n8n · Make · Zapier · Google Apps Script · Google Forms · Google Sheets · Google Drive · Gmail / Google Workspace · API · Webhooks · Интеграции Meta / Instagram"],
       ["Simple Google flow", "Простой процесс Google"],
@@ -584,7 +576,7 @@ const translations = {
       ["Create focused pages and forms that feed directly into the workflow behind them.", "Создаём понятные страницы и формы, которые сразу передают данные в связанный процесс."],
       ["Responsive pages · Useful forms · Reliable publishing", "Адаптивные страницы · Полезные формы · Надёжная публикация"],
       ["Time savings calculator", "Калькулятор экономии времени"],
-      ["How much time could automation save your team?", "Сколько времени ваша команда могла бы сэкономить благодаря автоматизации?"],
+
       ["Adjust the sliders to estimate the time your team could save by automating recurring manual work.", "Настройте ползунки, чтобы оценить, сколько времени ваша команда могла бы сэкономить, автоматизировав повторяющиеся ручные операции."],
       ["How many hours per week does each person spend on repetitive administrative work?", "Сколько часов в неделю каждый человек тратит на повторяющиеся административные задачи?"],
       ["How many people regularly do this work?", "Сколько человек регулярно выполняют эту работу?"],
@@ -632,7 +624,7 @@ const translations = {
       ["Put it to work", "Запускаем в работу"],
       ["We document the system, help the team use it, and improve what matters in everyday work.", "Документируем систему, помогаем команде начать работу и улучшаем то, что важно каждый день."],
       ["Behind Vooglin", "Кто стоит за Vooglin"],
-      ["Your workflow,<br>handled personally.", "Ваш процесс —<br>под личным контролем."],
+
       ["You work directly with the person who maps, builds and improves your system. That keeps decisions clear, communication simple and every automation grounded in how your team actually works.", "Вы напрямую работаете с человеком, который изучает, создаёт и улучшает вашу систему. Решения остаются понятными, общение — простым, а автоматизация соответствует реальной работе команды."],
       ["One point of contact, start to finish.", "Один контакт от начала до конца."],
       ["Practical systems, built around real work.", "Практичные системы для реальной работы."],
@@ -640,8 +632,8 @@ const translations = {
       ["Portrait / 4:5", "Портрет / 4:5"],
       ["Your photo", "Ваше фото"],
       ["Add a vertical portrait here", "Добавьте сюда вертикальный портрет"],
-      ["Founder / 01", "Основатель / 01"],
-      ["Founder and Lead Automator", "Основатель и ведущий специалист по автоматизации"],
+
+
       ["Collaborations", "Сотрудничество"],
       ["Organisations we have worked with.", "Организации, с которыми мы работали."],
       ["Selected organisations and teams Vooglin has supported or collaborated with.", "Некоторые организации и команды, которым Vooglin помогал или с которыми сотрудничал."],
@@ -695,15 +687,15 @@ const translations = {
       ["Maintenance and small workflow improvements after launch.", "Поддержка и небольшие улучшения процессов после запуска."],
       ["Three steps before work begins.", "Три шага до начала работ."],
       ["Identify the process, people and desired result.", "Определяем процесс, участников и желаемый результат."],
-      ["Define the build, required access and project boundaries.", "Определяем решение, необходимые доступы и границы проекта."],
+
       ["Approve the written plan and fixed price before work begins.", "Вы утверждаете письменный план и фиксированную цену до начала работ."],
-      ["Steps, tools and integrations", "Шаги, инструменты и интеграции"],
+
       ["Existing data and access requirements", "Существующие данные и требования к доступу"],
-      ["Roles, approvals and generated outputs", "Роли, согласования и создаваемые материалы"],
+
       ["Testing, documentation, urgency and support", "Тестирование, документация, срочность и поддержка"],
       ["Agreed scope", "Согласованный объём"],
-      ["Build and integrations", "Создание решения и интеграции"],
-      ["Essential documentation and handover", "Необходимая документация и передача"],
+
+
       ["Launch support and agreed-scope fixes", "Поддержка запуска и исправления в рамках согласованного объёма"],
       ["Expected subscriptions, transaction fees, hosting and other third-party costs are listed separately before approval.", "Ожидаемые расходы на подписки, комиссии, хостинг и другие сторонние сервисы указываются отдельно до подтверждения."],
       ["Ready for a clear quote?", "Готовы получить понятный расчёт?"],
@@ -713,19 +705,19 @@ const translations = {
       ["Clear scope. Fixed price before we build.", "Понятный объём. Фиксированная цена до начала работ."],
       ["A transparent way to price practical automation and workflow projects.", "Прозрачная оценка проектов практичной автоматизации и рабочих процессов."],
       ["Request a quote", "Запросить расчёт"],
-      ["Clear scope.<br>Fixed price before we build.", "Понятный объём.<br>Фиксированная цена до начала работ."],
+
       ["Every project starts with a short review of the work, tools and desired result. You receive a written scope, delivery plan and fixed quote before any build begins.", "Каждый проект начинается с короткого разбора работы, инструментов и желаемого результата. До начала создания вы получаете письменный объём, план реализации и фиксированную стоимость."],
       ["Discuss your workflow", "Обсудить ваш процесс"],
       ["No open-ended build. No surprise invoice.", "Никаких работ с открытым бюджетом. Никаких неожиданных счетов."],
       ["Project types", "Типы проектов"],
-      ["Priced around the work that needs to change.", "Стоимость зависит от работы, которую нужно изменить."],
+
       ["Focused improvement", "Точечное улучшение"],
       ["One form, report, document process or repetitive task made simpler.", "Упрощаем одну форму, отчёт, процесс с документами или повторяющуюся задачу."],
       ["Fixed project quote", "Фиксированная стоимость проекта"],
       ["Best for a clear, contained problem", "Для понятной и ограниченной задачи"],
       ["Connected workflow", "Связанный процесс"],
       ["Several tools and steps connected into one reliable day-to-day process.", "Несколько инструментов и шагов объединяются в один надёжный повседневный процесс."],
-      ["Fixed scope + implementation", "Фиксированный объём + реализация"],
+
       ["Best for work moving between people and systems", "Для работы, которая переходит между людьми и системами"],
       ["Ongoing support", "Постоянная поддержка"],
       ["Small improvements, maintenance and new workflow needs after launch.", "Небольшие улучшения, обслуживание и новые задачи после запуска."],
@@ -741,7 +733,7 @@ const translations = {
       ["You receive the scope, delivery plan and fixed price in writing. Work begins only after you approve it.", "Вы письменно получаете объём, план реализации и фиксированную цену. Работа начинается только после вашего подтверждения."],
       ["Pricing details", "Детали ценообразования"],
       ["Pricing factors", "На цену влияют"],
-      ["The price depends on the workflow, not the size of your company.", "Цена зависит от процесса, а не от размера компании."],
+
       ["Number of steps, tools and integrations", "Количество шагов, инструментов и интеграций"],
       ["Quality and structure of existing data", "Качество и структура существующих данных"],
       ["User roles, permissions and approvals", "Роли пользователей, права и согласования"],
@@ -749,7 +741,7 @@ const translations = {
       ["Testing, documentation and handover", "Тестирование, документация и передача"],
       ["Delivery urgency and support needs", "Срочность реализации и потребность в поддержке"],
       ["Included", "Включено"],
-      ["A working system, clearly handed over.", "Готовая система и понятная передача команде."],
+
       ["Agreed project scope", "Согласованный объём проекта"],
       ["Build and integration work", "Создание и интеграция"],
       ["Testing with realistic information", "Тестирование на реалистичных данных"],
@@ -760,7 +752,7 @@ const translations = {
       ["Software costs stay visible.", "Расходы на сервисы остаются прозрачными."],
       ["Subscriptions, transaction fees, hosting and other third-party services are not hidden inside the project price. Any expected external costs are listed separately before you approve the work.", "Подписки, комиссии, хостинг и другие сторонние сервисы не скрываются в цене проекта. Все ожидаемые внешние расходы указываются отдельно до вашего подтверждения."],
       ["Have a process taking too much time?", "Какой-то процесс отнимает слишком много времени?"],
-      ["Let’s find the sensible first step.", "Давайте найдём разумный первый шаг."],
+
       ["Send a short description of how the work runs today. We’ll explain what should be simplified, what the project would include and what it would cost.", "Коротко опишите, как работа устроена сейчас. Мы объясним, что стоит упростить, что войдёт в проект и сколько это будет стоить."],
       ["Request a project quote", "Запросить расчёт проекта"],
     ],
@@ -916,14 +908,7 @@ export function localizePage(source, locale, page) {
   const pagePath = `${basePath}${suffix}`;
 
   html = html.replace('<html lang="en">', `<html lang="${locale}">`);
-  if (page === "home") {
-    html = html.replace(
-      '<section class="process section-surface visual-surface--nodes" id="process" aria-labelledby="process-title">',
-      '<section class="process section-surface visual-surface--nodes" id="process" aria-labelledby="process-label" data-process-heading="omitted">'
-    );
-    html = html.replace('<p class="section-label">How it works</p>', '<p class="section-label" id="process-label">How it works</p>');
-    html = html.replace('        <h2 id="process-title">From bottleneck to working system.</h2>\n', '');
-  }
+
   html = html.replace(/href="\/pricing\/"/g, `href="${basePath}pricing/"`);
   html = html.replace(/href="\/privacy\/"/g, `href="${basePath}privacy/"`);
   if (page !== "home") {
@@ -949,7 +934,9 @@ export function localizePage(source, locale, page) {
     `  <link rel="alternate" hreflang="ru" href="https://vooglin.ee/ru/${suffix}">\n` +
     `  <link rel="alternate" hreflang="x-default" href="https://vooglin.ee/${suffix}">`
   );
-  html = replaceAll(html, [...dictionary[page], ...dictionary.common]);
+  const revisedPairs = simplifiedCopy.map((row) => [row[0].replaceAll("\n", " "), row[locale === "et" ? 1 : 2].replaceAll("\n", " ")]);
+  const extraPairs = [["Vooglin — practical automation for everyday work", "Vooglin — praktiline automatiseerimine igapäevatööks", "Vooglin — практичная автоматизация повседневной работы"], ["A little less to do.", "Veidi vähem tegemist.", "Чуть меньше дел."], ["With Vooglin", "Koos Voogliniga", "С Vooglin"], ["A request arrives", "Saabub päring", "Приходит заявка"], ["From your form or email", "Sinu vormist või e-postist", "Из формы или почты"], ["Your records update", "Andmed uuenevad", "Данные обновляются"], ["The right details, in the right place", "Õige info õiges kohas", "Нужные данные в нужном месте"], ["A confirmation is sent", "Kinnitus saadetakse", "Подтверждение отправлено"], ["Automatically, without the extra admin", "Automaatselt, ilma lisatööta", "Автоматически, без лишней работы"], ["Less copying.", "Vähem kopeerimist.", "Меньше копирования."], ["More time for people.", "Rohkem aega inimestele.", "Больше времени для людей."], ["Explore services", "Vaata teenuseid", "Посмотреть услуги"], ["Based in Estonia · Working with the tools you already use", "Asume Eestis · Kasutame sulle tuttavaid tööriistu", "Работаем из Эстонии · Используем привычные вам инструменты"], ["Fictional conversation between a client and Vooglin", "Väljamõeldud vestlus kliendi ja Vooglini vahel", "Вымышленный диалог клиента и Vooglin"], ["Client &amp; Vooglin", "Klient &amp; Vooglin", "Клиент &amp; Vooglin"], ["Client", "Klient", "Клиент"]] .map((row) => [row[0], row[locale === "et" ? 1 : 2]]);
+  html = replaceAll(html, [...revisedPairs, ...extraPairs, ...dictionary[page], ...dictionary.common]);
   html = html.replace(
     /data-menu-label="[^"]+" data-close-label="[^"]+"/,
     `data-menu-label="${locale === "et" ? "Menüü" : "Меню"}" data-close-label="${locale === "et" ? "Sulge" : "Закрыть"}"`

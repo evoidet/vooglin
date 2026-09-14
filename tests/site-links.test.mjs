@@ -144,183 +144,51 @@ test("every footer includes one accessible Vooglin LinkedIn link", async () => {
   assert.match(css, /\.footer-social-link svg \{[\s\S]*?width: 28px;[\s\S]*?height: 28px;[\s\S]*?fill: currentColor;/);
 });
 
-test("the hero serves an optimized WebP with a PNG compatibility fallback", async () => {
-  const [webp, png, css] = await Promise.all([
-    readFile(path.join(publicRoot, "cosmic-convergence.webp")),
-    readFile(path.join(publicRoot, "cosmic-convergence.png")),
-    readFile(path.join(publicRoot, "styles.css"), "utf8"),
-  ]);
-  assert.ok(webp.byteLength > 0);
-  assert.ok(webp.byteLength < png.byteLength / 10, "WebP should materially reduce the critical image transfer");
-  assert.match(css, /image-set\([\s\S]*cosmic-convergence\.webp[\s\S]*cosmic-convergence\.png/);
-
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("optimized-image-test", String(Date.now()));
-  const { default: worker } = await import(workerUrl.href);
-  const response = await worker.fetch(new Request("https://vooglin.ee/cosmic-convergence.webp"), {});
-  assert.equal(response.status, 200);
-  assert.equal(response.headers.get("Content-Type"), "image/webp");
-});
-
-test("the messenger story is semantic, localized, and motion-safe", async () => {
-  const homepages = [
-    {
-      relativePath: "index.html",
-      heading: "A typical workflow starts with a conversation.",
-      exampleLabel: "Example workflow conversation",
-      ariaLabel: "Example workflow conversation between MTÜ Noortealgatuste Tugi and Vooglin",
-      messages: [
-        "Hi! We currently manage applications and some of our finances in several Google Forms and Sheets.",
-        "Got it. What takes the most manual work?",
-        "Checking duplicates, updating statuses, moving data between sheets and sending confirmations.",
-        "We can connect the forms and sheets, then automate those checks, updates and messages.",
-        "We’d also like the financial overview to be easier to follow.",
-        "We can bring incoming data, approvals and reporting into the same workflow.",
-        "That sounds exactly like what we need.",
-        "Perfect. First we’ll map the current process, then automate the parts that genuinely save your team time.",
-      ],
-      pauseLabel: "Pause conversation",
-      resumeLabel: "Resume conversation",
-      replayLabel: "Replay conversation",
-    },
-    {
-      relativePath: "et/index.html",
-      heading: "Tüüpiline töövoog algab vestlusest.",
-      exampleLabel: "Töövoo näidisvestlus",
-      ariaLabel: "Töövoo näidisvestlus MTÜ Noortealgatuste Tugi ja Vooglini vahel",
-      messages: [
-        "Tere! Praegu haldame taotlusi ja osa rahaasju mitmes Google Formsi vormis ja Google Sheetsi tabelis.",
-        "Selge. Mis võtab praegu kõige rohkem käsitööd?",
-        "Duplikaatide kontrollimine, olekute uuendamine, andmete tabelite vahel liigutamine ja kinnituste saatmine.",
-        "Saame vormid ja tabelid ühendada ning need kontrollid, uuendused ja sõnumid automatiseerida.",
-        "Soovime ka, et rahaasjadest oleks lihtsam ülevaadet saada.",
-        "Saame saabuvad andmed, kinnitused ja aruandluse tuua samasse töövoogu.",
-        "Just seda meil vaja ongi.",
-        "Suurepärane. Kõigepealt kaardistame praeguse protsessi ja seejärel automatiseerime osad, mis sinu tiimil päriselt aega säästavad.",
-      ],
-      pauseLabel: "Peata vestlus",
-      resumeLabel: "Jätka vestlust",
-      replayLabel: "Esita vestlus uuesti",
-    },
-    {
-      relativePath: "ru/index.html",
-      heading: "Обычный рабочий процесс начинается с разговора.",
-      exampleLabel: "Пример диалога о рабочем процессе",
-      ariaLabel: "Пример диалога о рабочем процессе между MTÜ Noortealgatuste Tugi и Vooglin",
-      messages: [
-        "Здравствуйте! Сейчас мы ведём заявки и часть финансов в нескольких формах и таблицах Google.",
-        "Понятно. Что сейчас требует больше всего ручной работы?",
-        "Проверка дубликатов, обновление статусов, перенос данных между таблицами и отправка подтверждений.",
-        "Мы можем связать формы и таблицы, а затем автоматизировать проверки, обновления и сообщения.",
-        "Мы также хотим, чтобы финансовую картину было проще отслеживать.",
-        "Мы можем объединить входящие данные, согласования и отчётность в одном рабочем процессе.",
-        "Именно это нам и нужно.",
-        "Отлично. Сначала разберём текущий процесс, а затем автоматизируем те части, которые действительно экономят время вашей команды.",
-      ],
-      pauseLabel: "Приостановить диалог",
-      resumeLabel: "Продолжить диалог",
-      replayLabel: "Повторить диалог",
-    },
-  ];
-
-  for (const homepage of homepages) {
-    const html = await readFile(path.join(publicRoot, homepage.relativePath), "utf8");
-    const messenger = html.match(/<section class="workflow-conversation[\s\S]*?<\/section>/)?.[0] || "";
-    assert.equal((html.match(/\sdata-messenger(?:\s|>)/g) || []).length, 1);
-    assert.equal((html.match(/\sdata-messenger-message(?:\s|>)/g) || []).length, 8);
-    assert.equal((html.match(/<time datetime="17:3[1-8]">17:3[1-8]<\/time>/g) || []).length, 8);
+test("the fictional demo is complete and localized on all homepages", async () => {
+  const copy = JSON.parse(await readFile(path.join(projectRoot, "redesign-copy.json"), "utf8"));
+  const dialogue = copy.slice(17, 25);
+  for (const [relativePath, index, client] of [["index.html", 0, "Client"], ["et/index.html", 1, "Klient"], ["ru/index.html", 2, "Клиент"]]) {
+    const html = await readFile(path.join(publicRoot, relativePath), "utf8");
+    assert.equal((html.match(/ data-messenger-message /g) || []).length, 8);
+    assert.ok(html.includes('data-speaker="' + client + '"'));
+    for (const row of dialogue) assert.ok(html.includes(row[index]), `${relativePath}: ${row[index]}`);
+    if (index !== 0) for (const row of dialogue) assert.ok(!html.includes(row[0]));
+    assert.match(html, /data-messenger-control/);
+    assert.match(html, /data-pause-label="[^"]+"/);
+    assert.match(html, /data-resume-label="[^"]+"/);
+    assert.match(html, /data-replay-label="[^"]+"/);
+    assert.match(html, /data-messenger-window role="region" aria-label="[^"]+" tabindex="0"/);
     assert.match(html, /<ol class="messenger-thread" data-messenger-thread role="list">/);
-    assert.match(html, /data-messenger-typing[^>]+aria-hidden="true" hidden/);
-    const controlMarkup = html.match(/<button\s+class="messenger-control"[\s\S]*?<\/button>/)?.[0];
-    assert.ok(controlMarkup, "the messenger control must be present");
-    assert.match(controlMarkup, /\shidden\s*>/);
-    assert.match(controlMarkup, /data-control-mode="pause"/);
-    assert.match(controlMarkup, new RegExp(`aria-label="${homepage.pauseLabel}"`));
-    assert.match(controlMarkup, /class="messenger-control-icon" aria-hidden="true"/);
-    assert.match(controlMarkup, /data-messenger-control-label/);
-    assert.doesNotMatch(controlMarkup, /aria-pressed/);
-    assert.ok(html.includes(`data-messenger-window role="region" aria-label="${homepage.ariaLabel}" tabindex="0"`));
-    assert.ok(html.includes(homepage.heading));
-    assert.ok(html.includes(homepage.exampleLabel));
-    homepage.messages.forEach((message) => assert.ok(html.includes(message), `${homepage.relativePath} must contain every localized message`));
-    assert.ok(html.includes(`data-pause-label="${homepage.pauseLabel}"`));
-    assert.ok(html.includes(`data-resume-label="${homepage.resumeLabel}"`));
-    assert.ok(html.includes(`data-replay-label="${homepage.replayLabel}"`));
-    assert.equal((messenger.match(/\/images\/partners\/noortealgatuste-tugi-logo\.png/g) || []).length, 6);
-    assert.ok(html.includes("/vooglin-v-black.png"));
-    assert.doesNotMatch(html, /class="messenger-intro"/);
-    assert.doesNotMatch(html, /class="messenger-frame-footer"/);
-    assert.doesNotMatch(html, /class="messenger-frame"[^>]*data-reveal/);
-    assert.doesNotMatch(html, /data-messenger-thread[^>]+(?:aria-live|role="log")/);
+    assert.match(html, /id="process-title">[^<]+<\/h2>/);
+    assert.doesNotMatch(html, /<img[^>]+partners/);
+  }
+});
 
-    if (homepage.relativePath !== "index.html") {
-      homepages[0].messages.forEach((message) => {
-        assert.ok(!html.includes(message), `${homepage.relativePath} must not retain English messenger copy`);
-      });
+test("all pages use a text brand and a decorative mascot with no controls", async () => {
+  for (const relativePath of pages) {
+    const html = await readFile(path.join(publicRoot, relativePath), "utf8");
+    const brands = html.match(/<a class="brand"[\s\S]*?<\/a>/g) || [];
+    assert.equal(brands.length, 2);
+    for (const brand of brands) {
+      assert.match(brand, /<span>Vooglin<\/span>/);
+      assert.doesNotMatch(brand, /<img/);
     }
+    const mascot = html.match(/<div class="robot-perch"[\s\S]*?<\/div>/)?.[0];
+    assert.ok(mascot);
+    assert.match(mascot, /aria-hidden="true"/);
+    assert.match(mascot, /focusable="false"/);
+    assert.doesNotMatch(mascot, /<(?:button|a|input)\b|tabindex|onclick/);
   }
-
-  const [css, javascript] = await Promise.all([
-    readFile(path.join(publicRoot, "styles.css"), "utf8"),
-    readFile(path.join(publicRoot, "script.js"), "utf8"),
-  ]);
-  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.workflow-conversation\.is-sequencing \.messenger-message/);
-  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.messenger-control,[\s\S]*\.messenger-typing/);
-  assert.match(css, /\.workflow-conversation \{[\s\S]*?min-height: 100svh;[\s\S]*?padding: 0;/);
-  assert.match(css, /\.messenger-layout \{[\s\S]*?min-height: 100svh;[\s\S]*?max-width: none;/);
-  assert.match(css, /\.messenger-frame \{[\s\S]*?border: 0;[\s\S]*?box-shadow: none;/);
-  assert.match(css, /\.messenger-message \{[\s\S]*?width: min\(58%, 1050px\);/);
-  assert.match(css, /\.messenger-participants \.messenger-avatar--organisation \{[\s\S]*?width: clamp\(62px, 5vw, 82px\);/);
-  assert.match(css, /\.messenger-avatar--organisation img \{[\s\S]*?object-fit: contain;/);
-  assert.match(css, /\.messenger-window \{[\s\S]*?overscroll-behavior-y: auto;/);
-  assert.match(css, /\.messenger-window:focus-visible \{/);
-  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.messenger-window \{[\s\S]*?overflow-y: auto;/);
-  const narrowViewportCss = css.match(/@media \(max-width: 480px\) \{([\s\S]*?)@media \(prefers-reduced-motion: reduce\)/)?.[1] || "";
-  assert.doesNotMatch(narrowViewportCss, /\.messenger-(?:control|typing)[\s\S]*?display:\s*none/);
-  assert.doesNotMatch(narrowViewportCss, /\.messenger-window[\s\S]*?overflow:\s*visible/);
-  assert.match(javascript, /observer\?\.observe\(frame\)/, "the sequence must wait until the messenger frame is visible");
-  assert.match(javascript, /control\.dataset\.controlMode = mode/);
-  assert.match(javascript, /transcriptWindow\.scrollTo\(\{[\s\S]*?top: transcriptWindow\.scrollHeight,[\s\S]*?behavior,/);
-  assert.match(javascript, /scrollTranscript\("smooth", true\)/);
+  const config = await readFile(path.join(publicRoot, "site-config.js"), "utf8");
+  assert.match(config, /clients: Object.freeze\(\[\]\)/);
 });
 
-test("the Estonian hero heading preserves complete words at every breakpoint", async () => {
-  const [html, css] = await Promise.all([
-    readFile(path.join(publicRoot, "et/index.html"), "utf8"),
-    readFile(path.join(publicRoot, "styles.css"), "utf8"),
-  ]);
-  const heading = html.match(/<h1 id="hero-title">([\s\S]*?)<\/h1>/)?.[1];
-  assert.equal(heading, "Praktiline automatiseerimine ettevõtetele ja organisatsioonidele.");
-  assert.doesNotMatch(heading, /(?:&shy;|\u00ad|<wbr\b)/i);
-  assert.match(css, /html\[lang="et"\] \.hero h1 \{[\s\S]*?overflow-wrap: normal;[\s\S]*?word-break: normal;[\s\S]*?hyphens: none;/);
-  assert.match(css, /@media \(max-width: 720px\)[\s\S]*?html\[lang="et"\] \.hero h1 \{[\s\S]*?font-size: clamp\(31px, 9\.8vw, 49px\);/);
-});
-
-test("the brand sculpture and its exclusive implementation are fully removed", async () => {
-  for (const relativePath of ["index.html", "et/index.html", "ru/index.html"]) {
-    const html = await readFile(path.join(publicRoot, relativePath), "utf8");
-    assert.doesNotMatch(html, /brand-sculpture|data-brand-sculpture|Vooglin digital environment/);
-  }
-
-  const [css, javascript, localization] = await Promise.all([
-    readFile(path.join(publicRoot, "styles.css"), "utf8"),
-    readFile(path.join(publicRoot, "script.js"), "utf8"),
-    readFile(path.join(projectRoot, "localize.mjs"), "utf8"),
-  ]);
-  assert.doesNotMatch(css, /brand-sculpture|brand-cube-face|@keyframes brand-(?:grid|orbit|cube|logo|client|node)/);
-  assert.doesNotMatch(javascript, /initialiseBrandSculpture|data-brand-sculpture|brandMotion/);
-  assert.doesNotMatch(localization, /Vooglin digital environment|Pause ambient motion|Resume ambient motion/);
-});
-
-test("the process heading stays in English and is omitted accessibly in localized pages", async () => {
-  const english = await readFile(path.join(publicRoot, "index.html"), "utf8");
-  assert.match(english, /<h2 id="process-title">From bottleneck to working system\.<\/h2>/);
-  assert.match(english, /<section class="process[^>]*aria-labelledby="process-title">/);
-
-  for (const relativePath of ["et/index.html", "ru/index.html"]) {
-    const html = await readFile(path.join(publicRoot, relativePath), "utf8");
-    assert.doesNotMatch(html, /From bottleneck to working system|Kitsaskohast toimiva süsteemini|От узкого места к работающей системе/);
-    assert.match(html, /<section class="process[^>]*aria-labelledby="process-label" data-process-heading="omitted">/);
-    assert.match(html, /<p class="section-label" id="process-label">[^<]+<\/p>/);
-  }
+test("reduced motion and narrow layouts keep the decorative mascot quiet", async () => {
+  const css = await readFile(path.join(publicRoot, "styles.css"), "utf8");
+  const mascot = css.match(/\.robot-perch \{([^}]+)\}/)?.[1] || "";
+  assert.match(mascot, /position: relative/);
+  assert.doesNotMatch(mascot, /position: (?:fixed|absolute)/);
+  assert.match(css, /@media \(max-width: 359px\)[\s\S]*?\.robot-perch \{ display: none/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?animation: none !important/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.robot-perch:hover \.robot-body[\s\S]*?transform: none/);
 });

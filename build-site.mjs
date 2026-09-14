@@ -33,10 +33,6 @@ const imageAssetTypes = new Map([
 
 const binaryAssetDefinitions = [
   { url: "/og-brand.png", filename: "og-brand.png", type: "image/png" },
-  { url: "/cosmic-convergence.png", filename: "cosmic-convergence.png", type: "image/png" },
-  { url: "/cosmic-convergence.webp", filename: "cosmic-convergence.webp", type: "image/webp" },
-  { url: "/vooglin-mark.png", filename: "vooglin-mark.png", type: "image/png" },
-  { url: "/vooglin-v-black.png", filename: "vooglin-v-black.png", type: "image/png" },
   { url: "/egor-portrait.webp", filename: "egor-portrait.webp", type: "image/webp" },
   { url: "/favicon.ico", filename: "favicon.ico", type: "image/x-icon" },
   { url: "/favicon-16x16.png", filename: "favicon-16x16.png", type: "image/png" },
