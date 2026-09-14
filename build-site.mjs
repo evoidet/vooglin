@@ -4,6 +4,7 @@ import path from "node:path";
 import { runInNewContext } from "node:vm";
 import { normaliseBookingPolicy } from "./booking-runtime.mjs";
 import { localizePage } from "./localize.mjs";
+import { buildAssistantKnowledge } from "./assistant-knowledge.mjs";
 
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const distDirectory = path.join(projectRoot, "dist");
@@ -100,12 +101,26 @@ const ruPricingHtml = localizePage(pricingHtml, "ru", "pricing");
 const etPrivacyHtml = localizePage(privacyHtml, "et", "privacy");
 const ruPrivacyHtml = localizePage(privacyHtml, "ru", "privacy");
 
+const assistantAssets = await Promise.all([
+  ["assistant.mjs", "text/javascript; charset=utf-8"],
+  ["assistant-intents.mjs", "text/javascript; charset=utf-8"],
+  ["assistant.css", "text/css; charset=utf-8"],
+].map(async ([filename, type]) => ({ filename, type, body: await readFile(path.join(projectRoot, filename), "utf8") })));
+for (const [locale, home, pricing, privacy] of [
+  ["en", html, pricingHtml, privacyHtml],
+  ["et", etHtml, etPricingHtml, etPrivacyHtml],
+  ["ru", ruHtml, ruPricingHtml, ruPrivacyHtml],
+]) {
+  assistantAssets.push({ filename: `assistant-${locale}.json`, type: "application/json; charset=utf-8", body: JSON.stringify(buildAssistantKnowledge({ home, pricing, privacy }, locale)) });
+}
+
 const workerSource = `
 ${workerBookingRuntime}
 
 const bookingPolicy = ${JSON.stringify(bookingPolicy)};
 
 const assets = new Map([
+${assistantAssets.map(asset => `  [${JSON.stringify(`/${asset.filename}`)}, { body: ${JSON.stringify(asset.body)}, type: ${JSON.stringify(asset.type)} }],`).join("\n")}
   ["/", { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" }],
   ["/index.html", { body: ${JSON.stringify(html)}, type: "text/html; charset=utf-8" }],
   ["/pricing/", { body: ${JSON.stringify(pricingHtml)}, type: "text/html; charset=utf-8" }],
@@ -268,6 +283,7 @@ await Promise.all([
   writeFile(path.join(publicDirectory, "robots.txt"), robots),
   writeFile(path.join(publicDirectory, "sitemap.xml"), sitemap),
   writeFile(path.join(publicDirectory, "site.webmanifest"), manifest),
+  ...assistantAssets.map(asset => writeFile(path.join(publicDirectory, asset.filename), asset.body)),
   ...binaryAssets.map((asset) => writeFile(path.join(publicDirectory, asset.outputFilename || asset.filename), asset.body)),
   ...partnerAssets.map((asset) => writeFile(path.join(publicPartnerDirectory, asset.filename), asset.body)),
   ...peopleAssets.map((asset) => writeFile(path.join(publicPeopleDirectory, asset.filename), asset.body)),

@@ -1,0 +1,47 @@
+/* Isolated styles for the SECOND robot. No original robot selectors or overrides. */
+.site-assistant-mount { position: relative; flex: 0 0 44px; width: 44px; height: 44px; }
+.site-assistant-mount[hidden], .site-assistant-panel[hidden], .site-assistant-greeting[hidden] { display: none; }
+.site-assistant-launcher { display: grid; place-items: center; width: 44px; height: 44px; padding: 1px; border: 1px solid #536048; border-radius: 12px; background: #20271c; cursor: pointer; transition: background 160ms ease, border-color 160ms ease; }
+.site-assistant-launcher:hover, .site-assistant-launcher[aria-expanded="true"] { background: #35402b; border-color: #ddff6a; }
+.site-assistant-avatar { width: 40px; height: 42px; flex-shrink: 0; overflow: visible; pointer-events: none; }
+.site-assistant-character { transform-origin: 50px 60px; transition: transform 180ms ease; }
+.site-assistant-eyes { transform-box: fill-box; transform-origin: center; animation: site-assistant-blink 4.5s 1; }
+.site-assistant-launcher:hover .site-assistant-character { transform: rotate(-5deg) translateY(-2px); }
+.site-assistant-launcher:active .site-assistant-character { transform: translateY(2px); }
+.site-assistant-panel { position: fixed; z-index: 19; box-sizing: border-box; display: flex; flex-direction: column; min-width: 0; padding: 16px; overflow: hidden; border: 1px solid #526044; border-radius: 20px; background: #171d14; color: #f3f5ee; box-shadow: 0 14px 48px #0005; font-family: Manrope, sans-serif; font-size: 14px; line-height: 1.5; isolation: isolate; }
+.site-assistant-panel *, .site-assistant-greeting { box-sizing: border-box; }
+.site-assistant-panel button, .site-assistant-panel input { font-family: inherit; }
+.site-assistant-heading { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.site-assistant-heading h2 { margin: 0; font-size: 16px; font-weight: 700; line-height: 1.3; letter-spacing: -.02em; }
+.site-assistant-close { flex-shrink: 0; width: 44px; height: 44px; margin-left: auto; padding: 0; border: 1px solid #58664c; border-radius: 10px; background: #26301f; color: #f3f5ee; font-size: 27px; cursor: pointer; }
+.site-assistant-context { flex-shrink: 0; margin: 8px 0 12px; padding-bottom: 12px; border-bottom: 1px solid #3b4533; color: #c6d0bc; font-size: 12px; }
+.site-assistant-log { flex: 1 1 auto; min-height: 50px; overflow-y: auto; overscroll-behavior: contain; scrollbar-color: #71815e transparent; scrollbar-width: thin; padding: 2px 5px 8px 2px; overflow-wrap: anywhere; }
+.site-assistant-message { margin: 0 0 12px; padding: 12px; background: #26301f; border-radius: 4px 14px 14px; }
+.site-assistant-message-user { margin-left: 26px; background: #d6eeab; color: #18220e; border-radius: 14px 4px 14px 14px; }
+.site-assistant-speaker { display: block; margin-bottom: 4px; font-size: 11px; font-weight: 700; opacity: .85; }
+.site-assistant-message p { margin: 0; font-size: 14px; line-height: 1.6; }
+.site-assistant-details { margin-top: 10px; font-size: 13px; }
+.site-assistant-details summary { padding: 6px 0; color: #ddff6a; cursor: pointer; }
+.site-assistant-details ul { padding-left: 18px; }
+.site-assistant-details li { margin-bottom: 8px; }
+.site-assistant-links, .site-assistant-quick { display: flex; flex-wrap: wrap; gap: 6px; }
+.site-assistant-links { margin-top: 12px; }
+.site-assistant-action { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; max-width: 100%; padding: 7px 11px; border: 1px solid #71805e; border-radius: 9px; background: transparent; color: #e4f4cf; text-decoration: none; text-align: left; font-size: 12px; line-height: 1.4; font-weight: 600; cursor: pointer; }
+.site-assistant-action:hover, .site-assistant-close:hover { border-color: #ddff6a; background: #39472e; }
+.site-assistant-quick { flex-shrink: 0; padding-top: 10px; border-top: 1px solid #3b4533; }
+.site-assistant-form { flex-shrink: 0; display: flex; gap: 8px; margin-top: 12px; }
+.site-assistant-input { min-width: 0; width: 100%; min-height: 44px; padding: 10px; border: 1px solid #748166; border-radius: 10px; background: #10150d; color: #f3f5ee; font-size: 16px; }
+.site-assistant-input::placeholder { color: #b6c0aa; }
+.site-assistant-send { flex-shrink: 0; min-width: 54px; min-height: 44px; padding: 8px 12px; border: 0; border-radius: 10px; background: #ddff6a; color: #18220e; font-size: 13px; font-weight: 700; cursor: pointer; }
+.site-assistant-send:disabled { background: #425133; color: #c2cdb5; cursor: default; }
+.site-assistant-note { flex-shrink: 0; margin: 8px 0 0; color: #bec9b4; font-size: 10px; line-height: 1.5; }
+.site-assistant-greeting { position: fixed; z-index: 19; max-width: calc(100vw - 24px); padding: 9px 14px; border: 1px solid #536048; border-radius: 12px 3px 12px 12px; background: #ddff6a; color: #18220e; font: 600 13px/1.5 Manrope, sans-serif; pointer-events: none; }
+.site-assistant-launcher:focus-visible, .site-assistant-panel :focus-visible { outline: 3px solid #ddff6a; outline-offset: 3px; }
+.site-assistant-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.site-assistant-compact .site-assistant-context, .site-assistant-compact .site-assistant-quick, .site-assistant-compact .site-assistant-note { display: none; }
+.site-assistant-compact .site-assistant-heading { margin-bottom: 8px; }
+.site-assistant-answering .site-assistant-heading .site-assistant-character { animation: site-assistant-nod 300ms ease 1; }
+@keyframes site-assistant-blink { 0%, 88%, 94%, 100% { transform: scaleY(1); } 91% { transform: scaleY(.15); } }
+@keyframes site-assistant-nod { 50% { transform: rotate(5deg) translateY(2px); } }
+@media (max-width: 600px) { .site-assistant-panel { padding: 12px; border-radius: 16px; padding-bottom: max(12px, env(safe-area-inset-bottom)); } .site-assistant-action { min-height: 40px; } }
+@media (prefers-reduced-motion: reduce) { .site-assistant-character, .site-assistant-eyes { animation: none !important; transition: none !important; transform: none !important; } .site-assistant-launcher { transition: none; } }

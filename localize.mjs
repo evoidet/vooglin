@@ -3,6 +3,33 @@ const simplifiedCopy = JSON.parse(readFileSync(new URL("./redesign-copy.json", i
 const translations = {
   et: {
     common: [
+      ["Website helper", "Veebiabiline"],
+      ["Open website helper", "Ava veebiabiline"],
+      ["Minimize helper", "Peida abiline"],
+      ["Hi! Need a hand?", "Tere! Kas saan aidata?"],
+      ["Hi! I can help you find your way around Vooglin. Choose a topic or ask me a question.", "Tere! Aitan sul Vooglini veebis vajalikku leida. Vali teema või esita küsimus."],
+      ["Your question", "Sinu küsimus"],
+      ["Ask about Vooglin…", "Küsi Vooglini kohta…"],
+      ["Send", "Saada"],
+      ["You", "Sina"],
+      ["Helper", "Abiline"],
+      ["Questions stay in this tab. This helper does not send messages.", "Küsimused jäävad sellele vahelehele. Abiline ei saada sõnumeid."],
+      ["I couldn't find that information on the website. Try one of these pages, or get in touch.", "Ma ei leidnud seda infot veebilehelt. Vaata neid lehti või võta ühendust."],
+      ["Finding that on the website…", "Otsin veebilehelt…"],
+      ["The helper could not load. You can still use the website navigation.", "Abilist ei õnnestunud laadida. Veebilehe menüü töötab endiselt."],
+      ["Try again", "Proovi uuesti"],
+      ["You're on: {page}", "Oled lehel: {page}"],
+      ["Read more", "Loe edasi"],
+      ["Read full policy", "Loe kogu privaatsuspoliitikat"],
+      ["Home", "Avaleht"],
+      ["Time savings calculator", "Ajasäästu kalkulaator"],
+      ["Book a free consultation", "Broneeri tasuta konsultatsioon"],
+      ["Send an email", "Saada e-kiri"],
+      ["What does Vooglin do?", "Millega Vooglin tegeleb?"],
+      ["About this helper", "Sellest abilisest"],
+      ["I look up information from Vooglin's public pages. Your questions stay in this tab; only greeting and panel preferences are saved for this browsing session.", "Otsin infot Vooglini avalikelt lehtedelt. Küsimused jäävad sellele vahelehele; selleks sirvimisseansiks salvestatakse ainult tervituse ja paneeli eelistused."],
+      ["Try asking about services, pricing, time savings, contact details or the privacy policy.", "Küsi teenuste, hindade, ajasäästu, kontaktide või privaatsuspoliitika kohta."],
+      ["Details from the page", "Üksikasjad veebilehelt"],
       ["Skip to content", "Liigu sisu juurde"],
       ["Vooglin home", "Vooglini avaleht"],
       ["Primary navigation", "Põhinavigatsioon"],
@@ -436,6 +463,33 @@ const translations = {
   },
   ru: {
     common: [
+      ["Website helper", "Помощник по сайту"],
+      ["Open website helper", "Открыть помощника"],
+      ["Minimize helper", "Свернуть помощника"],
+      ["Hi! Need a hand?", "Привет! Подсказать?"],
+      ["Hi! I can help you find your way around Vooglin. Choose a topic or ask me a question.", "Привет! Помогу найти нужное на сайте Vooglin. Выберите тему или задайте вопрос."],
+      ["Your question", "Ваш вопрос"],
+      ["Ask about Vooglin…", "Спросите о Vooglin…"],
+      ["Send", "Отправить"],
+      ["You", "Вы"],
+      ["Helper", "Помощник"],
+      ["Questions stay in this tab. This helper does not send messages.", "Вопросы остаются в этой вкладке. Помощник не отправляет сообщения."],
+      ["I couldn't find that information on the website. Try one of these pages, or get in touch.", "Я не нашёл эту информацию на сайте. Посмотрите эти страницы или свяжитесь с нами."],
+      ["Finding that on the website…", "Ищу на сайте…"],
+      ["The helper could not load. You can still use the website navigation.", "Не удалось загрузить помощника. Меню сайта по-прежнему доступно."],
+      ["Try again", "Попробовать снова"],
+      ["You're on: {page}", "Вы на странице: {page}"],
+      ["Read more", "Подробнее"],
+      ["Read full policy", "Прочитать политику полностью"],
+      ["Home", "Главная"],
+      ["Time savings calculator", "Калькулятор экономии времени"],
+      ["Book a free consultation", "Записаться на бесплатную консультацию"],
+      ["Send an email", "Написать письмо"],
+      ["What does Vooglin do?", "Чем занимается Vooglin?"],
+      ["About this helper", "Об этом помощнике"],
+      ["I look up information from Vooglin's public pages. Your questions stay in this tab; only greeting and panel preferences are saved for this browsing session.", "Я ищу информацию на публичных страницах Vooglin. Вопросы остаются в этой вкладке; на время сеанса сохраняются только настройки приветствия и панели."],
+      ["Try asking about services, pricing, time savings, contact details or the privacy policy.", "Спросите об услугах, ценах, экономии времени, контактах или политике конфиденциальности."],
+      ["Details from the page", "Подробности со страницы"],
       ["Skip to content", "Перейти к содержанию"],
       ["Vooglin home", "Главная Vooglin"],
       ["Primary navigation", "Основная навигация"],
@@ -943,4 +997,12 @@ export function localizePage(source, locale, page) {
   );
 
   return html;
+}
+
+// Shared exact-string localization for build-time UI modules.
+export function localizeText(source, locale) {
+  if (locale === "en") return source;
+  const translated = translations[locale]?.common.find(([from]) => from === source)?.[1];
+  if (!translated) throw new Error(`Missing UI translation (${locale}): ${source}`);
+  return translated;
 }
