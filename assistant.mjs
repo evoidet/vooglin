@@ -51,6 +51,19 @@ function initialize() {
   mount.append(launcher);
   mount.hidden = false;
 
+  // A second launcher for this same panel, SVG and in-memory conversation.
+  const floating = element('div', 'site-assistant-floating');
+  const floatingLauncher = launcher.cloneNode(true);
+  floatingLauncher.classList.add('site-assistant-floating-launcher');
+  const floatingClose = element('button', 'site-assistant-floating-close', '×');
+  floatingClose.type = 'button';
+  floatingClose.setAttribute('aria-label', document.querySelector('.menu-toggle')?.dataset.closeLabel || 'Close');
+  floatingClose.title = floatingClose.getAttribute('aria-label');
+  floating.append(floatingLauncher, floatingClose);
+  let floatingHidden = storage.get('floating-hidden') === 'yes';
+  floating.hidden = floatingHidden;
+  let returnFocus = launcher;
+
   const panel = element('section', 'site-assistant-panel');
   panel.id = 'site-assistant-panel';
   panel.hidden = true;
@@ -59,7 +72,7 @@ function initialize() {
   const greeting = element('div', 'site-assistant-greeting');
   greeting.hidden = true;
   greeting.setAttribute('aria-hidden', 'true');
-  document.body.append(panel, greeting);
+  document.body.append(panel, greeting, floating);
   let knowledge, resolver, pending, input, log, timer, greeted = false;
   let frame = 0;
   const header = document.querySelector('.site-header');
@@ -71,11 +84,27 @@ function initialize() {
     const wasOpen = !panel.hidden;
     panel.hidden = true;
     launcher.setAttribute('aria-expanded', 'false');
+    floatingLauncher.setAttribute('aria-expanded', 'false');
     storage.set('panel', 'closed');
-    if (restoreFocus && wasOpen) launcher.focus({ preventScroll: true });
+    positionFloating();
+    if (restoreFocus && wasOpen) (returnFocus === floatingLauncher && !floating.inert ? floatingLauncher : launcher).focus({ preventScroll: true });
   }
 
   function hideGreeting() { greeting.hidden = true; clearTimeout(timer); }
+
+  function positionFloating() {
+    floating.hidden = floatingHidden;
+    // Stay in one fixed corner; step aside instead of covering controls as they scroll by.
+    // This temporary suppression never changes the visitor's saved visibility choice.
+    const bounds = floating.getBoundingClientRect();
+    const protectedContent = document.querySelectorAll('main a, main button, main input, main select, main textarea, main label, main h1, main h2, footer a, .robot-perch');
+    const blocked = floatingHidden || header.classList.contains('is-open') || booking?.open
+      || bounds.top < header.getBoundingClientRect().bottom
+      || (!panel.hidden && overlap(bounds, panel.getBoundingClientRect()))
+      || [...protectedContent].some(node => [...node.getClientRects()].some(rect => rect.width && rect.height && overlap(bounds, rect)));
+    floating.classList.toggle('site-assistant-floating-blocked', Boolean(blocked));
+    floating.inert = Boolean(blocked);
+  }
 
   function position() {
     frame = 0;
@@ -94,7 +123,7 @@ function initialize() {
       const important = [...document.querySelectorAll('main h1, main h2, main p, main a, main button, main input, .robot-perch')];
       if (important.some(node => overlap(bubble, node.getBoundingClientRect()))) hideGreeting();
     }
-    if (panel.hidden) return;
+    if (panel.hidden) { positionFloating(); return; }
     const width = Math.min(380, rightEdge - leftEdge);
     const height = Math.min(550, bottomEdge - topEdge);
     const options = [];
@@ -115,6 +144,7 @@ function initialize() {
     panel.style.width = `${width}px`;
     panel.style.height = `${best.height}px`;
     panel.classList.toggle('site-assistant-compact', best.height < 360);
+    positionFloating();
   }
 
   function schedulePosition() { if (!frame) frame = requestAnimationFrame(position); }
@@ -270,11 +300,13 @@ function initialize() {
     return pending;
   }
 
-  async function open(focus = true) {
+  async function open(focus = true, source = launcher) {
+    returnFocus = source;
     hideGreeting();
     if (header.classList.contains('is-open')) document.querySelector('.menu-toggle')?.click();
     panel.hidden = false;
     launcher.setAttribute('aria-expanded', 'true');
+    floatingLauncher.setAttribute('aria-expanded', 'true');
     storage.set('panel', 'open');
     if (!knowledge && !panel.childElementCount) {
       const status = element('p', '', mount.dataset.assistantLoading);
@@ -293,25 +325,43 @@ function initialize() {
     }
   }
 
-  launcher.addEventListener('click', () => panel.hidden ? open() : close());
+  launcher.addEventListener('click', () => {
+    if (floatingHidden) {
+      floatingHidden = false;
+      storage.set('floating-hidden', 'no');
+      positionFloating();
+      if (!floating.inert) { floatingLauncher.focus({ preventScroll: true }); return; }
+    }
+    panel.hidden ? open() : close();
+  });
+  floatingLauncher.addEventListener('click', () => panel.hidden ? open(true, floatingLauncher) : close());
+  floatingClose.addEventListener('click', () => {
+    floatingHidden = true;
+    storage.set('floating-hidden', 'yes');
+    hideGreeting();
+    close(false);
+    launcher.focus({ preventScroll: true });
+  });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && !panel.hidden) { event.preventDefault(); close(); }
   });
   document.addEventListener('focusin', event => {
-    if (!panel.hidden && !panel.contains(event.target) && !mount.contains(event.target)) close(false);
+    if (!panel.hidden && !panel.contains(event.target) && !mount.contains(event.target) && !floating.contains(event.target)) close(false);
   });
   document.addEventListener('pointerdown', event => {
-    if (!panel.hidden && !panel.contains(event.target) && !mount.contains(event.target)) close(false);
+    if (!panel.hidden && !panel.contains(event.target) && !mount.contains(event.target) && !floating.contains(event.target)) close(false);
   });
   // Preserve the existing menu/dialog behavior and prevent competing overlays.
   new MutationObserver(() => {
     if (header.classList.contains('is-open') || booking?.open) { hideGreeting(); close(false); }
+    positionFloating();
   }).observe(header, { attributes: true, attributeFilter: ['class'] });
-  if (booking) new MutationObserver(() => { if (booking.open) { hideGreeting(); close(false); } }).observe(booking, { attributes: true, attributeFilter: ['open'] });
+  if (booking) new MutationObserver(() => { if (booking.open) { hideGreeting(); close(false); } positionFloating(); }).observe(booking, { attributes: true, attributeFilter: ['open'] });
   addEventListener('resize', schedulePosition, { passive: true });
   addEventListener('scroll', () => { hideGreeting(); schedulePosition(); }, { passive: true });
   window.visualViewport?.addEventListener('resize', schedulePosition, { passive: true });
   window.visualViewport?.addEventListener('scroll', schedulePosition, { passive: true });
+  positionFloating();
 
   // Intentional cross-page consultation links use the site's existing dialog.
   if (page === 'home' && new URL(location.href).searchParams.get('consultation') === '1') {

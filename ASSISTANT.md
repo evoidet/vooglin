@@ -59,3 +59,25 @@ it minimizes. Reduced motion disables the new robot's blink, nod and hover movem
   assistive technologies were not available for device-level testing.
 - Compared the three original robot blocks and existing CSS/JS with the pre-change
   baseline; all are unchanged. No website was deployed or published.
+
+## Floating launcher (16 September 2026)
+
+The larger bottom-right robot clones the header launcher's existing SVG and opens
+the same panel, matcher and in-memory conversation. Its × closes the panel and
+hides the floating launcher for the session; the header robot restores it. Closing
+only the chat keeps the floating robot available. Escape/minimize returns focus
+to the initiating launcher when it is visible.
+
+The fixed corner position does not change the page layout. On phones the robot
+scales down, while × retains a 44px target. It temporarily becomes hidden and inert
+when it would cover protected content, the menu, booking dialog or chat panel.
+This does not alter the saved visibility preference. Existing blink, hover and
+reduced-motion rules are reused; no new animation or assistant backend is added.
+
+Verified: all 31 existing tests and build checks pass; all nine pages were checked
+at 1440, 1024, 768, 390 and 320px widths. Repeated hide/restore, conversation reuse,
+session preference, translated controls, fixed scroll position, booking and a
+390 × 430 keyboard-sized viewport were checked in the browser. Physical phone
+keyboards were not available. Page HTML changed only to refresh assistant asset
+versions; global styles, page scripts, knowledge, localization and dependencies
+remain unchanged. Nothing was deployed.

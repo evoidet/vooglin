@@ -45,3 +45,18 @@
 @keyframes site-assistant-nod { 50% { transform: rotate(5deg) translateY(2px); } }
 @media (max-width: 600px) { .site-assistant-panel { padding: 12px; border-radius: 16px; padding-bottom: max(12px, env(safe-area-inset-bottom)); } .site-assistant-action { min-height: 40px; } }
 @media (prefers-reduced-motion: reduce) { .site-assistant-character, .site-assistant-eyes { animation: none !important; transition: none !important; transform: none !important; } .site-assistant-launcher { transition: none; } }
+
+/* Additional corner launcher; the header robot and chat panel keep their styles. */
+.site-assistant-floating { position: fixed; z-index: 18; right: max(20px, env(safe-area-inset-right)); bottom: max(20px, env(safe-area-inset-bottom)); width: 120px; height: 136px; pointer-events: none; }
+.site-assistant-floating[hidden] { display: none; }
+.site-assistant-floating-blocked { visibility: hidden; }
+.site-assistant-floating-launcher { position: absolute; left: 0; bottom: 0; width: 104px; height: 108px; border-radius: 26px; box-shadow: 0 8px 26px #0003; pointer-events: auto; }
+.site-assistant-floating-launcher .site-assistant-avatar { width: 94px; height: 98px; }
+.site-assistant-floating-close { position: absolute; top: 0; right: 0; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #58664c; border-radius: 50%; background: #26301f; color: #f3f5ee; font-size: 24px; line-height: 1; cursor: pointer; pointer-events: auto; }
+.site-assistant-floating-close:hover { background: #39472e; border-color: #ddff6a; }
+.site-assistant-floating-close:focus-visible { outline: 3px solid #ddff6a; outline-offset: 3px; }
+@media (max-width: 760px) {
+  .site-assistant-floating { right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); width: 92px; height: 110px; }
+  .site-assistant-floating-launcher { width: 78px; height: 82px; border-radius: 20px; }
+  .site-assistant-floating-launcher .site-assistant-avatar { width: 70px; height: 74px; }
+}
