@@ -33,6 +33,8 @@ const imageAssetTypes = new Map([
 ]);
 
 const binaryAssetDefinitions = [
+  { url: "/email/egor-stepanov.png", filename: "images/email/egor-stepanov.png", outputFilename: "email/egor-stepanov.png", type: "image/png" },
+  { url: "/email/linkedin.png", filename: "images/email/linkedin.png", outputFilename: "email/linkedin.png", type: "image/png" },
   { url: "/og-brand.png", filename: "og-brand.png", type: "image/png" },
   { url: "/egor-portrait.webp", filename: "egor-portrait.webp", type: "image/webp" },
   { url: "/favicon.ico", filename: "favicon.ico", type: "image/x-icon" },
@@ -264,6 +266,7 @@ await Promise.all([
   mkdir(publicRuPrivacyDirectory, { recursive: true }),
   mkdir(publicPartnerDirectory, { recursive: true }),
   mkdir(publicPeopleDirectory, { recursive: true }),
+  mkdir(path.join(publicDirectory, "email"), { recursive: true }),
 ]);
 
 await Promise.all([
